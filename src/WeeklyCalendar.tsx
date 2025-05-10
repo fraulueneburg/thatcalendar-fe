@@ -24,16 +24,22 @@ export default function WeeklyCalendar() {
 
 	return (
 		<>
-			<h1>{writtenMonthName}</h1>
-			<button onClick={() => setOffset((prev) => prev - 1)}>prev</button>
-			<button onClick={() => setOffset(0)} disabled={offset === 0}>
-				today
-			</button>
-			<button onClick={() => setOffset((prev) => prev + 1)}>next</button>
-
-			<h2>{ISOweekNum}</h2>
+			<header className="page-header">
+				<h1>{writtenMonthName}</h1>
+				<nav>
+					<button onClick={() => setOffset((prev) => prev - 1)}>prev</button>
+					<button onClick={() => setOffset(0)} disabled={offset === 0}>
+						today
+					</button>
+					<button onClick={() => setOffset((prev) => prev + 1)}>next</button>
+				</nav>
+			</header>
 
 			<div className="week">
+				<h2>
+					<span className="sr-only">Week </span>
+					{ISOweekNum}
+				</h2>
 				{weekdaysArr.map((dayName, index) => {
 					const dayDate = subDays(new Date(today), currWeekdayNum - index + timePeriodInDays * offset * -1)
 					const dayNum = dayDate.getDate()
