@@ -18,13 +18,17 @@ ul {
 	}
 }
 
-div.week {
+.week {
 	display: grid;
 	grid-template-columns: repeat(7, 1fr);
 	gap: 1rem;
 
-	> div {
-		background-color: rgba(255, 255, 255, 0.3);
+	.day {
+		background-color: rgba(255, 255, 255, 0.2);
+	}
+
+	.weekend {
+		background-color: rgba(255, 255, 255, 0.5);
 	}
 }
 
