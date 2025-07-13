@@ -1,5 +1,5 @@
-import './App.scss'
-import WeeklyCalendar from './WeeklyCalendar'
+import './styles/App.scss'
+import WeeklyCalendar from './components/WeeklyCalendar'
 
 // import calRot from './data/ical/rot.json'
 // import calPink from './data/ical/pink.json'

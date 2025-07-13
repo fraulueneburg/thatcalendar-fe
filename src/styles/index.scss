@@ -11,11 +11,26 @@
 	text-rendering: optimizeLegibility;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+
+	--color-primary: #646cff;
+}
+
+@media (prefers-color-scheme: light) {
+	:root {
+		color: #213547;
+		background-color: #ffffff;
+	}
+	a:hover {
+		color: #747bff;
+	}
+	button {
+		background-color: #f9f9f9;
+	}
 }
 
 a {
 	font-weight: 500;
-	color: #646cff;
+	color: var(--color-primary);
 	text-decoration: inherit;
 }
 
@@ -43,24 +58,29 @@ button {
 	background-color: #1a1a1a;
 	cursor: pointer;
 	transition: border-color 0.25s;
-}
-button:hover {
-	border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-	outline: 4px auto -webkit-focus-ring-color;
+
+	&:not(:disabled):hover {
+		border-color: var(--color-primary);
+	}
+
+	&:focus,
+	&:focus-visible {
+		outline: 4px auto -webkit-focus-ring-color;
+	}
+
+	&:disabled {
+		cursor: default;
+	}
 }
 
-@media (prefers-color-scheme: light) {
-	:root {
-		color: #213547;
-		background-color: #ffffff;
-	}
-	a:hover {
-		color: #747bff;
-	}
-	button {
-		background-color: #f9f9f9;
+.task {
+	background-color: var(--color-primary);
+	margin-top: 1rem;
+	overflow: hidden;
+	padding: 0.5rem;
+	resize: vertical;
+
+	* {
+		margin: 0;
 	}
 }
