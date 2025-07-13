@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { endOfWeek, format, getISOWeek, startOfWeek, subDays, subWeeks } from 'date-fns'
-import SingleCalendar from './SingleCalendar'
 import Task from './Task'
 
 export default function WeeklyCalendar() {
@@ -49,6 +48,27 @@ export default function WeeklyCalendar() {
 
 	const ISOweekNum = getISOWeek(subWeeks(new Date(today), offset * -1))
 
+	const tasksArr = [
+		{
+			summary: 'client work',
+			description: 'some description',
+			dtStart: '20250714T090000Z',
+			dtEnd: '20250714T100000Z',
+		},
+		{
+			summary: 'personal project',
+			description: 'some description',
+			dtStart: '20250714T130000Z',
+			dtEnd: '20250714T160000Z',
+		},
+		{
+			summary: 'chores',
+			description: 'some description',
+			dtStart: '20250712T090000Z',
+			dtEnd: '20250712T100000Z',
+		},
+	]
+
 	return (
 		<>
 			<header className="page-header">
@@ -76,13 +96,17 @@ export default function WeeklyCalendar() {
 
 					return (
 						<div className={classes} key={`${offset}-${index}`}>
-							<h3>
-								{dayName} {dayNum}
-							</h3>
-							<button>+ new event</button>
-							<Task data={{ title: 'One To Do', description: 'some description' }} />
-							<Task data={{ title: 'One To Do', description: 'some description' }} />
-							<Task data={{ title: 'One To Do', description: 'some description' }} />
+							<div className="header">
+								<h3>
+									{dayName} {dayNum}
+								</h3>
+								<button>+ new event</button>
+							</div>
+							<div className="content">
+								{tasksArr.map((task) => (
+									<Task data={task} />
+								))}
+							</div>
 						</div>
 					)
 				})}
