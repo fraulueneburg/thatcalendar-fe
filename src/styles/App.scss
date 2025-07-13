@@ -11,6 +11,17 @@
 	height: 100dvh;
 }
 
+.sr-only {
+	border: 0;
+	clip: rect(0, 0, 0, 0);
+	position: absolute;
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	padding: 0;
+	width: 1px;
+}
+
 .page-header {
 	align-items: center;
 	display: flex;
@@ -27,6 +38,11 @@ h6 {
 	margin: 0;
 }
 
+h1 {
+	font-size: 3.2em;
+	line-height: 1.1;
+}
+
 ul {
 	max-width: 1280px;
 	margin: 0 auto;
@@ -40,6 +56,16 @@ ul {
 h1 {
 	.year {
 		font-weight: normal;
+	}
+}
+
+a {
+	font-weight: 500;
+	color: var(--color-primary);
+	text-decoration: inherit;
+
+	&:hover {
+		color: #535bf2;
 	}
 }
 
