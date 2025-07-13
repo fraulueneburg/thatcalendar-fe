@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { endOfWeek, format, getISOWeek, startOfWeek, subDays, subWeeks } from 'date-fns'
+import SingleCalendar from './SingleCalendar'
+import Task from './Task'
 
 export default function WeeklyCalendar() {
 	const [offset, setOffset] = useState(0)
@@ -69,7 +71,7 @@ export default function WeeklyCalendar() {
 					const dayDate = subDays(new Date(today), weekdayNumToday - index + timePeriodInDays * offset * -1)
 					const dayNum = dayDate.getDate()
 					const isToday = offset === 0 && weekdayNumToday === index
-					const isWeekend = dayName === 'Sat' || dayName === 'Sun'
+					const isWeekend = ['Sat', 'Sun'].includes(dayName)
 					const classes = `day${isToday ? ' today' : ''}${isWeekend ? ' weekend' : ''}`
 
 					return (
@@ -77,10 +79,15 @@ export default function WeeklyCalendar() {
 							<h3>
 								{dayName} {dayNum}
 							</h3>
+							<button>+ new event</button>
+							<Task data={{ title: 'One To Do', description: 'some description' }} />
+							<Task data={{ title: 'One To Do', description: 'some description' }} />
+							<Task data={{ title: 'One To Do', description: 'some description' }} />
 						</div>
 					)
 				})}
 			</div>
+			<footer>{/* <SingleCalendar cal="" /> */}</footer>
 		</>
 	)
 }
