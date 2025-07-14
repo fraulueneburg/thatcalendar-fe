@@ -33,16 +33,19 @@ export default function Task(props) {
 
 	return (
 		<>
-			<div className="task" style={{ backgroundColor: colorBg, color: color }}>
+			<section className="task" style={{ backgroundColor: colorBg, color: color }}>
 				{travelTime && <TravelTime time={travelTime} />}
 				<div className="content">
 					<small className="time">
 						<span className="hours">
-							{startTime}&thinsp;–&thinsp;{endTime}
+							<time>{startTime}</time>
+							<span className="sr-only">
+								&thinsp;–&thinsp;<time>{endTime}</time>
+							</span>
 						</span>
 						<span className="duration">
-							<IconDuration />
-							{duration}
+							<IconDuration aria-label="duration" />
+							{duration} <span className="sr-only">hours</span>
 						</span>
 					</small>
 					<h4 className="title">{summary}</h4>
@@ -51,7 +54,7 @@ export default function Task(props) {
 					</small>
 				</div>
 				{travelTime && travelReturnTime != 0 && <TravelTime time={travelReturnTime || travelTime} isReturn={true} />}
-			</div>
+			</section>
 		</>
 	)
 }

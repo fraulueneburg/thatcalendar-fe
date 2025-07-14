@@ -20,12 +20,12 @@ export default function TravelTime({ time, isReturn }) {
 
 	return (
 		<>
-			<p className="travel-time">
+			<aside className="travel-time">
 				<IconTravel size={14} />
 				<small className="text">
 					{timeFormatted} <span className="sr-only">{text}</span>
 				</small>
-			</p>
+			</aside>
 		</>
 	)
 }
