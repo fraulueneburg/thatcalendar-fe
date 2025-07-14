@@ -3,4 +3,5 @@ export type MainCalendarType = {
 	calName: string
 	color: string
 	colorBg: string
+	childCalendars: string[]
 }

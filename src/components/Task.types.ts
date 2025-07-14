@@ -3,8 +3,8 @@ export type TaskType = {
 	description: string
 	dtStart: string
 	dtEnd: string
-	calendar: string
-	subCalendar: string
+	calendarId: string
+	subCalendarId: string
 	travelTime: string
 	travelReturnTime: string
 }
