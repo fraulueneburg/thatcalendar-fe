@@ -3,8 +3,8 @@ import { CaretRightIcon as IconToRight, CaretLeftIcon as IconToLeft } from '@pho
 import { calArr } from '../data/dummydata'
 
 export default function Header() {
-	const [isExpanded, setIsExpanded] = useState(true)
 	const brandName = 'that calendar'
+	const [isExpanded, setIsExpanded] = useState(true)
 
 	return (
 		<>
@@ -14,13 +14,12 @@ export default function Header() {
 				</h1>
 				<button
 					role="switch"
-					aria-label="expand header"
 					aria-checked={isExpanded}
 					className="btn-round btn-expand"
 					onClick={() => setIsExpanded((prev) => !prev)}>
 					{isExpanded ? <IconToLeft /> : <IconToRight />} <span className="sr-only">expand header</span>
 				</button>
-				<nav>
+				<nav className="nav-main">
 					<ul>
 						{calArr.map((elem) => (
 							<li>{elem.calname}</li>
