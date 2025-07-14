@@ -1,11 +1,10 @@
 import { useState } from 'react'
 import { endOfWeek, format, getISOWeek, startOfWeek, subDays, subWeeks } from 'date-fns'
-import Task from './Task'
-
 import { PlusIcon as IconAdd, CaretLeftIcon as IconPrev, CaretRightIcon as IconNext } from '@phosphor-icons/react'
+import Task from './Task'
+import Header from './Header'
 
 import { tasksArr } from '../data/dummydata'
-import Header from './Header'
 
 export default function WeeklyCalendar() {
 	const [offset, setOffset] = useState(0)
@@ -36,7 +35,7 @@ export default function WeeklyCalendar() {
 
 	const dayStartHour = 7
 	const dayEndHour = 24
-	const hoursRange = (start, end) => Array.from({ length: end - start + 1 }, (_, i) => start + i)
+	const hoursRange = (start: number, end: number) => Array.from({ length: end - start + 1 }, (_, i) => start + i)
 	const hoursArr = ['all day', ...hoursRange(dayStartHour, dayEndHour)]
 
 	const periodHeadline = isSameMonth ? (
@@ -112,7 +111,7 @@ export default function WeeklyCalendar() {
 									{tasksArr.map((task) => (
 										<Task data={task} key={task._id} />
 									))}
-									{hoursArr.map((e, index, arr) => (
+									{hoursArr.map((_, index, arr) => (
 										<div className="line" style={{ bottom: (820 / arr.length) * index + 38 }}></div>
 									))}
 								</div>
