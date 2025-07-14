@@ -80,7 +80,7 @@ export default function WeeklyCalendar() {
 				<div className="week">
 					<aside className="hours-range" aria-hidden="true">
 						{hoursArr.map((hour, index) => (
-							<div>
+							<div key={`range-${index}`}>
 								{hour}
 								{index === 0 ? '' : ':00'}
 							</div>
@@ -112,7 +112,7 @@ export default function WeeklyCalendar() {
 										<Task data={task} key={task._id} />
 									))}
 									{hoursArr.map((_, index, arr) => (
-										<div className="line" style={{ bottom: (820 / arr.length) * index + 38 }}></div>
+										<div className="line" style={{ bottom: (835 / arr.length) * index + 41 }} key={`line-${index}`}></div>
 									))}
 								</div>
 							</article>
