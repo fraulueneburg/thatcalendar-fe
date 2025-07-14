@@ -1,4 +1,6 @@
-export default function Badge({ count, itemType }) {
+import { BadgeType } from './Badge.types'
+
+export default function Badge({ count, itemType }: BadgeType) {
 	return (
 		<>
 			<span className="badge">
