@@ -23,3 +23,6 @@ src/data/ical/*
 *.njsproj
 *.sln
 *.sw?
+
+# other
+TODO.md
