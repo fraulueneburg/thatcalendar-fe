@@ -28,13 +28,14 @@ export default function Task(props) {
 
 	const startTime = convertToTime(dtStart)
 	const endTime = convertToTime(dtEnd)
-
 	const duration = calculateDuration(dtStart, dtEnd)
+
+	const isValidTravelTime = (time: string) => time && time !== '0'
 
 	return (
 		<>
 			<section className="task" style={{ backgroundColor: colorBg, color: color }}>
-				{travelTime && <TravelTime time={travelTime} />}
+				{isValidTravelTime(travelTime) ? <TravelTime time={travelTime} /> : null}
 				<div className="content">
 					<small className="time">
 						<span className="hours">
@@ -53,7 +54,7 @@ export default function Task(props) {
 						<span className="sub-cal">{subCalendar}</span> <span className="main-cal">•&nbsp;{calname}</span>
 					</small>
 				</div>
-				{travelTime && travelReturnTime != 0 && <TravelTime time={travelReturnTime || travelTime} isReturn={true} />}
+				{isValidTravelTime(travelReturnTime) && <TravelTime time={travelReturnTime} isReturn={true} />}
 			</section>
 		</>
 	)

@@ -1,7 +1,12 @@
 import { PersonSimpleBikeIcon as IconTravel } from '@phosphor-icons/react'
 
-export default function TravelTime({ time, isReturn }) {
-	const parseDuration = (isoString) => {
+type TravelTimeProps = {
+	time: string
+	isReturn?: boolean
+}
+
+export default function TravelTime({ time, isReturn }: TravelTimeProps) {
+	const parseDuration = (isoString: string) => {
 		const match = isoString.match(/P(?:(\d+)D)?(?:T(?:(\d+)H)?(?:(\d+)M)?)?/)
 		const days = parseInt(match?.[1] || '0', 10)
 		const hours = parseInt(match?.[2] || '0', 10)
