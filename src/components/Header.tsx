@@ -1,0 +1,33 @@
+import { useState } from 'react'
+import { CaretRightIcon as IconToRight, CaretLeftIcon as IconToLeft } from '@phosphor-icons/react'
+import { calArr } from '../data/dummydata'
+
+export default function Header() {
+	const [isExpanded, setIsExpanded] = useState(true)
+	const brandName = 'that calendar'
+
+	return (
+		<>
+			<header className={`page-header ${isExpanded && 'expanded'}`}>
+				<h1 className="logo" aria-label={brandName}>
+					👌 <span style={{ display: isExpanded ? 'block' : 'none' }}>{brandName}</span>
+				</h1>
+				<button
+					role="switch"
+					aria-label="expand header"
+					aria-checked={isExpanded}
+					className="btn-round btn-expand"
+					onClick={() => setIsExpanded((prev) => !prev)}>
+					{isExpanded ? <IconToLeft /> : <IconToRight />} <span className="sr-only">expand header</span>
+				</button>
+				<nav>
+					<ul>
+						{calArr.map((elem) => (
+							<li>{elem.calname}</li>
+						))}
+					</ul>
+				</nav>
+			</header>
+		</>
+	)
+}

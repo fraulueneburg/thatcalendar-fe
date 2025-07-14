@@ -5,7 +5,7 @@ import Task from './Task'
 import { PlusIcon as IconAdd, CaretLeftIcon as IconPrev, CaretRightIcon as IconNext } from '@phosphor-icons/react'
 
 import { tasksArr } from '../data/dummydata'
-import { calArr, tasksArr } from '../data/dummydata'
+import Header from './Header'
 
 export default function WeeklyCalendar() {
 	const [offset, setOffset] = useState(0)
