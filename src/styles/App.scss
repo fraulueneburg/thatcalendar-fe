@@ -181,12 +181,11 @@ main {
 	border-left: 3px solid currentColor;
 	display: flex;
 	flex-direction: column;
-	min-height: min-content;
 	margin-inline: var(--padding-cell-x);
 	overflow: hidden;
-	position: relative;
-	resize: vertical;
+	position: absolute;
 	text-wrap: balance;
+	width: calc(100% - var(--padding-cell-x) * 2);
 	z-index: 1;
 
 	&:not(:last-child) {
