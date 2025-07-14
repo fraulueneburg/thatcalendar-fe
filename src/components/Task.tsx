@@ -3,13 +3,24 @@ import { parse, format, differenceInMinutes } from 'date-fns'
 import TravelTime from './TravelTime'
 import { TimerIcon as IconDuration } from '@phosphor-icons/react'
 
+type TaskType = {
+	summary: string
+	description: string
+	dtStart: string
+	dtEnd: string
+	calendar: string
+	subCalendar: string
+	travelTime: string
+	travelReturnTime: string
+}
+
 export default function Task(props) {
-	const { summary, description, dtStart, dtEnd, calendar, subCalendar, travelTime, travelReturnTime } = props.data
+	const { summary, dtStart, dtEnd, calendar, subCalendar, travelTime, travelReturnTime } = props.data
 
 	const mainCalendar = calArr.find((elem) => elem._id === calendar)
 	const { calname, color, colorBg } = mainCalendar
 
-	const calculateDuration = (start, end) => {
+	const calculateDuration = (start: string, end: string) => {
 		const format = "yyyyMMdd'T'HHmmssX"
 		const date1 = parse(start, format, new Date())
 		const date2 = parse(end, format, new Date())
@@ -21,7 +32,7 @@ export default function Task(props) {
 		return `${hours}:${String(minutes).padStart(2, '0')}`
 	}
 
-	const convertToTime = (date) => {
+	const convertToTime = (date: string) => {
 		const parsedDate = parse(date, "yyyyMMdd'T'HHmmssX", new Date())
 		return format(parsedDate, 'HH.mm')
 	}
