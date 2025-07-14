@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { CaretRightIcon as IconToRight, CaretLeftIcon as IconToLeft } from '@phosphor-icons/react'
 import { calArr } from '../data/dummydata'
+import Badge from './Badge'
 
 export default function Header() {
 	const brandName = 'that calendar'
@@ -21,8 +22,10 @@ export default function Header() {
 				</button>
 				<nav className="nav-main">
 					<ul>
-						{calArr.map((elem) => (
-							<li>{elem.calname}</li>
+						{calArr.map((elem, i) => (
+							<li key={i} style={{ color: elem.color }}>
+								{elem.calname} <Badge count={'3'} itemType={'tasks'} />
+							</li>
 						))}
 					</ul>
 				</nav>
