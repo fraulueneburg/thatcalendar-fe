@@ -2,6 +2,9 @@ import { useState } from 'react'
 import { endOfWeek, format, getISOWeek, startOfWeek, subDays, subWeeks } from 'date-fns'
 import Task from './Task'
 
+import { PlusIcon as IconAdd, CaretLeftIcon as IconPrev, CaretRightIcon as IconNext } from '@phosphor-icons/react'
+
+import { tasksArr } from '../data/dummydata'
 import { calArr, tasksArr } from '../data/dummydata'
 
 export default function WeeklyCalendar() {
@@ -24,11 +27,17 @@ export default function WeeklyCalendar() {
 	const endMonth = format(new Date(endDay), 'MMM')
 	const startYear = startDay.getFullYear()
 	const endYear = endDay.getFullYear()
+
 	const isSameMonth = startMonth === endMonth
 	const isTwoYears = startMonth === 'Dec' && endMonth === 'Jan'
 	const hideIfCurrYear = (year: number) => {
 		return year === yearToday ? null : <span className="year"> {year}</span>
 	}
+
+	const dayStartHour = 7
+	const dayEndHour = 24
+	const hoursRange = (start, end) => Array.from({ length: end - start + 1 }, (_, i) => start + i)
+	const hoursArr = ['all day', ...hoursRange(dayStartHour, dayEndHour)]
 
 	const periodHeadline = isSameMonth ? (
 		<>
@@ -52,46 +61,66 @@ export default function WeeklyCalendar() {
 
 	return (
 		<>
-			<header className="page-header">
-				<h1>{periodHeadline}</h1>
-				<nav>
-					<button onClick={() => setOffset((prev) => prev - 1)}>prev</button>
-					<button onClick={() => setOffset(0)} disabled={offset === 0}>
-						today
-					</button>
-					<button onClick={() => setOffset((prev) => prev + 1)}>next</button>
-				</nav>
-			</header>
-
-			<div className="week">
-				<h2>
-					<span className="sr-only">Week </span>
-					{ISOweekNum}
-				</h2>
-				{weekdaysArr.map((dayName, index) => {
-					const dayDate = subDays(new Date(today), weekdayNumToday - index + timePeriodInDays * offset * -1)
-					const dayNum = dayDate.getDate()
-					const isToday = offset === 0 && weekdayNumToday === index
-					const isWeekend = ['Sat', 'Sun'].includes(dayName)
-					const classes = `day${isToday ? ' today' : ''}${isWeekend ? ' weekend' : ''}`
-
-					return (
-						<div className={classes} key={`${offset}-${index}`}>
-							<div className="header">
-								<h3>
-									{dayName} {dayNum}
-								</h3>
-								<button aria-label="add new task">+</button>
+			<Header />
+			<main>
+				<header>
+					<h1>{periodHeadline}</h1>
+					<h2>week {ISOweekNum}</h2>
+					<nav>
+						<button className="btn-round" onClick={() => setOffset((prev) => prev - 1)} aria-label="previous week">
+							<IconPrev />
+						</button>
+						<button onClick={() => setOffset(0)} disabled={offset === 0} aria-label="current week">
+							today
+						</button>
+						<button className="btn-round" onClick={() => setOffset((prev) => prev + 1)} aria-label="next week">
+							<IconNext />
+						</button>
+					</nav>
+				</header>
+				<div className="week">
+					<aside className="hours-range" aria-hidden="true">
+						{hoursArr.map((hour, index) => (
+							<div>
+								{hour}
+								{index === 0 ? '' : ':00'}
 							</div>
-							<div className="content">
-								{tasksArr.map((task) => (
-									<Task data={task} key={task._id} />
-								))}
-							</div>
-						</div>
-					)
-				})}
-			</div>
+						))}
+					</aside>
+					{weekdaysArr.map((dayName, index) => {
+						const dayDate = subDays(new Date(today), weekdayNumToday - index + timePeriodInDays * offset * -1)
+						const dayNum = dayDate.getDate()
+						const isToday = offset === 0 && weekdayNumToday === index
+						const isWeekend = ['Sat', 'Sun'].includes(dayName)
+						const classes = `day${isToday ? ' today' : ''}${isWeekend ? ' weekend' : ''}`
+						const writtenDate = format(dayDate, 'EEEE, MMMM do, yyyy')
+
+						return (
+							<article className={classes} key={`${offset}-${index}`}>
+								<header>
+									<h3>
+										<div className="day-details">
+											{isToday && <span className="sr-only">today, </span>}
+											<span className="day-name">{dayName}</span> <span className="day-num">{dayNum}</span>
+										</div>
+									</h3>
+									<button className="btn-round" aria-label={`add task for ${isToday ? 'today,' : ''} ${writtenDate}`}>
+										<IconAdd />
+									</button>
+								</header>
+								<div className="content">
+									{tasksArr.map((task) => (
+										<Task data={task} key={task._id} />
+									))}
+									{hoursArr.map((e, index, arr) => (
+										<div className="line" style={{ bottom: (820 / arr.length) * index + 38 }}></div>
+									))}
+								</div>
+							</article>
+						)
+					})}
+				</div>
+			</main>
 		</>
 	)
 }

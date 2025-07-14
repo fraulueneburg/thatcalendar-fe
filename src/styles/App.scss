@@ -10,6 +10,7 @@
 	--color: #e5e5e5;
 	--color-primary: #646cff;
 	--color-text-secondary: #86888f;
+	--color-line: #35353b;
 	--border-radius: 5px;
 
 	color-scheme: light dark;
@@ -51,11 +52,21 @@ h6 {
 }
 
 h1 {
-	font-size: 3.2em;
+	font-size: 2.5rem;
 	line-height: 1.1;
 
 	.year {
 		font-weight: normal;
+	}
+}
+
+nav ul {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+
+	li {
+		margin: 0;
 	}
 }
 
@@ -73,6 +84,7 @@ main {
 	flex: 1;
 	display: grid;
 	grid-template-rows: auto 1fr;
+	z-index: 1;
 
 	header {
 		align-items: center;
@@ -80,6 +92,12 @@ main {
 		justify-content: space-between;
 		margin-left: 65px;
 		padding: 1rem;
+
+		nav {
+			align-items: center;
+			display: flex;
+			gap: 0.5rem;
+		}
 
 		> * {
 			width: max-content;
@@ -92,9 +110,7 @@ main {
 	--padding-cell-y: 0.75rem;
 
 	display: grid;
-	flex: 1;
-	grid-template-columns: repeat(7, 1fr);
-	gap: 2px;
+	grid-template-columns: auto repeat(7, 1fr);
 	position: relative;
 
 	h2 {
@@ -111,17 +127,33 @@ main {
 	}
 }
 
+.hours-range {
+	color: var(--color-text-secondary);
+	display: flex;
+	flex-direction: column;
+	font-size: 0.9rem;
+	font-weight: bold;
+	justify-content: space-around;
+	margin: 4rem 0 1rem;
+	padding: 0 0.75rem 0 1rem;
+	text-align: right;
+}
+
 .day {
 	background-color: #1e1f25;
 	display: flex;
 	flex-direction: column;
 	position: relative;
 
+	&:not(:last-child) {
+		border-right: 1px solid var(--color-line);
+	}
 
-	h3 {
-		align-self: end;
-		width: fit-content;
-		padding: 0.25rem 1rem;
+	.line {
+		border-top: 1px solid var(--color-line);
+		position: absolute;
+		width: 100%;
+	}
 
 	> header {
 		align-items: center;
@@ -265,3 +297,38 @@ button {
 	height: 2rem;
 }
 
+.page-header {
+	--padding: 0.75rem;
+
+	border-right: 1px solid var(--color-line);
+	position: relative;
+	width: 40px;
+	z-index: 2;
+
+	.logo {
+		font-size: 1.25rem;
+		display: flex;
+		gap: 0.5rem;
+		padding: 1.5rem var(--padding) var(--padding);
+		white-space: nowrap;
+	}
+
+	&.expanded {
+		width: 200px;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		transition: width 0.2s ease-out;
+	}
+
+	nav {
+		overflow: hidden;
+		padding: var(--padding);
+	}
+}
+
+.btn-expand {
+	position: absolute;
+	right: -10px;
+	top: 5rem;
+}
