@@ -14,6 +14,7 @@ export default function Header() {
 					👌 <span style={{ display: isExpanded ? 'block' : 'none' }}>{brandName}</span>
 				</h1>
 				<button
+					type="button"
 					role="switch"
 					aria-checked={isExpanded}
 					className="btn-round btn-expand"

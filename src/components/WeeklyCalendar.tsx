@@ -66,13 +66,17 @@ export default function WeeklyCalendar() {
 					<h1>{periodHeadline}</h1>
 					<h2>week {ISOweekNum}</h2>
 					<nav>
-						<button className="btn-round" onClick={() => setOffset((prev) => prev - 1)} aria-label="previous week">
+						<button
+							type="button"
+							className="btn-round"
+							onClick={() => setOffset((prev) => prev - 1)}
+							aria-label="previous week">
 							<IconPrev />
 						</button>
-						<button onClick={() => setOffset(0)} disabled={offset === 0} aria-label="current week">
+						<button type="button" onClick={() => setOffset(0)} disabled={offset === 0} aria-label="current week">
 							today
 						</button>
-						<button className="btn-round" onClick={() => setOffset((prev) => prev + 1)} aria-label="next week">
+						<button type="button" className="btn-round" onClick={() => setOffset((prev) => prev + 1)} aria-label="next week">
 							<IconNext />
 						</button>
 					</nav>
@@ -92,18 +96,15 @@ export default function WeeklyCalendar() {
 						const isToday = offset === 0 && weekdayNumToday === index
 						const isWeekend = ['Sat', 'Sun'].includes(dayName)
 						const classes = `day${isToday ? ' today' : ''}${isWeekend ? ' weekend' : ''}`
-						const writtenDate = format(dayDate, 'EEEE, MMMM do, yyyy')
+						const writtenDate = `${isToday ? 'today, ' : ''}${format(dayDate, 'EEEE, MMMM do, yyyy')}`
 
 						return (
 							<article className={classes} key={`${offset}-${index}`}>
 								<header>
-									<h3>
-										<div className="day-details">
-											{isToday && <span className="sr-only">today, </span>}
-											<span className="day-name">{dayName}</span> <span className="day-num">{dayNum}</span>
-										</div>
+									<h3 aria-label={writtenDate}>
+										<span className="day-name">{dayName}</span> <span className="day-num">{dayNum}</span>
 									</h3>
-									<button className="btn-round" aria-label={`add session for ${isToday ? 'today,' : ''} ${writtenDate}`}>
+									<button type="button" className="btn-round" aria-label={`add session on ${writtenDate}`}>
 										<IconAdd />
 									</button>
 								</header>

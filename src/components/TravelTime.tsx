@@ -26,9 +26,9 @@ export default function TravelTime({ time, isReturn }: TravelTimeProps) {
 	return (
 		<>
 			<aside className="travel-time">
-				<IconTravel size={14} />
+				<IconTravel size={14} aria-hidden="true" />
 				<small className="text">
-					{timeFormatted} <span className="sr-only">{text}</span>
+					<time dateTime={time}>{timeFormatted}</time>&nbsp;<span className="sr-only">{text}</span>
 				</small>
 			</aside>
 		</>

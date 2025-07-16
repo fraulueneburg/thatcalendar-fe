@@ -4,8 +4,8 @@ import TravelTime from './TravelTime'
 import { TimerIcon as IconDuration } from '@phosphor-icons/react'
 import { calArr, subCalArr } from '../data/dummydata'
 import { MainCalendarType } from '../types/main-calendar'
-import { calculateGridPosition } from '../utils/calculateGridPosition'
-import { calculateDuration } from '../utils/calculateDuration'
+import { getGridPosition } from '../utils/grid'
+import { calculateDuration, convertToTime, stripLeadingZero } from '../utils/time'
 
 export default function Session({ data }: SessionProps) {
 	const { title, dtStart, dtEnd, calendarId, parent, travelTime, travelReturnTime } = data
@@ -21,11 +21,6 @@ export default function Session({ data }: SessionProps) {
 		throw new Error('Calendar not found')
 	}
 
-	const convertToTime = (date: string) => {
-		const parsedDate = parse(date, "yyyyMMdd'T'HHmmssX", new Date())
-		return format(parsedDate, 'HH.mm')
-	}
-
 	const startTime = convertToTime(dtStart)
 	const endTime = convertToTime(dtEnd)
 	const duration = calculateDuration(dtStart, dtEnd)
@@ -36,7 +31,7 @@ export default function Session({ data }: SessionProps) {
 	const globalOffsetY = 128
 	const globalStartHour = 7
 
-	const gridPos = calculateGridPosition(globalStartHour, dtStart, dtEnd, globalGridSize, globalOffsetY)
+	const gridPos = getGridPosition(globalStartHour, dtStart, dtEnd, globalGridSize, globalOffsetY)
 
 	return (
 		<>
@@ -47,14 +42,14 @@ export default function Session({ data }: SessionProps) {
 				<div className="content">
 					<small className="time">
 						<span className="hours">
-							<time>{startTime}</time>
+							<time dateTime={startTime}>{stripLeadingZero(startTime)}</time>
 							<span className="sr-only">
-								&thinsp;–&thinsp;<time>{endTime}</time>
+								&thinsp;–&thinsp;<time dateTime={endTime}>{stripLeadingZero(endTime)}</time>
 							</span>
 						</span>
 						<span className="duration">
 							<IconDuration aria-label="duration" />
-							{duration} <span className="sr-only">hours</span>
+							<time dateTime={duration}>{stripLeadingZero(duration)}</time> <span className="sr-only">hours</span>
 						</span>
 					</small>
 					<h4 className="title">{title}</h4>
