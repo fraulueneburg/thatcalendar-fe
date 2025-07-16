@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { endOfWeek, format, getISOWeek, startOfWeek, subDays, subWeeks } from 'date-fns'
 import { PlusIcon as IconAdd, CaretLeftIcon as IconPrev, CaretRightIcon as IconNext } from '@phosphor-icons/react'
-import Task from './Task'
+import Session from './Session'
 import Header from './Header'
 
-import { tasksArr } from '../data/dummydata'
+import { sessionsArr } from '../data/dummydata'
 
 export default function WeeklyCalendar() {
 	const [offset, setOffset] = useState(0)
@@ -103,13 +103,13 @@ export default function WeeklyCalendar() {
 											<span className="day-name">{dayName}</span> <span className="day-num">{dayNum}</span>
 										</div>
 									</h3>
-									<button className="btn-round" aria-label={`add task for ${isToday ? 'today,' : ''} ${writtenDate}`}>
+									<button className="btn-round" aria-label={`add session for ${isToday ? 'today,' : ''} ${writtenDate}`}>
 										<IconAdd />
 									</button>
 								</header>
 								<div className="content">
-									{tasksArr.map((task) => (
-										<Task data={task} key={task._id} />
+									{sessionsArr.map((session) => (
+										<Session data={session} key={session._id} />
 									))}
 									{hoursArr.map((_, index, arr) => (
 										<div className="line" style={{ bottom: (835 / arr.length) * index + 41 }} key={`line-${index}`}></div>

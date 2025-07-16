@@ -1,14 +1,14 @@
-export type TaskType = {
-	summary: string
+export type SessionType = {
+	title: string
 	description: string
 	dtStart: string
 	dtEnd: string
 	calendarId: string
-	subCalendarId: string
+	parent: string
 	travelTime: string
 	travelReturnTime: string
 }
 
-export type TaskProps = {
-	data: TaskType
+export type SessionProps = {
+	data: SessionType
 }

@@ -1,4 +1,4 @@
-import { TaskProps } from './Task.types'
+import { SessionProps } from './Session.types'
 import { parse, format, differenceInMinutes } from 'date-fns'
 import TravelTime from './TravelTime'
 import { TimerIcon as IconDuration } from '@phosphor-icons/react'
@@ -7,16 +7,16 @@ import { MainCalendarType } from '../types/main-calendar'
 import { calculateGridPosition } from '../utils/calculateGridPosition'
 import { calculateDuration } from '../utils/calculateDuration'
 
-export default function Task({ data }: TaskProps) {
-	const { summary, dtStart, dtEnd, calendarId, subCalendarId, travelTime, travelReturnTime } = data
+export default function Session({ data }: SessionProps) {
+	const { title, dtStart, dtEnd, calendarId, parent, travelTime, travelReturnTime } = data
 
 	const mainCalendar: MainCalendarType | undefined = calArr.find((elem) => elem._id === calendarId)
 	if (!mainCalendar) {
 		throw new Error('Calendar not found')
 	}
-	const { calName, color, colorBg } = mainCalendar
+	const { title: calendarTitle, color, colorBg } = mainCalendar
 
-	const subCalendar = subCalArr.find((elem) => elem._id === subCalendarId)
+	const subCalendar = subCalArr.find((elem) => elem._id === parent)
 	if (!subCalendar) {
 		throw new Error('Calendar not found')
 	}
@@ -40,7 +40,9 @@ export default function Task({ data }: TaskProps) {
 
 	return (
 		<>
-			<section className="task" style={{ backgroundColor: colorBg, color: color, top: gridPos.top, height: gridPos.height }}>
+			<section
+				className="session"
+				style={{ backgroundColor: colorBg, color: color, top: gridPos.top, height: gridPos.height }}>
 				{isValidTravelTime(travelTime) ? <TravelTime time={travelTime} /> : null}
 				<div className="content">
 					<small className="time">
@@ -55,9 +57,9 @@ export default function Task({ data }: TaskProps) {
 							{duration} <span className="sr-only">hours</span>
 						</span>
 					</small>
-					<h4 className="title">{summary}</h4>
+					<h4 className="title">{title}</h4>
 					<small className="cal">
-						<span className="sub-cal">{subCalendar.name}</span> <span className="main-cal">•&nbsp;{calName}</span>
+						<span className="sub-cal">{subCalendar.name}</span> <span className="main-cal">•&nbsp;{calendarTitle}</span>
 					</small>
 				</div>
 				{isValidTravelTime(travelReturnTime) && <TravelTime time={travelReturnTime} isReturn={true} />}

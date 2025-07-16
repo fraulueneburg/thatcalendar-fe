@@ -24,7 +24,7 @@ export default function Header() {
 					<ul>
 						{calArr.map((elem, i) => (
 							<li key={i} style={{ color: elem.color }}>
-								{elem.calName} <Badge count={3} itemType={'tasks'} />
+								{elem.title} <Badge count={3} itemType={'sessions'} />
 							</li>
 						))}
 					</ul>
