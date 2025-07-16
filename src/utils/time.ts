@@ -16,8 +16,6 @@ const calculateDuration = (start: string, end: string): string => {
 	return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`
 }
 
-const stripLeadingZero = (time: string): string => time.replace(/^0(?=\d)/, '')
-
 const convertToTime = (date: string): string => {
 	const parsedDate = parse(date, DATE_FORMAT, new Date())
 	const isInvalidDate = isNaN(parsedDate.getTime())
@@ -27,4 +25,8 @@ const convertToTime = (date: string): string => {
 	return format(parsedDate, 'HH:mm')
 }
 
-export { calculateDuration, convertToTime, stripLeadingZero }
+const getHoursRange = (start: number, end: number) => Array.from({ length: end - start + 1 }, (_, i) => start + i)
+
+const stripLeadingZero = (time: string): string => time.replace(/^0(?=\d)/, '')
+
+export { calculateDuration, convertToTime, getHoursRange, stripLeadingZero }
