@@ -11,6 +11,7 @@
 	},
 	"dependencies": {
 		"@phosphor-icons/react": "^2.1.10",
+		"@radix-ui/themes": "^3.2.1",
 		"date-fns": "^4.1.0",
 		"ical2json": "^4.1.0",
 		"react": "^19.0.0",
