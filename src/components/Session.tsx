@@ -1,5 +1,4 @@
 import { SessionProps } from './Session.types'
-import { parse, format, differenceInMinutes } from 'date-fns'
 import TravelTime from './TravelTime'
 import { TimerIcon as IconDuration } from '@phosphor-icons/react'
 import { calArr, subCalArr } from '../data/dummydata'

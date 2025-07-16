@@ -1,5 +1,10 @@
 import { format } from 'date-fns'
-import { PeriodHeadlineProps } from './PeriodHeadline.types'
+
+export type PeriodHeadlineProps = {
+	today: Date
+	startDay: Date
+	endDay: Date
+}
 
 export default function PeriodHeadline({ today, startDay, endDay }: PeriodHeadlineProps) {
 	const yearToday = today.getFullYear()

@@ -1,6 +1,9 @@
-import { BadgeType } from './Badge.types'
+export type BadgeProps = {
+	count: number
+	itemType: string
+}
 
-export default function Badge({ count, itemType }: BadgeType) {
+export default function Badge({ count, itemType }: BadgeProps) {
 	return (
 		<>
 			<small className="badge">
