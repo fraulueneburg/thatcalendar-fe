@@ -2,7 +2,7 @@ import { format, subDays } from 'date-fns'
 import { useState } from 'react'
 import { PlusIcon as IconAdd } from '@phosphor-icons/react'
 import { sessionsArr } from '../data/dummydata'
-import { hoursArr, weekStartsOnMonday } from '../data/settings'
+import { hoursArr, weekStartsOnMonday } from '../data/user-settings'
 import Session from './Session'
 
 type DayType = {
