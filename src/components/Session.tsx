@@ -1,10 +1,14 @@
 import { SessionProps } from './Session.types'
+import { MainCalendarType } from '../types/main-calendar'
+
+import { calArr, subCalArr } from '../data/dummydata'
+
+import { getGridPosition } from '../utils/grid/'
+import { calculateDuration } from '../utils/duration/'
+import { convertToTime, stripLeadingZero } from '../utils/time'
+
 import TravelTime from './TravelTime'
 import { TimerIcon as IconDuration } from '@phosphor-icons/react'
-import { calArr, subCalArr } from '../data/dummydata'
-import { MainCalendarType } from '../types/main-calendar'
-import { getGridPosition } from '../utils/grid'
-import { calculateDuration, convertToTime, stripLeadingZero } from '../utils/time'
 
 export default function Session({ data }: SessionProps) {
 	const { title, dtStart, dtEnd, calendarId, parent, travelTime, travelReturnTime } = data

@@ -1,6 +1,6 @@
 import { differenceInMinutes, parseISO } from 'date-fns'
 
-export const getGridPosition = (
+const getGridPosition = (
 	globalStartHour: number,
 	startDate: string,
 	endDate: string,
@@ -21,3 +21,5 @@ export const getGridPosition = (
 
 	return { top, height }
 }
+
+export { getGridPosition }
