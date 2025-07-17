@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import { endOfWeek, getISOWeek, startOfWeek, subDays, subWeeks } from 'date-fns'
 
-import { hoursArr, weekStartsOnMonday } from '../data/settings'
+import { hoursArr, weekStartsOnMonday } from '../data/user-settings'
 
 import PeriodHeadline from './PeriodHeadline'
 import Day from './Day'
 import { CaretLeftIcon as IconPrev, CaretRightIcon as IconNext } from '@phosphor-icons/react'
 
-export default function WeeklyCalendar() {
+export default function Calendar() {
 	const [offsetDays, setOffsetDays] = useState(0)
 
 	const weekdaysArrUS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
