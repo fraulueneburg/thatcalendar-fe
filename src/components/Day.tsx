@@ -4,6 +4,8 @@ import { PlusIcon as IconAdd } from '@phosphor-icons/react'
 import { sessionsArr } from '../data/dummydata'
 import { hoursArr, weekStartsOnMonday } from '../data/user-settings'
 import Session from './Session'
+import { Popover } from './Popover'
+import TimeslotForm from './Forms/TimeslotForm'
 
 type DayType = {
 	dayName: string
@@ -36,13 +38,9 @@ export default function Day({ data }: DayProps) {
 				<h3 aria-label={writtenDate}>
 					<span className="day-name">{dayName}</span> <span className="day-num">{dayNum}</span>
 				</h3>
-				<button
-					type="button"
-					onClick={() => setFormOpen((prev) => !prev)}
-					className="btn-round"
-					aria-label={`add session on ${writtenDate}`}>
-					<IconAdd />
-				</button>
+				<Popover trigger={<IconAdd />} triggerLabel={`add session on ${writtenDate}`}>
+					<TimeslotForm />
+				</Popover>
 			</header>
 			<div className="content">
 				{sessionsArr.map((session) => (
