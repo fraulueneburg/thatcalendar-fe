@@ -1,11 +1,14 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { CaretRightIcon as IconToRight, CaretLeftIcon as IconToLeft } from '@phosphor-icons/react'
-import { catArr } from '../data/dummydata'
+import { categoryArr, categoryIndex } from '../data/dummydata'
 import Count from './Count'
+import { CategoryType } from '../types/category'
 
 export default function Header() {
 	const brandName = 'that calendar'
 	const [isExpanded, setIsExpanded] = useState(true)
+
+	const mainCategoryArr: CategoryType[] = useMemo(() => categoryArr.filter((elem) => !elem.parent), [categoryArr])
 
 	return (
 		<>
@@ -23,11 +26,26 @@ export default function Header() {
 				</button>
 				<nav className="nav-main">
 					<ul>
-						{catArr.map((elem, i) => (
-							<li key={i} style={{ color: elem.color }}>
-								{elem.title} <Count quantity={3} itemType={'sessions'} />
-							</li>
-						))}
+						{mainCategoryArr.map((category, i) => {
+							const subCategoryIds = categoryIndex[category._id]
+
+							return (
+								<li key={i} style={{ color: category.color }}>
+									{category.title}
+									{subCategoryIds && (
+										<>
+											<Count quantity={subCategoryIds.length} itemType={'sessions'} />
+											<ul>
+												{subCategoryIds.map((subCatId) => {
+													const subCategory = categoryArr.find((elem) => elem._id === subCatId)
+													return <li key={subCatId}>{subCategory.title}</li>
+												})}
+											</ul>
+										</>
+									)}
+								</li>
+							)
+						})}
 					</ul>
 				</nav>
 			</header>
