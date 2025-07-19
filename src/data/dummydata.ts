@@ -1,10 +1,15 @@
 export const calArr = [
-	{ _id: 'c1', title: 'Client Work', color: '#465BB3', colorBg: '#131627', childCalendars: ['sc1'] },
-	{ _id: 'c2', title: 'Personal Projects', color: '#56EFDB', colorBg: '#061E2F', childCalendars: ['sc2'] },
-	{ _id: 'c3', title: 'Daily Stuff', color: '#B14382', colorBg: '#1B0E15', childCalendars: ['sc3'] },
+	{ _id: 'c1', title: 'Client Work', color: '#465BB3', colorBg: '#131627' },
+	{ _id: 'c2', title: 'Personal Projects', color: '#56EFDB', colorBg: '#061E2F' },
+	{ _id: 'c3', title: 'Daily Stuff', color: '#B14382', colorBg: '#1B0E15' },
+
+	{ _id: 'sc1', title: 'DreamClient Inc.', parent: 'c1' },
+	{ _id: 'sc2', title: 'Calendar App', parent: 'c2' },
+	{ _id: 'sc3', title: 'Chore', parent: 'c3' },
+	{ _id: 'sc4', title: 'sortOf', parent: 'c2' },
 ]
 
-export const sessionsArr = [
+export const tasksArr = [
 	{
 		_id: 't1',
 		parent: 'sc1',
@@ -51,9 +56,39 @@ export const sessionsArr = [
 	},
 ]
 
-export const subCalArr = [
-	{ _id: 'sc1', name: 'DreamClient Inc.', parent: 'c1', sessions: ['t1'] },
-	{ _id: 'sc2', name: 'Calendar App', parent: 'c2', sessions: ['t2', 't4'] },
-	{ _id: 'sc3', name: 'Chore', parent: 'c3', sessions: ['t3'] },
-	{ _id: 'sc2', name: 'sortOf', parent: 'c2', sessions: [] },
+export const sessionsArr = [
+	{
+		_id: 's1',
+		parent: 't1',
+		dtStart: '20250714T050500Z',
+		dtEnd: '20250714T100000Z',
+		calendarId: 'c1',
+	},
+	{
+		_id: 's2',
+		parent: 't2',
+		dtStart: '20250714T131500Z',
+		dtEnd: '20250714T160000Z',
+		calendarId: 'c2',
+	},
+	{
+		_id: 's3',
+		parent: 't3',
+		dtStart: '20250712T080000Z',
+		dtEnd: '20250712T093000Z',
+		calendarId: 'c3',
+	},
+	{
+		_id: 's4',
+		parent: 't1',
+		dtStart: '20250719T201500Z',
+		dtEnd: '20250719T213000Z',
+		calendarId: 'c2',
+	},
 ]
+
+export const sessionIndex: Record<string, string[]> = {
+	'20250714': ['s1', 's2'],
+	'20250712': ['s3'],
+	'20250719': ['s4'],
+}

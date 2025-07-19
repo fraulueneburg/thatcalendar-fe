@@ -1,11 +1,13 @@
 import { format, subDays } from 'date-fns'
-import { useState } from 'react'
-import { PlusIcon as IconAdd } from '@phosphor-icons/react'
-import { sessionsArr } from '../data/dummydata'
+
+import { sessionsArr, sessionIndex } from '../data/dummydata'
 import { hoursArr, weekStartsOnMonday } from '../data/user-settings'
+
 import Session from './Session'
+import { SessionProps } from './Session.types'
+import SessionForm from './Forms/SessionForm'
+import { PlusIcon as IconAdd } from '@phosphor-icons/react'
 import { Popover } from './Popover'
-import TimeslotForm from './Forms/TimeslotForm'
 
 type DayType = {
 	dayName: string
@@ -30,7 +32,9 @@ export default function Day({ data }: DayProps) {
 	const classes = `day${isToday ? ' today' : ''}${isWeekend ? ' weekend' : ''}`
 	const writtenDate = `${isToday ? 'today, ' : ''}${format(dayDate, 'EEEE, MMMM do, yyyy')}`
 
-	const [formOpen, setFormOpen] = useState(false)
+	const sessionTargetDay = format(dayDate, 'yyyyMMdd')
+	const sessionIdsSet = new Set(sessionIndex[sessionTargetDay] ?? [])
+	const filteredSessions = sessionsArr.filter((session) => sessionIdsSet.has(session._id))
 
 	return (
 		<article className={classes}>
@@ -38,12 +42,12 @@ export default function Day({ data }: DayProps) {
 				<h3 aria-label={writtenDate}>
 					<span className="day-name">{dayName}</span> <span className="day-num">{dayNum}</span>
 				</h3>
-				<Popover trigger={<IconAdd />} triggerLabel={`add session on ${writtenDate}`}>
-					<TimeslotForm />
+				<Popover trigger={<IconAdd />} triggerLabel={`add session`}>
+					<SessionForm />
 				</Popover>
 			</header>
 			<div className="content">
-				{sessionsArr.map((session) => (
+				{filteredSessions.map((session) => (
 					<Session data={session} key={session._id} />
 				))}
 				{hoursArr.map((_, index, arr) => (
