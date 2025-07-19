@@ -1,4 +1,4 @@
-export const calArr = [
+export const catArr = [
 	{ _id: 'c1', title: 'Client Work', color: '#465BB3', colorBg: '#131627' },
 	{ _id: 'c2', title: 'Personal Projects', color: '#56EFDB', colorBg: '#061E2F' },
 	{ _id: 'c3', title: 'Daily Stuff', color: '#B14382', colorBg: '#1B0E15' },

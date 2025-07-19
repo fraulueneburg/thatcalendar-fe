@@ -1,7 +1,7 @@
 import { SessionProps } from './Session.types'
 import { CategoryType } from '../types/category'
 
-import { calArr, tasksArr } from '../data/dummydata'
+import { catArr, tasksArr } from '../data/dummydata'
 
 import { getGridPosition } from '../utils/grid/'
 import { calculateDuration } from '../utils/duration/'
@@ -17,11 +17,11 @@ export default function Session({ data }: SessionProps) {
 	if (!task) throw Error('No task found')
 	const { title: taskTitle, travelTime, travelReturnTime, parent: taskParentId } = task
 
-	const subCategory = calArr.find((elem) => elem._id === taskParentId)
+	const subCategory = catArr.find((elem) => elem._id === taskParentId)
 	if (!subCategory) throw new Error('Sub Calendar not found')
 	const { title: subCatTitle, parent: subCatParentId } = subCategory
 
-	const category: CategoryType | undefined = calArr.find((elem) => elem._id === subCatParentId)
+	const category: CategoryType | undefined = catArr.find((elem) => elem._id === subCatParentId)
 	if (!category) throw new Error('Calendar not found')
 	const { title: calTitle, color, colorBg } = category
 

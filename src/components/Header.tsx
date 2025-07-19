@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { CaretRightIcon as IconToRight, CaretLeftIcon as IconToLeft } from '@phosphor-icons/react'
-import { calArr } from '../data/dummydata'
+import { catArr } from '../data/dummydata'
 import Count from './Count'
 
 export default function Header() {
@@ -23,7 +23,7 @@ export default function Header() {
 				</button>
 				<nav className="nav-main">
 					<ul>
-						{calArr.map((elem, i) => (
+						{catArr.map((elem, i) => (
 							<li key={i} style={{ color: elem.color }}>
 								{elem.title} <Count quantity={3} itemType={'sessions'} />
 							</li>
