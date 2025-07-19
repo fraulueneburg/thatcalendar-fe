@@ -4,7 +4,6 @@ import { sessionsArr, sessionIndex } from '../data/dummydata'
 import { hoursArr, weekStartsOnMonday } from '../data/user-settings'
 
 import Session from './Session'
-import { SessionProps } from './Session.types'
 import SessionForm from './Forms/SessionForm'
 import { PlusIcon as IconAdd } from '@phosphor-icons/react'
 import { Popover } from './Popover'

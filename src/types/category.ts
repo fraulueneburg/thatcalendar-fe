@@ -4,4 +4,5 @@ export type CategoryType = {
 	parent?: string
 	color?: string
 	colorBg?: string
+	children?: string[]
 }

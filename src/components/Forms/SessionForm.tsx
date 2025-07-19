@@ -3,12 +3,12 @@ import { CheckIcon } from '@phosphor-icons/react'
 
 import { dayStartHour, dayEndHour } from '../../data/user-settings'
 import { convertToTime } from '../../utils/time'
-import { catArr, tasksArr } from '../../data/dummydata'
+import { categoryArr, tasksArr } from '../../data/dummydata'
 import { useState } from 'react'
 
 export default function SessionForm() {
 	const [category, setCategory] = useState('empty')
-	const filteredSubCategories = catArr.filter((elem) => elem.parent === category)
+	const filteredSubCategories = categoryArr.filter((elem) => elem.parent === category)
 
 	return (
 		<>
@@ -34,7 +34,7 @@ export default function SessionForm() {
 					<Fieldset.Legend>Category</Fieldset.Legend>
 					<select required defaultValue="" onChange={(e) => setCategory(e.target.value)}>
 						<option value="empty">Category</option>
-						{catArr.map((elem) => (
+						{categoryArr.map((elem) => (
 							<option value={elem._id} key={elem._id}>
 								{elem.title}
 							</option>

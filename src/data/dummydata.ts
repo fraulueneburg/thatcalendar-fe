@@ -1,13 +1,19 @@
-export const catArr = [
-	{ _id: 'c1', title: 'Client Work', color: '#465BB3', colorBg: '#131627' },
-	{ _id: 'c2', title: 'Personal Projects', color: '#56EFDB', colorBg: '#061E2F' },
-	{ _id: 'c3', title: 'Daily Stuff', color: '#B14382', colorBg: '#1B0E15' },
+export const categoryArr = [
+	{ _id: 'c1', title: 'Client Work', color: '#465BB3', colorBg: '#131627', children: ['sc1'] },
+	{ _id: 'c2', title: 'Personal Projects', color: '#56EFDB', colorBg: '#061E2F', children: ['sc2', 'sc4'] },
+	{ _id: 'c3', title: 'Daily Stuff', color: '#B14382', colorBg: '#1B0E15', children: ['sc3'] },
 
 	{ _id: 'sc1', title: 'DreamClient Inc.', parent: 'c1' },
 	{ _id: 'sc2', title: 'Calendar App', parent: 'c2' },
 	{ _id: 'sc3', title: 'Chore', parent: 'c3' },
 	{ _id: 'sc4', title: 'sortOf', parent: 'c2' },
 ]
+
+export const categoryIndex: Record<string, string[]> = {
+	c1: ['sc1'],
+	c2: ['sc2', 'sc4'],
+	c3: ['sc3'],
+}
 
 export const tasksArr = [
 	{
