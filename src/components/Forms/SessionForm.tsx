@@ -17,7 +17,7 @@ export default function SessionForm() {
 				<fieldset>
 					<legend>Task</legend>
 					<p>choose an existing task</p>
-					<select defaultValue="" onChange={(e) => setCategory(e.target.value)}>
+					<select required defaultValue="" onChange={(e) => setCategory(e.target.value)}>
 						<option value="empty">Task</option>
 						{tasksArr.map((elem) => (
 							<option value={elem._id} key={elem._id}>
@@ -27,12 +27,12 @@ export default function SessionForm() {
 					</select>
 
 					<p>or create a new one</p>
-					<input type="text" />
+					<input required type="text" />
 				</fieldset>
 
 				<Fieldset.Root>
 					<Fieldset.Legend>Category</Fieldset.Legend>
-					<select defaultValue="" onChange={(e) => setCategory(e.target.value)}>
+					<select required defaultValue="" onChange={(e) => setCategory(e.target.value)}>
 						<option value="empty">Category</option>
 						{catArr.map((elem) => (
 							<option value={elem._id} key={elem._id}>
@@ -40,7 +40,7 @@ export default function SessionForm() {
 							</option>
 						))}
 					</select>
-					<select defaultValue="" disabled={category === 'empty'}>
+					<select required defaultValue="" disabled={category === 'empty'}>
 						<option value="empty">Project</option>
 						{filteredSubCategories.map((elem) => (
 							<option value={elem._id} key={elem._id}>
@@ -56,6 +56,7 @@ export default function SessionForm() {
 					<p>
 						<label htmlFor="slot-start-time">starts at</label>
 						<input
+							required
 							id="slot-start-time"
 							type="time"
 							name="slot-start-time"
@@ -66,7 +67,7 @@ export default function SessionForm() {
 					</p>
 					<p>
 						<label htmlFor="slot-end-time">ends at</label>
-						<input id="slot-end-time" type="time" name="slot-end-time" min={dayStartHour} max={dayEndHour} />
+						<input required id="slot-end-time" type="time" name="slot-end-time" min={dayStartHour} max={dayEndHour} />
 					</p>
 				</Fieldset.Root>
 
@@ -74,7 +75,7 @@ export default function SessionForm() {
 					<Fieldset.Legend>Travel duration</Fieldset.Legend>
 					<div>
 						<label htmlFor="appointment-time">travel time</label>
-						<input id="appointment-time" type="time" name="start-time" />
+						<input required id="appointment-time" type="time" name="start-time" />
 					</div>
 					<div>
 						<div>
@@ -89,7 +90,7 @@ export default function SessionForm() {
 							</Checkbox.Root>
 						</div>
 						<label htmlFor="appointment-time">travel return time</label>
-						<input id="appointment-time" type="time" name="end-time" />
+						<input required id="appointment-time" type="time" name="end-time" />
 					</div>
 				</Fieldset.Root>
 				<button type="submit">create session</button>
