@@ -38,6 +38,7 @@ export default function Header() {
 											<ul>
 												{subCategoryIds.map((subCatId) => {
 													const subCategory = categoryArr.find((elem) => elem._id === subCatId)
+													if (!subCategory) return
 													return <li key={subCatId}>{subCategory.title}</li>
 												})}
 											</ul>
