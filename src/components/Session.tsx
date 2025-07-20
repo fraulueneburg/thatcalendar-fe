@@ -10,6 +10,7 @@ import { convertToTime, stripLeadingZero } from '../utils/time'
 import TravelTime from './TravelTime'
 import { TimerIcon as IconDuration } from '@phosphor-icons/react'
 import { useDraggable } from '@dnd-kit/core'
+import { CSS } from '@dnd-kit/utilities'
 
 export default function Session({ data }: SessionProps) {
 	const { _id, dtStart, dtEnd, parent: sessionParent } = data
@@ -40,11 +41,9 @@ export default function Session({ data }: SessionProps) {
 	const { attributes, listeners, setNodeRef, transform } = useDraggable({
 		id: _id,
 	})
-	const style = transform
-		? {
-				transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-		  }
-		: undefined
+	const style = {
+		transform: CSS.Translate.toString(transform),
+	}
 
 	return (
 		<>
