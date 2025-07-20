@@ -25,6 +25,7 @@ export default function Header() {
 					{isExpanded ? <IconToLeft /> : <IconToRight />} <span className="sr-only">expand header</span>
 				</button>
 				<nav className="nav-main">
+					<h2>Categories</h2>
 					<ul>
 						{mainCategoryArr.map((category, i) => {
 							const subCategoryIds = categoryIndex[category._id]
@@ -34,7 +35,7 @@ export default function Header() {
 									{category.title}
 									{subCategoryIds && (
 										<>
-											<Count quantity={subCategoryIds.length} itemType={'sessions'} />
+											<Count quantity={subCategoryIds.length} itemType={'projects'} />
 											<ul>
 												{subCategoryIds.map((subCatId) => {
 													const subCategory = categoryArr.find((elem) => elem._id === subCatId)

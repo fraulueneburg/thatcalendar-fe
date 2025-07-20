@@ -377,11 +377,13 @@ button {
 .count {
 	background-color: #2f3237;
 	border-radius: 50%;
+	box-sizing: border-box;
 	color: var(--color);
 	display: inline-block;
 	font-weight: bold;
 	height: 1.5rem;
 	min-width: 1.5rem;
+	padding-top: 1px;
 	text-align: center;
 }
 
