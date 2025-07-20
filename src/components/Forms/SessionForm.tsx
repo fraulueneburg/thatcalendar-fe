@@ -8,6 +8,7 @@ import { useState } from 'react'
 
 export default function SessionForm() {
 	const [category, setCategory] = useState('empty')
+	const filteredCategories = categoryArr.filter((elem) => !elem.parent)
 	const filteredSubCategories = categoryArr.filter((elem) => elem.parent === category)
 
 	return (
@@ -34,7 +35,7 @@ export default function SessionForm() {
 					<Fieldset.Legend>Category</Fieldset.Legend>
 					<select required defaultValue="" onChange={(e) => setCategory(e.target.value)}>
 						<option value="empty">Category</option>
-						{categoryArr.map((elem) => (
+						{filteredCategories.map((elem) => (
 							<option value={elem._id} key={elem._id}>
 								{elem.title}
 							</option>
@@ -54,22 +55,32 @@ export default function SessionForm() {
 					<Fieldset.Legend>Time</Fieldset.Legend>
 					<Fieldset.ErrorText>Fieldset Error Text</Fieldset.ErrorText>
 					<p>
-						<label htmlFor="slot-start-time">starts at</label>
-						<input
-							required
-							id="slot-start-time"
-							type="time"
-							name="slot-start-time"
-							min={convertToTime(dayStartHour)}
-							max={convertToTime(dayEndHour)}
-						/>
-						<span className="validity"></span>
+						<label>
+							<input type="checkbox" />
+							all day
+						</label>
 					</p>
-					<p>
-						<label htmlFor="slot-end-time">ends at</label>
-						<input required id="slot-end-time" type="time" name="slot-end-time" min={dayStartHour} max={dayEndHour} />
-					</p>
+					<div className="grid field-time-slot">
+						<p>
+							<label htmlFor="slot-start-time">starts at</label>
+							<input
+								required
+								id="slot-start-time"
+								type="time"
+								name="slot-start-time"
+								min={convertToTime(dayStartHour)}
+								max={convertToTime(dayEndHour)}
+							/>
+							<span className="validity"></span>
+						</p>
+						<p>
+							<label htmlFor="slot-end-time">ends at</label>
+							<input required id="slot-end-time" type="time" name="slot-end-time" min={dayStartHour} max={dayEndHour} />
+						</p>
+					</div>
 				</Fieldset.Root>
+
+				<button type="button">add travel duration</button>
 
 				<Fieldset.Root>
 					<Fieldset.Legend>Travel duration</Fieldset.Legend>
@@ -79,15 +90,10 @@ export default function SessionForm() {
 					</div>
 					<div>
 						<div>
-							<Checkbox.Root>
-								<Checkbox.Control>
-									<Checkbox.Indicator>
-										<CheckIcon />
-									</Checkbox.Indicator>
-								</Checkbox.Control>
-								<Checkbox.Label>same return time</Checkbox.Label>
-								<Checkbox.HiddenInput />
-							</Checkbox.Root>
+							<label>
+								<input type="checkbox" />
+								same return time
+							</label>
 						</div>
 						<label htmlFor="appointment-time">travel return time</label>
 						<input required id="appointment-time" type="time" name="end-time" />
