@@ -39,9 +39,11 @@ export default function Day({ data }: DayProps) {
 		<article className={classes}>
 			<header>
 				<h3 aria-label={writtenDate}>
-					<span className="day-name">{dayName}</span> <span className="day-num">{dayNum}</span>
+					<span className="day-name">{dayName}</span>
+					<span className="day-num">{dayNum}</span>
+					<span className="day-total-time">00:00 h</span>
 				</h3>
-				<Popover trigger={<IconAdd />} triggerLabel={`add session`}>
+				<Popover trigger={<IconAdd weight="bold" />} triggerLabel={`add session`}>
 					<SessionForm />
 				</Popover>
 			</header>
