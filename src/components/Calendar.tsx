@@ -7,6 +7,7 @@ import PeriodHeadline from './PeriodHeadline'
 import Day from './Day'
 import { CaretLeftIcon as IconPrev, CaretRightIcon as IconNext } from '@phosphor-icons/react'
 import { DndContext } from '@dnd-kit/core'
+import { createCustomSnapModifier } from '../utils/dndkit/createCustomSnapModifier'
 
 export default function Calendar() {
 	const [offsetDays, setOffsetDays] = useState(0)
@@ -22,6 +23,11 @@ export default function Calendar() {
 	const startDay = startOfWeek(new Date(refDate), { weekStartsOn: weekStartsOnMonday ? 1 : 0 })
 	const endDay = endOfWeek(new Date(refDate), { weekStartsOn: weekStartsOnMonday ? 1 : 0 })
 	const ISOweekNum = getISOWeek(subWeeks(new Date(today), offsetDays * -1))
+
+	const globalGridSize = 45
+	const gridHeight5min = globalGridSize / 12
+	const gridColumnWidth = 168
+	const snapToGridModifier = createCustomSnapModifier(gridColumnWidth, gridHeight5min)
 
 	return (
 		<>
@@ -59,7 +65,7 @@ export default function Calendar() {
 						</div>
 					))}
 				</aside>
-				<DndContext>
+				<DndContext modifiers={[snapToGridModifier]}>
 					{weekdaysArr.map((dayName, index) => {
 						const dayDate = subDays(new Date(today), weekdayNumToday - index + timePeriodInDays * offsetDays * -1)
 						const id = format(dayDate, 'yyyyMMdd')

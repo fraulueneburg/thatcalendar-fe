@@ -49,10 +49,10 @@ export default function Session({ data }: SessionProps) {
 		<>
 			<section
 				id={_id}
+				className="session"
 				ref={setNodeRef}
 				{...listeners}
 				{...attributes}
-				className="session"
 				style={{ backgroundColor: colorBg, color: color, top: gridPos.top, height: gridPos.height, ...style }}>
 				{isValidTravelTime(travelTime) ? <TravelTime time={travelTime} /> : null}
 				<div className="content">
