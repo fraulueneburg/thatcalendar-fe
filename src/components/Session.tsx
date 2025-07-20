@@ -9,9 +9,13 @@ import { convertToTime, stripLeadingZero } from '../utils/time'
 
 import TravelTime from './TravelTime'
 import { TimerIcon as IconDuration } from '@phosphor-icons/react'
+import { useDraggable } from '@dnd-kit/core'
 
 export default function Session({ data }: SessionProps) {
-	const { dtStart, dtEnd, parent: sessionParent } = data
+	const { _id, dtStart, dtEnd, parent: sessionParent } = data
+	const startTime = convertToTime(dtStart)
+	const endTime = convertToTime(dtEnd)
+	const duration = calculateDuration(dtStart, dtEnd)
 
 	const task = tasksArr.find((elem) => elem._id === sessionParent)
 	if (!task) throw Error('No task found')
@@ -25,10 +29,6 @@ export default function Session({ data }: SessionProps) {
 	if (!category) throw new Error('Category not found')
 	const { title: catTitle, color, colorBg } = category
 
-	const startTime = convertToTime(dtStart)
-	const endTime = convertToTime(dtEnd)
-	const duration = calculateDuration(dtStart, dtEnd)
-
 	const isValidTravelTime = (time: string) => time && time !== '0'
 
 	const globalGridSize = 45
@@ -37,11 +37,24 @@ export default function Session({ data }: SessionProps) {
 
 	const gridPos = getGridPosition(globalStartHour, dtStart, dtEnd, globalGridSize, globalOffsetY)
 
+	const { attributes, listeners, setNodeRef, transform } = useDraggable({
+		id: _id,
+	})
+	const style = transform
+		? {
+				transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+		  }
+		: undefined
+
 	return (
 		<>
 			<section
+				id={_id}
+				ref={setNodeRef}
+				{...listeners}
+				{...attributes}
 				className="session"
-				style={{ backgroundColor: colorBg, color: color, top: gridPos.top, height: gridPos.height }}>
+				style={{ backgroundColor: colorBg, color: color, top: gridPos.top, height: gridPos.height, ...style }}>
 				{isValidTravelTime(travelTime) ? <TravelTime time={travelTime} /> : null}
 				<div className="content">
 					<small className="time">
