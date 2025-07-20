@@ -388,6 +388,29 @@ button {
 button[data-scope='popover'][aria-expanded='true'] + div {
 	background-color: #1a1a1a;
 	box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.8), 0px 0px 1px inset #fffbed3c;
-	padding: 1rem;
+	padding: 1.5rem;
 	z-index: 10 !important;
+}
+
+button[data-scope='popover'][data-part='close-trigger'] {
+	border: none;
+	position: absolute;
+	right: 0.5rem;
+	top: 0.5rem;
+}
+
+form p {
+	margin: 0;
+}
+
+.field-time-slot {
+	label {
+		display: block;
+	}
+}
+
+.grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 1rem;
 }
