@@ -13,7 +13,7 @@ type PopoverProps = {
 export const Popover = ({ trigger, triggerLabel, title, description, children }: PopoverProps) => {
 	return (
 		<>
-			<div className="popover">
+			<>
 				<ArkPopover.Root>
 					{trigger && (
 						<ArkPopover.Trigger className="btn-round" aria-label={triggerLabel}>
@@ -31,7 +31,7 @@ export const Popover = ({ trigger, triggerLabel, title, description, children }:
 						</ArkPopover.Content>
 					</ArkPopover.Positioner>
 				</ArkPopover.Root>
-			</div>
+			</>
 		</>
 	)
 }
