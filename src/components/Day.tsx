@@ -1,4 +1,4 @@
-import { format, subDays } from 'date-fns'
+import { format, subDays, isToday } from 'date-fns'
 
 import { sessionsArr, sessionIndex } from '../data/dummydata'
 import { hoursArr, weekStartsOnMonday } from '../data/user-settings'
@@ -7,13 +7,11 @@ import Session from './Session'
 import SessionForm from './Forms/SessionForm'
 import { PlusIcon as IconAdd } from '@phosphor-icons/react'
 import { Popover } from './Popover'
+import { useDroppable } from '@dnd-kit/core'
 
 type DayType = {
+	dayDate: Date
 	dayName: string
-	index: number
-	offsetDays: number
-	today: Date
-	timePeriodInDays: number
 }
 
 type DayProps = {
@@ -21,22 +19,22 @@ type DayProps = {
 }
 
 export default function Day({ data }: DayProps) {
-	const { dayName, index, offsetDays, today, timePeriodInDays } = data
+	const { dayDate, dayName } = data
 
-	const weekdayNumToday = weekStartsOnMonday ? subDays(new Date(today), 1).getDay() : today.getDay()
-	const dayDate = subDays(new Date(today), weekdayNumToday - index + timePeriodInDays * offsetDays * -1)
 	const dayNum = dayDate.getDate()
-	const isToday = offsetDays === 0 && weekdayNumToday === index
+	const isItToday = isToday(dayDate)
 	const isWeekend = ['Sat', 'Sun'].includes(dayName)
-	const classes = `day${isToday ? ' today' : ''}${isWeekend ? ' weekend' : ''}`
-	const writtenDate = `${isToday ? 'today, ' : ''}${format(dayDate, 'EEEE, MMMM do, yyyy')}`
+	const classes = `day${isItToday ? ' today' : ''}${isWeekend ? ' weekend' : ''}`
+	const writtenDate = `${isItToday ? 'today, ' : ''}${format(dayDate, 'EEEE, MMMM do, yyyy')}`
 
-	const sessionTargetDay = format(dayDate, 'yyyyMMdd')
-	const sessionIdsSet = new Set(sessionIndex[sessionTargetDay] ?? [])
+	const sessionStartDay = format(dayDate, 'yyyyMMdd')
+	const sessionIdsSet = new Set(sessionIndex[sessionStartDay] ?? [])
 	const filteredSessions = sessionsArr.filter((session) => sessionIdsSet.has(session._id))
 
+	const { setNodeRef } = useDroppable({ id: sessionStartDay })
+
 	return (
-		<article className={classes}>
+		<article className={classes} ref={setNodeRef} id={sessionStartDay}>
 			<header>
 				<h3 aria-label={writtenDate}>
 					<span className="day-name">{dayName}</span>
