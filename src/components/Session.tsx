@@ -12,6 +12,7 @@ import { TimerIcon as IconDuration } from '@phosphor-icons/react'
 import { useDndMonitor, useDraggable } from '@dnd-kit/core'
 import { CSS } from '@dnd-kit/utilities'
 import { useRef, useState } from 'react'
+import ResizeHandle from './ResizeHandle'
 
 export default function Session({ data }: SessionProps) {
 	const { _id, dtStart, dtEnd, parent: sessionParent } = data
@@ -76,30 +77,31 @@ export default function Session({ data }: SessionProps) {
 			<section
 				id={_id}
 				className="session"
-				ref={setNodeRef}
-				{...listeners}
-				{...attributes}
 				style={{ backgroundColor: colorBg, color: color, top: gridPos.top, height: gridPos.height, ...style }}>
-				{isValidTravelTime(travelTime) ? <TravelTime time={travelTime} /> : null}
+				<ResizeHandle />
 				<div className="content">
-					<small className="time">
-						<span className="hours">
-							<time dateTime={startTime}>{stripLeadingZero(startTime)}</time>
-							<span className="sr-only">
-								&thinsp;–&thinsp;<time dateTime={endTime}>{stripLeadingZero(endTime)}</time>
+					{isValidTravelTime(travelTime) ? <TravelTime time={travelTime} /> : null}
+					<div className="text" ref={setNodeRef} {...listeners} {...attributes}>
+						<small className="time">
+							<span className="hours">
+								<time dateTime={startTime}>{stripLeadingZero(startTime)}</time>
+								<span className="sr-only">
+									&thinsp;–&thinsp;<time dateTime={endTime}>{stripLeadingZero(endTime)}</time>
+								</span>
 							</span>
-						</span>
-						<span className="duration">
-							<IconDuration aria-label="duration" />
-							<time dateTime={duration}>{stripLeadingZero(duration)}</time> <span className="sr-only">hours</span>
-						</span>
-					</small>
-					<h4 className="title">{taskTitle}</h4>
-					<small className="cal">
-						<span className="sub-cal">{subCatTitle}</span> <span className="main-cal">•&nbsp;{catTitle}</span>
-					</small>
+							<span className="duration">
+								<IconDuration aria-label="duration" />
+								<time dateTime={duration}>{stripLeadingZero(duration)}</time> <span className="sr-only">hours</span>
+							</span>
+						</small>
+						<h4 className="title">{taskTitle}</h4>
+						<small className="cal">
+							<span className="sub-cal">{subCatTitle}</span> <span className="main-cal">•&nbsp;{catTitle}</span>
+						</small>
+					</div>
+					{isValidTravelTime(travelReturnTime) && <TravelTime time={travelReturnTime} isReturn={true} />}
 				</div>
-				{isValidTravelTime(travelReturnTime) && <TravelTime time={travelReturnTime} isReturn={true} />}
+				<ResizeHandle />
 			</section>
 		</>
 	)

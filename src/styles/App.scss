@@ -111,6 +111,7 @@ main {
 
 	display: grid;
 	grid-template-columns: auto repeat(7, 1fr);
+	overflow-x: scroll;
 	position: relative;
 
 	h2 {
@@ -223,14 +224,53 @@ main {
 		margin-bottom: var(--padding-cell-y);
 	}
 
-	* {
+	.resize-handle {
+		cursor: ns-resize;
+		height: 6px;
+		overflow: hidden;
 		margin: 0;
+		padding: 0;
+		flex-shrink: 0;
+		flex-grow: 0;
+
+		svg {
+			margin: 0 auto;
+			display: block;
+		}
+
+		&:first-of-type svg {
+			margin-top: -3px;
+		}
+
+		&:last-of-type svg {
+			margin-top: -6px;
+		}
 	}
 
-	> {
-		* {
-			padding: 0 0.75rem;
+	.content {
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+		cursor: grab;
+
+		&:active {
+			cursor: grabbing;
 		}
+
+		* {
+			margin: 0;
+		}
+
+		> {
+			* {
+				padding-inline: 0.75rem;
+			}
+		}
+	}
+
+	.text {
+		height: 100%;
+		padding-block: 0.65rem;
 	}
 
 	.title {
@@ -243,10 +283,6 @@ main {
 		display: flex;
 		justify-content: space-between;
 		margin-bottom: 0.25rem;
-	}
-
-	.content {
-		padding-block: 0.65rem;
 	}
 
 	.duration {
@@ -285,13 +321,14 @@ main {
 	font-weight: 500;
 	padding-block: var(--padding);
 
-	&:first-child {
+	&:has(+ .text) {
 		border-bottom: var(--border);
+		padding-top: 0;
 	}
 
-	&:last-child {
+	.text + & {
 		border-top: var(--border);
-		margin-top: auto;
+		padding-bottom: 2px;
 	}
 }
 
