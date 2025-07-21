@@ -17,49 +17,51 @@ export default function NavMain() {
 
 	return (
 		<>
-			<nav className="nav-main">
-				<h2>Categories</h2>
-				<ul>
-					{mainCategoryArr.map((category, i) => {
-						const subCategoryIds = categoryIndex[category._id]
-						const submenuIsOpen = openSubmenus[category._id] || false
+			{mainCategoryArr && (
+				<nav className="nav-main">
+					<h2>Categories</h2>
+					<ul>
+						{mainCategoryArr.map((category, i) => {
+							const subCategoryIds = categoryIndex[category._id]
+							const submenuIsOpen = openSubmenus[category._id] || false
 
-						return (
-							<li key={i} style={{ color: category.color }}>
-								<span>
-									{category.title}
-									{subCategoryIds && <Count quantity={subCategoryIds.length} itemType={'projects'} />}
-								</span>
-								{subCategoryIds && (
-									<>
-										<button
-											type="button"
-											className="toggle-submenu"
-											aria-controls={`subcats-${category._id}`}
-											aria-expanded={submenuIsOpen}
-											aria-label="expand subcategories"
-											onClick={() => toggleSubmenu(category._id)}>
-											<IconExpand />
-										</button>
-										<ul id={`subcats-${category._id}`}>
-											{subCategoryIds.map((subCatId) => {
-												const subCategory = categoryArr.find((elem) => elem._id === subCatId)
+							return (
+								<li key={i} style={{ color: category.color }}>
+									<span>
+										{category.title}
+										{subCategoryIds && <Count quantity={subCategoryIds.length} itemType={'projects'} />}
+									</span>
+									{subCategoryIds && (
+										<>
+											<button
+												type="button"
+												className="toggle-submenu"
+												aria-controls={`subcats-${category._id}`}
+												aria-expanded={submenuIsOpen}
+												aria-label="expand subcategories"
+												onClick={() => toggleSubmenu(category._id)}>
+												<IconExpand />
+											</button>
+											<ul id={`subcats-${category._id}`}>
+												{subCategoryIds.map((subCatId) => {
+													const subCategory = categoryArr.find((elem) => elem._id === subCatId)
 
-												if (!subCategory) return
-												return (
-													<li key={subCatId}>
-														<span>{subCategory.title}</span>
-													</li>
-												)
-											})}
-										</ul>
-									</>
-								)}
-							</li>
-						)
-					})}
-				</ul>
-			</nav>
+													if (!subCategory) return
+													return (
+														<li key={subCatId}>
+															<span>{subCategory.title}</span>
+														</li>
+													)
+												})}
+											</ul>
+										</>
+									)}
+								</li>
+							)
+						})}
+					</ul>
+				</nav>
+			)}
 		</>
 	)
 }
