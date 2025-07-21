@@ -3,6 +3,9 @@ import { categoryArr, categoryIndex } from '../data/dummydata'
 import { CategoryType } from '../types/category'
 import Count from './Count'
 import { CaretRightIcon as IconExpand } from '@phosphor-icons/react'
+import { PlusIcon as IconAdd } from '@phosphor-icons/react'
+import { Popover } from './Popover'
+import NewCategoryForm from './Forms/NewCategoryForm'
 
 export default function NavMain() {
 	const mainCategoryArr: CategoryType[] = useMemo(() => categoryArr.filter((elem) => !elem.parent), [categoryArr])
@@ -17,9 +20,14 @@ export default function NavMain() {
 
 	return (
 		<>
-			{mainCategoryArr && (
-				<nav className="nav-main">
+			<nav className="nav-main">
+				<div className="nav-header">
 					<h2>Categories</h2>
+					<Popover trigger={<IconAdd weight="bold" />} triggerLabel={`add category`}>
+						<NewCategoryForm />
+					</Popover>
+				</div>
+				{mainCategoryArr && (
 					<ul>
 						{mainCategoryArr.map((category, i) => {
 							const subCategoryIds = categoryIndex[category._id]
@@ -60,8 +68,8 @@ export default function NavMain() {
 							)
 						})}
 					</ul>
-				</nav>
-			)}
+				)}
+			</nav>
 		</>
 	)
 }
