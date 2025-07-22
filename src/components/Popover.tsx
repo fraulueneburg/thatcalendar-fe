@@ -8,19 +8,29 @@ type PopoverProps = {
 	title?: string
 	description?: string
 	children: ReactNode
+	isModal?: boolean
+	className?: string
 }
 
-export const Popover = ({ trigger, triggerLabel, title, description, children }: PopoverProps) => {
+export const Popover = ({
+	trigger,
+	triggerLabel,
+	title,
+	description,
+	children,
+	isModal = false,
+	className,
+}: PopoverProps) => {
 	return (
 		<>
 			<>
-				<ArkPopover.Root>
+				<ArkPopover.Root modal={isModal}>
 					{trigger && (
 						<ArkPopover.Trigger className="btn-round" aria-label={triggerLabel}>
 							{trigger}
 						</ArkPopover.Trigger>
 					)}
-					<ArkPopover.Positioner>
+					<ArkPopover.Positioner className={`${isModal ? 'modal' : ''}${className ? ` ${className}` : ''}`}>
 						<ArkPopover.Content>
 							{title && <ArkPopover.Title>{title}</ArkPopover.Title>}
 							{description && <ArkPopover.Description>{description}</ArkPopover.Description>}

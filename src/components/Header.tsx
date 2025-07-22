@@ -1,7 +1,13 @@
 import { useState } from 'react'
-import { CaretRightIcon as IconToRight, CaretLeftIcon as IconToLeft } from '@phosphor-icons/react'
+import {
+	CaretRightIcon as IconToRight,
+	CaretLeftIcon as IconToLeft,
+	GearFineIcon as IconSettings,
+} from '@phosphor-icons/react'
 
 import NavMain from './NavMain'
+import { Popover } from './Popover'
+import SettingsForm from './Forms/SettingsForm'
 
 export default function Header() {
 	const brandName = 'that calendar'
@@ -22,6 +28,14 @@ export default function Header() {
 					{isExpanded ? <IconToLeft /> : <IconToRight />} <span className="sr-only">expand header</span>
 				</button>
 				<NavMain />
+
+				<Popover
+					trigger={<IconSettings weight="bold" />}
+					triggerLabel={`Settings`}
+					isModal={true}
+					className="modal-settings">
+					<SettingsForm />
+				</Popover>
 			</header>
 		</>
 	)
