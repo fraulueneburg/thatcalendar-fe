@@ -91,7 +91,7 @@ export default function SessionForm() {
 					<div>
 						<div>
 							<label>
-								<input type="checkbox" />
+								<input type="checkbox" checked />
 								same return time
 							</label>
 						</div>
