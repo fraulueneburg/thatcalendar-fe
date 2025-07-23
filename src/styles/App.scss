@@ -522,7 +522,9 @@ button[data-scope='popover'][aria-expanded='true'] + div {
 }
 
 label {
-	input {
+	input,
+	select,
+	textarea {
 		display: block;
 	}
 }

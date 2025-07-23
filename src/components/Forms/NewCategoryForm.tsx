@@ -1,3 +1,6 @@
+import { categoryArr } from '../../data/dummydata'
+const mainCategories = categoryArr.filter((elem) => !elem.parent)
+
 export default function NewCategoryForm() {
 	return (
 		<>
@@ -5,7 +8,20 @@ export default function NewCategoryForm() {
 				<p>
 					<label>
 						Name
-						<input type="text" />
+						<input type="text" required />
+					</label>
+				</p>
+				<p>
+					<label>
+						Parent
+						{mainCategories.length > 0 && (
+							<select>
+								<option>—</option>
+								{mainCategories.map((category) => (
+									<option key={category._id}>{category.title}</option>
+								))}
+							</select>
+						)}
 					</label>
 				</p>
 				<p>
