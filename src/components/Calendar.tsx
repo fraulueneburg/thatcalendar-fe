@@ -7,7 +7,7 @@ import PeriodHeadline from './PeriodHeadline'
 import Day from './Day'
 import { CaretLeftIcon as IconPrev, CaretRightIcon as IconNext } from '@phosphor-icons/react'
 import { DndContext } from '@dnd-kit/core'
-import { createCustomSnapModifier } from '../utils/dndkit/createCustomSnapModifier'
+import { createCustomSnapModifier } from '../utils/dndkit'
 
 export default function Calendar() {
 	const [offsetDays, setOffsetDays] = useState(0)
