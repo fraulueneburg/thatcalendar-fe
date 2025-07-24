@@ -1,46 +1,38 @@
-import { createContext, ReactNode, useContext, useState } from 'react'
-import { CategoryType, CategoryIndexType, SessionType, SessionIndexType, TaskType } from '../types'
-
-type CategoryStateType = { data: CategoryType[]; index: CategoryIndexType[] }
-type SessionStateType = { data: SessionType[]; index: SessionIndexType[] }
-
-interface DataContextType {
-	categoryData: { data: CategoryType[]; index: CategoryIndexType[] }
-	setCategoryData: React.Dispatch<React.SetStateAction<CategoryStateType>>
-	taskData: TaskType[]
-	setTaskData: React.Dispatch<React.SetStateAction<TaskType[]>>
-	sessionsData: SessionStateType
-	setSessionsData: React.Dispatch<React.SetStateAction<SessionStateType>>
-}
+import { createContext, ReactNode, useContext, useMemo, useState } from 'react'
+import { TaskType } from '../types'
+import { getInitialData, useLocalStorageSync } from '../utils/data-storage'
+import { CategoryStateType, DataContextType, SessionStateType } from './DataContext.types'
 
 const DataContext = createContext<DataContextType | undefined>(undefined)
 
 const DataContextWrapper = ({ children }: { children: ReactNode }) => {
-	const [categoryData, setCategoryData] = useState<{ data: CategoryType[]; index: CategoryIndexType[] }>({
-		data: [],
-		index: [],
-	})
-
-	const [taskData, setTaskData] = useState<TaskType[]>([])
-
-	const [sessionsData, setSessionsData] = useState<{ data: SessionType[]; index: SessionIndexType[] }>({
-		data: [],
-		index: [],
-	})
-
-	return (
-		<DataContext.Provider
-			value={{
-				categoryData,
-				setCategoryData,
-				taskData,
-				setTaskData,
-				sessionsData,
-				setSessionsData,
-			}}>
-			{children}
-		</DataContext.Provider>
+	const [categoryData, setCategoryData] = useState<CategoryStateType>(() =>
+		getInitialData('categoryData', { data: [], index: [] })
 	)
+
+	const [taskData, setTaskData] = useState<TaskType[]>(() => getInitialData('taskData', []))
+
+	const [sessionData, setSessionData] = useState<SessionStateType>(() =>
+		getInitialData('sessionData', { data: [], index: [] })
+	)
+
+	useLocalStorageSync('categoryData', categoryData)
+	useLocalStorageSync('taskData', taskData)
+	useLocalStorageSync('sessionData', sessionData)
+
+	const dataContextValue = useMemo(
+		() => ({
+			categoryData,
+			setCategoryData,
+			taskData,
+			setTaskData,
+			sessionData,
+			setSessionData,
+		}),
+		[categoryData, taskData, sessionData]
+	)
+
+	return <DataContext.Provider value={dataContextValue}>{children}</DataContext.Provider>
 }
 
 const useDataContext = () => {
