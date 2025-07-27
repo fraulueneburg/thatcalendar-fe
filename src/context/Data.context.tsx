@@ -7,13 +7,13 @@ const DataContext = createContext<DataContextType | undefined>(undefined)
 
 const DataContextWrapper = ({ children }: { children: ReactNode }) => {
 	const [categoryData, setCategoryData] = useState<CategoryStateType>(() =>
-		getInitialData('categoryData', { data: [], index: [] })
+		getInitialData('categoryData', { data: [], index: {} })
 	)
 
 	const [taskData, setTaskData] = useState<TaskType[]>(() => getInitialData('taskData', []))
 
 	const [sessionData, setSessionData] = useState<SessionStateType>(() =>
-		getInitialData('sessionData', { data: [], index: [] })
+		getInitialData('sessionData', { data: [], index: {} })
 	)
 
 	useLocalStorageSync('categoryData', categoryData)

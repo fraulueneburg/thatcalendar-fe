@@ -1,7 +1,7 @@
 import { CategoryType, CategoryIndexType, SessionType, SessionIndexType, TaskType } from '../types'
 
-export type CategoryStateType = { data: CategoryType[]; index: CategoryIndexType[] }
-export type SessionStateType = { data: SessionType[]; index: SessionIndexType[] }
+export type CategoryStateType = { data: CategoryType[]; index: CategoryIndexType }
+export type SessionStateType = { data: SessionType[]; index: SessionIndexType }
 
 export interface DataContextType {
 	categoryData: CategoryStateType
