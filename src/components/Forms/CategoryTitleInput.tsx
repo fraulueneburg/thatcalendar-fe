@@ -2,7 +2,7 @@ import { useDataContext } from '../../context/Data.context'
 import { useState } from 'react'
 import { CategoryType } from '../../types'
 
-export default function TitleInput() {
+export default function CategoryTitleInput() {
 	const [title, setTitle] = useState('')
 	const [invalid, setInvalid] = useState(false)
 	const { categoryData } = useDataContext()
@@ -21,6 +21,7 @@ export default function TitleInput() {
 			Name
 			<input
 				type="text"
+				id="title"
 				name="title"
 				value={title}
 				onChange={handleChange}

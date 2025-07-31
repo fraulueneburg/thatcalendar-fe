@@ -8,14 +8,13 @@ export default function NewCategoryForm() {
 
 	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault()
-
 		const form = event.currentTarget
 		const formData = new FormData(form)
 		const invalid = form.querySelectorAll('[aria-invalid="true"]').length > 0
+		const parent = (formData.get('parent') as string) || null
 
 		if (invalid) {
 			const firstInvalid = form.querySelector('[aria-invalid="true"]')
-
 			if (firstInvalid && firstInvalid instanceof HTMLElement) {
 				firstInvalid.focus()
 			}
@@ -23,11 +22,26 @@ export default function NewCategoryForm() {
 		}
 
 		const customId = `c-${categoryData.data.length}`
-
 		const newCategory = { _id: customId, ...Object.fromEntries(formData.entries()) } as CategoryType
-		setCategoryData((prev) => ({ ...prev, data: [...prev.data, newCategory] }))
 
-		console.log(newCategory)
+		setCategoryData((prev) => {
+			const newData = [...prev.data, newCategory]
+			if (parent) {
+				const existingChildren = prev.index[parent] ?? []
+				return {
+					data: newData,
+					index: {
+						...prev.index,
+						[parent]: [...existingChildren, customId],
+					},
+				}
+			} else {
+				return {
+					...prev,
+					data: newData,
+				}
+			}
+		})
 	}
 
 	return (
@@ -37,9 +51,9 @@ export default function NewCategoryForm() {
 					<CategoryTitleInput />
 				</p>
 				<p>
-					<label htmlFor="parent">
+					<label htmlFor="cat-parent">
 						Parent
-						<select name="parent">
+						<select name="parent" id="cat-parent">
 							<option value="">—</option>
 							{mainCategories.length > 0 &&
 								mainCategories.map((category) => (
@@ -51,15 +65,15 @@ export default function NewCategoryForm() {
 					</label>
 				</p>
 				<p>
-					<label htmlFor="color">
+					<label htmlFor="cat-color">
 						Color
-						<input type="color" name="color" />
+						<input type="color" name="color" id="cat-color" />
 					</label>
 				</p>
 				<p>
-					<label htmlFor="colorBg">
+					<label htmlFor="cat-color-bg">
 						Background Color
-						<input type="color" name="colorBg" />
+						<input type="color" name="colorBg" id="cat-color-bg" />
 					</label>
 				</p>
 				<button type="submit">add category</button>
