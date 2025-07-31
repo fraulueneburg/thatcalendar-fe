@@ -3,7 +3,7 @@ export type TaskType = {
 	parent: string
 	title: string
 	description: string
-	isChecked: boolean
+	isDone: boolean
 	travelTime: string
 	travelReturnTime: string
 }
