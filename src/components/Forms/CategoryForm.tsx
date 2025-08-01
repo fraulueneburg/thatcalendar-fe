@@ -1,7 +1,7 @@
 import { useState, useId } from 'react'
 import { useDataContext } from '../../context/Data.context'
 import { CategoryType } from '../../types'
-import ColorSelect from '../ColorSelect'
+import { nanoid } from 'nanoid'
 
 export default function NewCategoryForm() {
 	const { categoryData, setCategoryData } = useDataContext()
@@ -27,7 +27,7 @@ export default function NewCategoryForm() {
 	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault()
 
-		const newCategoryId = `c-${categoryData.data.length}`
+		const newCategoryId = `c-${nanoid()}`
 		const form = event.currentTarget
 		const invalid = form.querySelectorAll('[aria-invalid="true"]').length > 0
 
@@ -71,6 +71,8 @@ export default function NewCategoryForm() {
 				},
 			}
 		})
+
+		setTitle('')
 	}
 
 	return (
