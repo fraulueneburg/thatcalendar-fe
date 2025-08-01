@@ -11,6 +11,7 @@
 	--color-primary: #646cff;
 	--color-text-secondary: #86888f;
 	--color-line: #35353b;
+	--color-error: #ff00ff;
 	--color-text-disabled: rgb(133, 133, 133);
 
 	--background-button: #1a1a1a;
@@ -593,6 +594,7 @@ button[data-scope='popover'] {
 
 input[type='text'],
 input[type='time'],
+input[type='color'],
 input[type='checkbox'],
 select,
 textarea {
@@ -622,6 +624,11 @@ textarea {
 	}
 }
 
+input[type='color'] {
+	box-sizing: content-box;
+	padding: 0.25rem 0;
+}
+
 label {
 	&:has(:disabled),
 	&:has(+ :disabled) {
@@ -638,6 +645,7 @@ label {
 
 form h4,
 form p,
+form > .field,
 fieldset {
 	margin: 0 0 1rem;
 }
@@ -653,3 +661,11 @@ fieldset {
 	grid-template-columns: 1fr 1fr;
 	gap: 1rem;
 }
+
+.error-message {
+	display: block;
+	color: var(--color-error);
+	font-size: 0.9rem;
+	margin-top: 0.25rem;
+}
+
