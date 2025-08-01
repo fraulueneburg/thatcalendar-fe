@@ -89,6 +89,66 @@ nav ul {
 	}
 }
 
+ul.list-categories {
+	&,
+	ul {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+
+		> li {
+			> span {
+				display: block;
+				padding: 0.375rem 0 0.375rem 1rem;
+			}
+		}
+	}
+
+	> li {
+		position: relative;
+
+		> span:before {
+			background-color: currentColor;
+			border-radius: 50%;
+			content: '';
+			height: 8px;
+			left: 0;
+			position: absolute;
+			top: 14px;
+			width: 8px;
+		}
+
+		button.toggle-submenu {
+			--size: 38px;
+			--transition: transform 0.2s ease;
+			background-color: transparent;
+			border: none;
+			color: var(--color-text-secondary);
+			padding: 0;
+			position: absolute;
+			right: calc(var(--size) / -2);
+			top: 0;
+			transition: var(--transition);
+			width: var(--size);
+			height: var(--size);
+
+			&:focus {
+				outline: none;
+			}
+
+			&[aria-expanded='true'] {
+				transform: rotate(90deg);
+				transition: var(--transition);
+
+				+ ul {
+					display: block;
+					height: auto;
+				}
+			}
+		}
+	}
+}
+
 a {
 	font-weight: 500;
 	color: var(--color-primary);
@@ -479,63 +539,10 @@ button {
 			font-weight: 800;
 		}
 
-		ul {
-			> li {
-				> span {
-					display: block;
-					padding: 0.375rem 0 0.375rem 1rem;
-				}
-			}
-		}
-
-		> ul {
-			> li {
-				position: relative;
-
-				> span:before {
-					background-color: currentColor;
-					border-radius: 50%;
-					content: '';
-					height: 8px;
-					left: 0;
-					position: absolute;
-					top: 14px;
-					width: 8px;
-				}
-
-				button.toggle-submenu {
-					--size: 38px;
-					--transition: transform 0.2s ease;
-					background-color: transparent;
-					border: none;
-					color: var(--color-text-secondary);
-					padding: 0;
-					position: absolute;
-					right: calc(var(--size) / -2);
-					top: 0;
-					transition: var(--transition);
-					width: var(--size);
-					height: var(--size);
-
-					&:focus {
-						outline: none;
-					}
-
-					&[aria-expanded='true'] {
-						transform: rotate(90deg);
-						transition: var(--transition);
-
-						+ ul {
-							display: block;
-							height: auto;
-						}
-					}
-				}
-
-				ul {
-					display: none;
-					height: 0;
-				}
+		ul > li {
+			ul {
+				display: none;
+				height: 0;
 			}
 		}
 	}
@@ -588,7 +595,6 @@ button[data-scope='popover'] {
 	inset: 0 !important;
 	margin: auto;
 	height: min-content;
-	max-height: 600px;
 	max-width: 400px;
 }
 
