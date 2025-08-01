@@ -7,7 +7,7 @@ import {
 
 import NavMain from './NavMain'
 import { Popover } from './Popover'
-import SettingsForm from './Forms/SettingsForm'
+import UserSettingsForm from './Forms/UserSettingsForm'
 
 export default function Header() {
 	const brandName = 'that calendar'
@@ -34,7 +34,7 @@ export default function Header() {
 					triggerLabel={`Settings`}
 					isModal={true}
 					className="modal-settings">
-					<SettingsForm />
+					<UserSettingsForm />
 				</Popover>
 			</header>
 		</>
