@@ -32,14 +32,15 @@ export default function SessionForm({ onSubmitAction }: SessionFormProps) {
 	}
 
 	const handleAddNewTask = (title: string) => {
+		const newId = nanoid()
 		const newTask: TaskType = {
-			_id: nanoid(),
+			_id: newId,
 			parent: subCategory,
 			title: title,
 			isDone: false,
 		}
-
 		setTaskData((prev) => [...prev, newTask])
+		return newId
 	}
 
 	const handleDeleteTask = (id: string) => {
@@ -85,7 +86,6 @@ export default function SessionForm({ onSubmitAction }: SessionFormProps) {
 				<Combobox
 					title="Task"
 					data={filteredTasks}
-					selectedItem={selectedTask}
 					newItemAction={handleAddNewTask}
 					deleteItemAction={handleDeleteTask}
 					disabled={subCategory === ''}

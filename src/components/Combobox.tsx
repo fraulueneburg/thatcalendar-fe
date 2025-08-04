@@ -1,12 +1,12 @@
-import { useEffect, useId, useRef, useState } from 'react'
+import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
 import { useCloseOnClickOutside } from '../utils/useCloseOnClickOutside'
-import { XIcon as IconClose, XIcon as IconDelete } from '@phosphor-icons/react'
+import { XIcon as IconDelete } from '@phosphor-icons/react'
 import { CategoryType } from '../types'
 
 type ComboboxProps = {
 	title: string
 	data: CategoryType[]
-	newItemAction: (title: string) => void
+	newItemAction: (title: string) => string
 	deleteItemAction: (title: string) => void
 	disabled?: boolean
 }
@@ -30,6 +30,7 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const formValue = event.target.value
 		setQuery(formValue)
+		if (!isOpen && formValue.length > 0) setIsOpen(true)
 	}
 
 	const handleClear = () => {
@@ -48,10 +49,10 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 	}
 
 	const handleAddNew = () => {
-		newItemAction(query)
+		const id = newItemAction(query)
 		setSelectedName(query)
+		setSelectedId(id)
 		setQuery('')
-		setIsOpen(false)
 	}
 
 	const handleDelete = (id: string) => (event: React.SyntheticEvent<HTMLButtonElement>) => {
@@ -64,6 +65,47 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 
 		deleteItemAction(id)
 	}
+
+	const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+		if (event.key === 'Enter') {
+			event.preventDefault()
+
+			const existingItem = data.find((elem) => elem.title === query)
+
+			if (existingItem) {
+				setSelectedId(existingItem._id)
+				setSelectedName(existingItem.title)
+				setQuery('')
+			} else {
+				handleAddNew()
+			}
+		}
+
+		if (event.key === 'Escape') {
+			event.preventDefault()
+			event.stopPropagation()
+
+			if (query) {
+				setQuery('')
+			} else {
+				setIsOpen(false)
+			}
+		}
+
+		if (event.key === 'Backspace' && query.length === 0 && selectedName !== '') {
+			setSelectedName('')
+			setSelectedId('')
+		}
+	}
+
+	useLayoutEffect(() => {
+		const selectedItemStillValid = data.some((elem) => elem._id === selectedId)
+
+		if (!selectedItemStillValid) {
+			setSelectedId('')
+			setSelectedName('')
+		}
+	}, [data])
 
 	// useCloseOnClickOutside({
 	// 	ref: wrapperRef,
@@ -88,7 +130,7 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 							<>
 								<div data-part="selected-item">
 									<strong id={`${uniqueId}selected-value-desc`} className="sr-only">
-										Selected task:
+										Selected {title.toLowerCase()}:
 									</strong>
 									<div id={`${uniqueId}selected-value`} aria-describedby={`${uniqueId}selected-value-desc`}>
 										{selectedName}
@@ -98,7 +140,7 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 										data-part="clear-trigger"
 										id={`${uniqueId}clear-btn`}
 										className="btn-icon-mini"
-										aria-label={`remove selected task ${selectedName}`}
+										aria-label={`remove selected ${title.toLowerCase()} "${selectedName}"`}
 										aria-controls={`${uniqueId}input`}
 										onClick={handleClear}>
 										<IconDelete aria-hidden="true" weight="bold" />
@@ -123,6 +165,7 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 							value={query}
 							onFocus={handleFocus}
 							onChange={handleChange}
+							onKeyDown={handleKeyDown}
 							ref={inputRef}
 						/>
 					</div>
