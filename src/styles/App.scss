@@ -492,6 +492,15 @@ button {
 	&[aria-disabled='true'] {
 		cursor: default;
 	}
+
+	&.btn-icon-mini {
+		background: transparent;
+		display: flex;
+		align-items: center;
+		border: none;
+		aspect-ratio: 1/1;
+		padding: 0.25rem;
+	}
 }
 
 .btn-round {
@@ -734,15 +743,6 @@ fieldset {
 				overflow: hidden;
 				white-space: nowrap;
 			}
-		}
-
-		[data-part='clear-trigger'] {
-			background: transparent;
-			display: flex;
-			align-items: center;
-			border: none;
-			aspect-ratio: 1/1;
-			padding: 0.25rem;
 		}
 
 		[data-part='input'] {

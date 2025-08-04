@@ -1,6 +1,6 @@
 import { useId, useRef, useState } from 'react'
 import { useCloseOnClickOutside } from '../utils/useCloseOnClickOutside'
-import { CaretDownIcon as IconOpen, XIcon as IconClose } from '@phosphor-icons/react'
+import { XIcon as IconClose, XIcon as IconDelete } from '@phosphor-icons/react'
 import { CategoryType } from '../types'
 
 type ComboboxProps = {
@@ -82,13 +82,14 @@ export function Combobox({ title, data, newItemAction, disabled }: ComboboxProps
 										{currentTaskName}
 									</div>
 									<button
+										type="button"
 										data-part="clear-trigger"
 										id={`${uniqueId}clear-btn`}
-										type="button"
+										className="btn-icon-mini"
 										aria-label={`remove selected task ${currentTaskName}`}
 										aria-controls={`${uniqueId}input`}
 										onClick={handleClear}>
-										<IconClose aria-hidden="true" weight="bold" />
+										<IconDelete aria-hidden="true" weight="bold" />
 									</button>
 								</div>
 							</>
@@ -131,6 +132,9 @@ export function Combobox({ title, data, newItemAction, disabled }: ComboboxProps
 								data-part="item"
 								data-value={elem._id}>
 								<span data-part="item-text">{elem.title}</span>
+								<button type="button" className="btn-icon-mini" aria-label={`delete ${elem.title}`}>
+									<IconDelete aria-hidden="true" weight="bold" />
+								</button>
 							</div>
 						))}
 						{query.length > 0 && !filteredData.some((elem) => elem.title === query) && (
