@@ -500,6 +500,7 @@ button {
 		border: none;
 		aspect-ratio: 1/1;
 		padding: 0.25rem;
+		width: 1.5rem;
 	}
 }
 
@@ -701,6 +702,7 @@ fieldset {
 
 [data-scope='combobox'] {
 	margin-bottom: 1rem;
+	position: relative;
 
 	[data-part='label']:has(+ [data-part='control'] input:disabled),
 	[data-part='label']:has(+ [data-part='control'] input[aria-disabled='true']) {
@@ -770,12 +772,15 @@ fieldset {
 
 	[data-part='positioner'] {
 		position: absolute;
+		width: 100%;
 
 		[data-part='content']:not(:empty) {
 			background-color: var(--background-popover);
 			border: var(--border-popover);
 			box-shadow: var(--box-shadow-popover);
+			box-sizing: border-box;
 			padding: 1rem 0.75rem;
+			width: 100%;
 		}
 	}
 
@@ -785,9 +790,10 @@ fieldset {
 
 	[data-part='item'] {
 		border-radius: var(--border-radius);
-		display: flex;
-		gap: 0.25rem;
-		padding-inline: 0.5rem;
+		display: grid;
+		grid-template-columns: 1fr auto;
+		gap: 0.5rem;
+		padding: 0.125rem 0 0.125rem 0.5rem;
 
 		&:hover,
 		&:focus,

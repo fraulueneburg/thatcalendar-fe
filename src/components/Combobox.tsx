@@ -1,4 +1,4 @@
-import { useId, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { useCloseOnClickOutside } from '../utils/useCloseOnClickOutside'
 import { XIcon as IconClose, XIcon as IconDelete } from '@phosphor-icons/react'
 import { CategoryType } from '../types'
@@ -7,10 +7,11 @@ type ComboboxProps = {
 	title: string
 	data: CategoryType[]
 	newItemAction: (title: string) => void
+	deleteItemAction: (title: string) => void
 	disabled?: boolean
 }
 
-export function Combobox({ title, data, newItemAction, disabled }: ComboboxProps) {
+export function Combobox({ title, data, newItemAction, deleteItemAction, disabled }: ComboboxProps) {
 	const wrapperRef = useRef<HTMLDivElement | null>(null)
 	const inputRef = useRef<HTMLInputElement>(null)
 
@@ -37,7 +38,8 @@ export function Combobox({ title, data, newItemAction, disabled }: ComboboxProps
 		inputRef.current?.focus()
 	}
 
-	const handleSelect = (id: string, title: string) => {
+	const handleSelect = (id: string, title: string) => (event: React.SyntheticEvent<HTMLDivElement>) => {
+		event.stopPropagation()
 		setSelectedId(id)
 		setSelectedName(title)
 
@@ -48,9 +50,19 @@ export function Combobox({ title, data, newItemAction, disabled }: ComboboxProps
 	const handleAddNew = () => {
 		newItemAction(query)
 		setSelectedName(query)
-
 		setQuery('')
 		setIsOpen(false)
+	}
+
+	const handleDelete = (id: string) => (event: React.SyntheticEvent<HTMLButtonElement>) => {
+		event.stopPropagation()
+
+		if (selectedId === id) {
+			setSelectedId('')
+			setSelectedName('')
+		}
+
+		deleteItemAction(id)
 	}
 
 	// useCloseOnClickOutside({
@@ -116,7 +128,7 @@ export function Combobox({ title, data, newItemAction, disabled }: ComboboxProps
 					</div>
 				</div>
 
-				<div data-part="positioner" id={`${uniqueId}popper`} /*aria-hidden={!isOpen}*/>
+				<div data-part="positioner" id={`${uniqueId}popper`}>
 					<div
 						data-part="content"
 						id={`${uniqueId}content`}
@@ -128,11 +140,15 @@ export function Combobox({ title, data, newItemAction, disabled }: ComboboxProps
 								key={elem._id}
 								role="option"
 								aria-selected={elem._id === selectedId}
-								onClick={() => handleSelect(elem._id, elem.title)}
+								onClick={(event) => handleSelect(elem._id, elem.title)(event)}
 								data-part="item"
 								data-value={elem._id}>
 								<span data-part="item-text">{elem.title}</span>
-								<button type="button" className="btn-icon-mini" aria-label={`delete ${elem.title}`}>
+								<button
+									type="button"
+									className="btn-icon-mini"
+									aria-label={`delete ${elem.title}`}
+									onClick={(event) => handleDelete(elem._id)(event)}>
 									<IconDelete aria-hidden="true" weight="bold" />
 								</button>
 							</div>

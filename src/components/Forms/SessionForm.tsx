@@ -12,8 +12,8 @@ type SessionFormProps = {
 }
 
 export default function SessionForm({ onSubmitAction }: SessionFormProps) {
-	const { categoryData, setCategoryData, taskData, setTaskData } = useDataContext()
-	const { data: categoryArr, index: categoryIndex } = categoryData
+	const { categoryData, taskData, setTaskData } = useDataContext()
+	const { data: categoryArr } = categoryData
 
 	const [category, setCategory] = useState('')
 	const [subCategory, setSubCategory] = useState('')
@@ -40,6 +40,10 @@ export default function SessionForm({ onSubmitAction }: SessionFormProps) {
 		}
 
 		setTaskData((prev) => [...prev, newTask])
+	}
+
+	const handleDeleteTask = (id: string) => {
+		setTaskData(taskData.filter((elem) => elem._id !== id))
 	}
 
 	useEffect(() => {
@@ -78,7 +82,14 @@ export default function SessionForm({ onSubmitAction }: SessionFormProps) {
 						</select>
 					</label>
 				</p>
-				<Combobox title="Task" data={filteredTasks} newItemAction={handleAddNewTask} disabled={subCategory === ''} />
+				<Combobox
+					title="Task"
+					data={filteredTasks}
+					selectedItem={selectedTask}
+					newItemAction={handleAddNewTask}
+					deleteItemAction={handleDeleteTask}
+					disabled={subCategory === ''}
+				/>
 				<fieldset>
 					<legend>Time</legend>
 					<label>
