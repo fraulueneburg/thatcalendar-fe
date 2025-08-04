@@ -8,8 +8,7 @@ import { useDataContext } from '../context/Data.context'
 
 export default function NavMain() {
 	const { categoryData } = useDataContext()
-	const categoryArr = categoryData.data
-	const categoryIndex = categoryData.index
+	const { data: categoryArr, index: categoryIndex } = categoryData
 
 	const mainCategories: CategoryType[] = useMemo(() => categoryArr.filter((elem) => !elem.parent), [categoryData])
 	const [openSubmenus, setOpenSubmenus] = useState<Record<string, boolean>>({})
