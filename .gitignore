@@ -28,5 +28,4 @@ src/data/ical/*
 TODO.md
 
 # any files (but not directories) inside components/ starting with _
-src/components/**/_*.tsx
-src/components/**/_*.html
+src/components/**/_*.*

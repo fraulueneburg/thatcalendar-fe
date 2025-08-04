@@ -1,15 +1,16 @@
 import { useMemo, useState } from 'react'
-import { categoryArr, categoryIndex } from '../data/dummydata'
 import { CategoryType } from '../types/category'
 import { Popover } from './Popover'
 import Count from './Count'
-import NewCategoryForm from './Forms/NewCategoryForm'
+import CategoryForm from './Forms/CategoryForm'
 import { CaretRightIcon as IconExpand, PlusIcon as IconAdd } from '@phosphor-icons/react'
 import { useDataContext } from '../context/Data.context'
 
 export default function NavMain() {
 	const { categoryData } = useDataContext()
-	const mainCategories: CategoryType[] = useMemo(() => categoryData.data.filter((elem) => !elem.parent), [categoryData])
+	const { data: categoryArr, index: categoryIndex } = categoryData
+
+	const mainCategories: CategoryType[] = useMemo(() => categoryArr.filter((elem) => !elem.parent), [categoryData])
 	const [openSubmenus, setOpenSubmenus] = useState<Record<string, boolean>>({})
 
 	const toggleSubmenu = (id: string) => {
@@ -24,12 +25,17 @@ export default function NavMain() {
 			<nav className="nav-main">
 				<div className="nav-header">
 					<h2>Categories</h2>
-					<Popover trigger={<IconAdd weight="bold" />} triggerLabel={`add category`}>
-						<NewCategoryForm />
+					<Popover
+						trigger={<IconAdd weight="bold" />}
+						triggerLabel={`add category`}
+						positioning={{
+							placement: 'right-start',
+						}}>
+						<CategoryForm />
 					</Popover>
 				</div>
 				{mainCategories && (
-					<ul>
+					<ul className="list-categories">
 						{mainCategories.map((category, i) => {
 							const subCategoryIds = categoryIndex[category._id]
 							const submenuIsOpen = openSubmenus[category._id] || false
