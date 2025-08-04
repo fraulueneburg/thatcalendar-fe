@@ -5,13 +5,12 @@ import { CategoryType } from '../types'
 
 type ComboboxProps = {
 	title: string
-	groups?: CategoryType[]
 	data: CategoryType[]
 	newItemAction: (title: string) => void
 	disabled?: boolean
 }
 
-export function Combobox({ title, data, groups, newItemAction, disabled }: ComboboxProps) {
+export function Combobox({ title, data, newItemAction, disabled }: ComboboxProps) {
 	const wrapperRef = useRef<HTMLDivElement | null>(null)
 	const inputRef = useRef<HTMLInputElement>(null)
 
@@ -123,48 +122,17 @@ export function Combobox({ title, data, groups, newItemAction, disabled }: Combo
 						role="listbox"
 						hidden={!isOpen}
 						aria-labelledby={`${uniqueId}label`}>
-						{groups?.map((group) => (
-							<div key={group._id} data-part="item-group" role="group" aria-labelledby="">
-								<div data-part="item-group-label" role="presentation">
-									<strong>{group.title}</strong>
-								</div>
-								{filteredData.map(
-									(elem) =>
-										group._id === elem.parent && (
-											<div
-												key={elem._id}
-												role="option"
-												aria-selected={elem._id === selectedId}
-												onClick={() => handleSelect(elem._id, elem.title)}
-												data-part="item"
-												// tabIndex={-1}
-												data-value={elem._id}>
-												<span data-part="item-text">{elem.title}</span>
-											</div>
-										)
-								)}
-								{selectedId === '' && query.length > 0 && (
-									<div role="option" data-part="item" data-value={''}>
-										<span data-part="item-text">
-											<hr />
-											create <strong>{query}</strong>
-										</span>
-									</div>
-								)}
+						{filteredData?.map((elem) => (
+							<div
+								key={elem._id}
+								role="option"
+								aria-selected={elem._id === selectedId}
+								onClick={() => handleSelect(elem._id, elem.title)}
+								data-part="item"
+								data-value={elem._id}>
+								<span data-part="item-text">{elem.title}</span>
 							</div>
 						))}
-						{!groups &&
-							filteredData?.map((elem) => (
-								<div
-									key={elem._id}
-									role="option"
-									aria-selected={elem._id === selectedId}
-									onClick={() => handleSelect(elem._id, elem.title)}
-									data-part="item"
-									data-value={elem._id}>
-									<span data-part="item-text">{elem.title}</span>
-								</div>
-							))}
 						{query.length > 0 && !filteredData.some((elem) => elem.title === query) && (
 							<>
 								<hr />
