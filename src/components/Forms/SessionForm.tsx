@@ -1,105 +1,162 @@
-import { Checkbox, Field, Fieldset } from '@ark-ui/react'
-import { CheckIcon } from '@phosphor-icons/react'
+import { useEffect, useState } from 'react'
+import { useDataContext } from '../../context/Data.context'
+import { TaskType } from '../../types'
 
 import { dayStartHour, dayEndHour } from '../../data/user-settings'
 import { convertToTime } from '../../utils/time'
-import { categoryArr, tasksArr } from '../../data/dummydata'
-import { useState } from 'react'
+import { Combobox } from '../Combobox'
+import { nanoid } from 'nanoid'
 
-export default function SessionForm() {
-	const [category, setCategory] = useState('empty')
-	const filteredCategories = categoryArr.filter((elem) => !elem.parent)
-	const filteredSubCategories = categoryArr.filter((elem) => elem.parent === category)
+type SessionFormProps = {
+	onSubmitAction?: React.FormEvent<HTMLFormElement>
+}
+
+export default function SessionForm({ onSubmitAction }: SessionFormProps) {
+	const { categoryData, setCategoryData, taskData, setTaskData } = useDataContext()
+	const { data: categoryArr, index: categoryIndex } = categoryData
+
+	const [category, setCategory] = useState('')
+	const [subCategory, setSubCategory] = useState('')
+	const mainCategories = categoryArr.filter((elem) => !elem.parent)
+	const subCategories = categoryArr.filter((elem) => elem.parent === category)
+
+	const filteredTasks = taskData.filter((elem: TaskType) => elem.parent === subCategory && elem.isDone === false)
+
+	const [isAllDay, setisAllDay] = useState(false)
+	const [hasTravelTime, setHasTravelTime] = useState(false)
+	const [isSameReturnTime, setIsSameReturnTime] = useState(false)
+
+	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault()
+		console.log(event.target)
+	}
+
+	const handleAddNewTask = (title: string) => {
+		const newTask: TaskType = {
+			_id: nanoid(),
+			parent: subCategory,
+			title: title,
+			isDone: false,
+		}
+
+		setTaskData((prev) => [...prev, newTask])
+	}
+
+	useEffect(() => {
+		setSubCategory('')
+	}, [category])
 
 	return (
 		<>
-			<form>
+			<form onSubmit={handleSubmit}>
 				<h4>New Session</h4>
+				<p className="grid">
+					<label>
+						Category
+						<select required onChange={(e) => setCategory(e.target.value)} name="parentsCategory">
+							<option value="">–</option>
+							{mainCategories.map((elem) => (
+								<option value={elem._id} key={elem._id}>
+									{elem.title}
+								</option>
+							))}
+						</select>
+					</label>
+					<label>
+						Project
+						<select
+							required
+							onChange={(e) => setSubCategory(e.target.value)}
+							disabled={category === ''}
+							name="parentsParentCategory">
+							<option value="">–</option>
+							{subCategories.map((elem) => (
+								<option value={elem._id} key={elem._id}>
+									{elem.title}
+								</option>
+							))}
+						</select>
+					</label>
+				</p>
+				<Combobox title="Task" data={filteredTasks} newItemAction={handleAddNewTask} disabled={subCategory === ''} />
 				<fieldset>
-					<legend>Task</legend>
-					<p>choose an existing task</p>
-					<select required defaultValue="" onChange={(e) => setCategory(e.target.value)}>
-						<option value="empty">Task</option>
-						{tasksArr.map((elem) => (
-							<option value={elem._id} key={elem._id}>
-								{elem.title}
-							</option>
-						))}
-					</select>
-
-					<p>or create a new one</p>
-					<input required type="text" />
-				</fieldset>
-
-				<Fieldset.Root>
-					<Fieldset.Legend>Category</Fieldset.Legend>
-					<select required defaultValue="" onChange={(e) => setCategory(e.target.value)}>
-						<option value="empty">Category</option>
-						{filteredCategories.map((elem) => (
-							<option value={elem._id} key={elem._id}>
-								{elem.title}
-							</option>
-						))}
-					</select>
-					<select required defaultValue="" disabled={category === 'empty'}>
-						<option value="empty">Project</option>
-						{filteredSubCategories.map((elem) => (
-							<option value={elem._id} key={elem._id}>
-								{elem.title}
-							</option>
-						))}
-					</select>
-				</Fieldset.Root>
-
-				<Fieldset.Root>
-					<Fieldset.Legend>Time</Fieldset.Legend>
-					<Fieldset.ErrorText>Fieldset Error Text</Fieldset.ErrorText>
-					<p>
-						<label>
-							<input type="checkbox" />
-							all day
-						</label>
-					</p>
+					<legend>Time</legend>
+					<label>
+						<input type="checkbox" name="isAllDay" checked={isAllDay} onChange={() => setisAllDay((prev) => !prev)} />
+						all day
+					</label>
 					<div className="grid field-time-slot">
-						<p>
+						<div>
 							<label htmlFor="slot-start-time">starts at</label>
 							<input
-								required
-								id="slot-start-time"
 								type="time"
-								name="slot-start-time"
+								name="dtStartTime"
+								id="slot-start-time"
 								min={convertToTime(dayStartHour)}
 								max={convertToTime(dayEndHour)}
+								disabled={isAllDay}
+								required
 							/>
-							<span className="validity"></span>
-						</p>
-						<p>
-							<label htmlFor="slot-end-time">ends at</label>
-							<input required id="slot-end-time" type="time" name="slot-end-time" min={dayStartHour} max={dayEndHour} />
-						</p>
-					</div>
-				</Fieldset.Root>
-
-				<button type="button">add travel duration</button>
-
-				<Fieldset.Root>
-					<Fieldset.Legend>Travel duration</Fieldset.Legend>
-					<div>
-						<label htmlFor="appointment-time">travel time</label>
-						<input required id="appointment-time" type="time" name="start-time" />
-					</div>
-					<div>
+							<div className="validity">enter at least {convertToTime(dayStartHour)}</div>
+						</div>
 						<div>
-							<label>
-								<input type="checkbox" checked />
-								same return time
+							<label htmlFor="slot-end-time">ends at</label>
+							<input
+								type="time"
+								name="dtEndTime"
+								id="slot-end-time"
+								min={convertToTime(dayStartHour)}
+								max={convertToTime(dayEndHour)}
+								disabled={isAllDay}
+								required
+							/>
+							<div className="validity">enter at most {convertToTime(dayEndHour)}</div>
+						</div>
+					</div>
+				</fieldset>
+				<p>
+					<label>
+						<input
+							type="checkbox"
+							aria-controls="fs-travel-duration"
+							checked={hasTravelTime}
+							onChange={() => setHasTravelTime((prev) => !prev)}
+						/>
+						add travel duration
+					</label>
+				</p>
+				{hasTravelTime && (
+					<fieldset id="fs-travel-duration">
+						<legend>Travel duration</legend>
+						<div>
+							<label htmlFor="travel-time">
+								travel time
+								<input required id="travel-time" type="time" name="travel-start-time" />
 							</label>
 						</div>
-						<label htmlFor="appointment-time">travel return time</label>
-						<input required id="appointment-time" type="time" name="end-time" />
-					</div>
-				</Fieldset.Root>
-				<button type="submit">create session</button>
+						<div>
+							<div>
+								<label>
+									<input type="checkbox" checked={!isSameReturnTime} onChange={() => setIsSameReturnTime((prev) => !prev)} />
+									same return time
+								</label>
+							</div>
+							{isSameReturnTime && (
+								<label htmlFor="travel-return-time">
+									travel return time
+									<input
+										required
+										id="travel-return-time"
+										type="time"
+										name="travel-return-time"
+										disabled={!isSameReturnTime}
+									/>
+								</label>
+							)}
+						</div>
+					</fieldset>
+				)}
+				<button type="submit">add session</button>
 			</form>
 		</>
 	)

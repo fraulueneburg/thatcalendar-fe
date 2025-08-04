@@ -17,6 +17,7 @@
 	--background-button: #1a1a1a;
 	--background-popover: #1a1a1a;
 	--background-field-disabled: #313131;
+	--background-form-field: rgb(59, 59, 59);
 
 	--border-radius: 5px;
 	--border-width: 1px;
@@ -54,6 +55,13 @@ body {
 	overflow: hidden;
 	padding: 0;
 	width: 1px;
+}
+
+@mixin focus-style {
+	border-color: var(--color-primary);
+	outline: 1px solid var(--color-primary);
+	transition: none 0.2s ease;
+	transition-property: border-color, outline;
 }
 
 .sr-only {
@@ -579,9 +587,10 @@ button[data-scope='popover'] {
 	}
 	&[aria-expanded='true'] + div {
 		background-color: var(--background-popover);
+		border: var(--border-popover);
 		border-radius: var(--border-radius);
 		box-shadow: var(--box-shadow-popover);
-		border: var(--border-popover);
+		width: 385px !important;
 		z-index: 10 !important;
 	}
 }
@@ -607,6 +616,7 @@ input[type='color'],
 input[type='checkbox'],
 select,
 textarea {
+	background-color: var(--background-form-field);
 	box-sizing: border-box;
 	border: var(--border);
 	border-radius: var(--border-radius);
@@ -620,10 +630,7 @@ textarea {
 	width: 100%;
 
 	&:focus {
-		border-color: var(--color-primary);
-		outline: 1px solid var(--color-primary);
-		transition: none 0.2s ease;
-		transition-property: border-color, outline;
+		@include focus-style;
 	}
 
 	&:disabled,
