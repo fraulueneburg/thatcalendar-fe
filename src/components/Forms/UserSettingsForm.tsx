@@ -16,19 +16,21 @@ export default function UserSettingsForm() {
 		setCategoryData((prev) => {
 			const { data, index } = prev
 			const newArr = data.filter((elem) => elem._id !== id)
+			const isParentCategory = !parentId
 
-			if (parentId) {
-				const newParentIndex = index[parentId].filter((elem) => elem !== id)
-				const newIndex = { ...index, [parentId]: [...newParentIndex] }
+			if (isParentCategory) {
+				const arrWithoutChildren = newArr.filter((elem) => elem.parent !== id)
+				const newIndex = { ...index }
+				delete newIndex[id]
+				return { index: newIndex, data: arrWithoutChildren }
+			} else {
+				const updatedParentIndex = index[parentId].filter((elem) => elem !== id)
+				const newIndex = { ...index, [parentId]: [...updatedParentIndex] }
 
 				return {
 					data: newArr,
 					index: newIndex,
 				}
-			} else {
-				// take property parentId out of index, put all remaining properties inside newIndex
-				const { parentId, ...newIndex } = index
-				return { index: newIndex, data: newArr }
 			}
 		})
 	}
