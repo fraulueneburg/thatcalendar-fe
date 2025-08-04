@@ -16,9 +16,9 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 	const inputRef = useRef<HTMLInputElement>(null)
 
 	const [isOpen, setIsOpen] = useState(false)
-	const [selectedId, setSelectedId] = useState('')
-	const [selectedName, setSelectedName] = useState('')
 	const [query, setQuery] = useState('')
+	const [selectedId, setSelectedId] = useState('')
+	const selectedItem = data.find((item) => item._id === selectedId)
 
 	const uniqueId = `combobox:${useId()}:`
 	const filteredData = data.filter((elem) => elem.title.toLowerCase().includes(query.toLowerCase()))
@@ -35,14 +35,12 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 
 	const handleClear = () => {
 		setSelectedId('')
-		setSelectedName('')
 		inputRef.current?.focus()
 	}
 
-	const handleSelect = (id: string, title: string) => (event: React.SyntheticEvent<HTMLDivElement>) => {
+	const handleSelect = (id: string) => (event: React.SyntheticEvent<HTMLDivElement>) => {
 		event.stopPropagation()
 		setSelectedId(id)
-		setSelectedName(title)
 
 		setQuery('')
 		setIsOpen(false)
@@ -50,7 +48,6 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 
 	const handleAddNew = () => {
 		const id = newItemAction(query)
-		setSelectedName(query)
 		setSelectedId(id)
 		setQuery('')
 	}
@@ -60,7 +57,6 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 
 		if (selectedId === id) {
 			setSelectedId('')
-			setSelectedName('')
 		}
 
 		deleteItemAction(id)
@@ -74,7 +70,6 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 
 			if (existingItem) {
 				setSelectedId(existingItem._id)
-				setSelectedName(existingItem.title)
 				setQuery('')
 			} else {
 				handleAddNew()
@@ -92,8 +87,7 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 			}
 		}
 
-		if (event.key === 'Backspace' && query.length === 0 && selectedName !== '') {
-			setSelectedName('')
+		if (event.key === 'Backspace' && query.length === 0 && selectedItem?.title !== '') {
 			setSelectedId('')
 		}
 	}
@@ -103,7 +97,6 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 
 		if (!selectedItemStillValid) {
 			setSelectedId('')
-			setSelectedName('')
 		}
 	}, [data])
 
@@ -126,21 +119,21 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 						aria-expanded={isOpen}
 						aria-haspopup="listbox"
 						role="combobox">
-						{selectedName && (
+						{selectedItem && (
 							<>
 								<div data-part="selected-item">
 									<strong id={`${uniqueId}selected-value-desc`} className="sr-only">
 										Selected {title.toLowerCase()}:
 									</strong>
 									<div id={`${uniqueId}selected-value`} aria-describedby={`${uniqueId}selected-value-desc`}>
-										{selectedName}
+										{selectedItem.title}
 									</div>
 									<button
 										type="button"
 										data-part="clear-trigger"
 										id={`${uniqueId}clear-btn`}
 										className="btn-icon-mini"
-										aria-label={`remove selected ${title.toLowerCase()} "${selectedName}"`}
+										aria-label={`remove selected ${title.toLowerCase()} "${selectedItem.title}"`}
 										aria-controls={`${uniqueId}input`}
 										onClick={handleClear}>
 										<IconDelete aria-hidden="true" weight="bold" />
@@ -183,7 +176,7 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 								key={elem._id}
 								role="option"
 								aria-selected={elem._id === selectedId}
-								onClick={(event) => handleSelect(elem._id, elem.title)(event)}
+								onClick={(event) => handleSelect(elem._id)(event)}
 								data-part="item"
 								data-value={elem._id}>
 								<span data-part="item-text">{elem.title}</span>

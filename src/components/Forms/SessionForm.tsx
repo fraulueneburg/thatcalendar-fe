@@ -32,15 +32,14 @@ export default function SessionForm({ onSubmitAction }: SessionFormProps) {
 	}
 
 	const handleAddNewTask = (title: string) => {
-		const newId = nanoid()
 		const newTask: TaskType = {
-			_id: newId,
+			_id: nanoid(),
 			parent: subCategory,
 			title: title,
 			isDone: false,
 		}
 		setTaskData((prev) => [...prev, newTask])
-		return newId
+		return newTask._id
 	}
 
 	const handleDeleteTask = (id: string) => {
