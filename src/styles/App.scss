@@ -471,7 +471,7 @@ button {
 	cursor: pointer;
 	transition: border-color 0.25s;
 
-	&:not(:disabled):hover {
+	&:not(:disabled, [aria-disabled='true']):hover {
 		border-color: var(--color-primary);
 	}
 
@@ -480,7 +480,8 @@ button {
 		outline: 4px auto var(--color-primary);
 	}
 
-	&:disabled {
+	&:disabled,
+	&[aria-disabled='true'] {
 		cursor: default;
 	}
 }
@@ -625,7 +626,8 @@ textarea {
 		transition-property: border-color, outline;
 	}
 
-	&:disabled {
+	&:disabled,
+	&[aria-disabled='true'] {
 		background-color: var(--background-field-disabled);
 		border: var(--border-field-disabled);
 		color: var(--color-text-disabled);
@@ -639,7 +641,9 @@ input[type='color'] {
 
 label {
 	&:has(:disabled),
-	&:has(+ :disabled) {
+	&:has(+ :disabled),
+	&:has([aria-disabled='true']),
+	&:has(+ [aria-disabled='true']) {
 		color: var(--color-text-disabled);
 	}
 
