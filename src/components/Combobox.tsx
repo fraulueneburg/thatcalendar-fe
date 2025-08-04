@@ -16,7 +16,7 @@ export function Combobox({ title, data, newItemAction, disabled }: ComboboxProps
 
 	const [isOpen, setIsOpen] = useState(false)
 	const [selectedId, setSelectedId] = useState('')
-	const [currentTaskName, setCurrentTaskName] = useState('')
+	const [selectedName, setSelectedName] = useState('')
 	const [query, setQuery] = useState('')
 
 	const uniqueId = `combobox:${useId()}:`
@@ -33,21 +33,21 @@ export function Combobox({ title, data, newItemAction, disabled }: ComboboxProps
 
 	const handleClear = () => {
 		setSelectedId('')
-		setCurrentTaskName('')
+		setSelectedName('')
 		inputRef.current?.focus()
 	}
 
 	const handleSelect = (id: string, title: string) => {
 		setSelectedId(id)
-		setCurrentTaskName(title)
+		setSelectedName(title)
 
 		setQuery('')
 		setIsOpen(false)
 	}
 
-	const handleAddNewTask = () => {
+	const handleAddNew = () => {
 		newItemAction(query)
-		setCurrentTaskName(query)
+		setSelectedName(query)
 
 		setQuery('')
 		setIsOpen(false)
@@ -72,21 +72,21 @@ export function Combobox({ title, data, newItemAction, disabled }: ComboboxProps
 						aria-expanded={isOpen}
 						aria-haspopup="listbox"
 						role="combobox">
-						{currentTaskName && (
+						{selectedName && (
 							<>
 								<div data-part="selected-item">
 									<strong id={`${uniqueId}selected-value-desc`} className="sr-only">
 										Selected task:
 									</strong>
 									<div id={`${uniqueId}selected-value`} aria-describedby={`${uniqueId}selected-value-desc`}>
-										{currentTaskName}
+										{selectedName}
 									</div>
 									<button
 										type="button"
 										data-part="clear-trigger"
 										id={`${uniqueId}clear-btn`}
 										className="btn-icon-mini"
-										aria-label={`remove selected task ${currentTaskName}`}
+										aria-label={`remove selected task ${selectedName}`}
 										aria-controls={`${uniqueId}input`}
 										onClick={handleClear}>
 										<IconDelete aria-hidden="true" weight="bold" />
@@ -116,7 +116,7 @@ export function Combobox({ title, data, newItemAction, disabled }: ComboboxProps
 					</div>
 				</div>
 
-				<div data-part="positioner" id={`${uniqueId}popper`} aria-hidden={!isOpen}>
+				<div data-part="positioner" id={`${uniqueId}popper`} /*aria-hidden={!isOpen}*/>
 					<div
 						data-part="content"
 						id={`${uniqueId}content`}
@@ -140,7 +140,7 @@ export function Combobox({ title, data, newItemAction, disabled }: ComboboxProps
 						{query.length > 0 && !filteredData.some((elem) => elem.title === query) && (
 							<>
 								<hr />
-								<div role="option" aria-selected="false" data-part="item" onClick={handleAddNewTask} data-value={''}>
+								<div role="option" aria-selected="false" data-part="item" onClick={handleAddNew} data-value={''}>
 									<span data-part="item-text">
 										create <strong>{query}</strong>
 									</span>
