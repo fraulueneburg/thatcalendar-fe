@@ -197,7 +197,7 @@ main {
 	--padding-cell-y: 0.75rem;
 
 	display: grid;
-	grid-template-columns: auto repeat(7, 1fr);
+	grid-template-columns: auto repeat(7, minmax(175px, 1fr));
 	overflow-x: scroll;
 	position: relative;
 
