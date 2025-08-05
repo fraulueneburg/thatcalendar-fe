@@ -1,62 +1,176 @@
-import { useId, useRef, useState } from 'react'
-import { useCloseOnClickOutside } from '../utils/useCloseOnClickOutside'
-import { CaretDownIcon as IconOpen, XIcon as IconClose } from '@phosphor-icons/react'
+import { useId, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { XIcon as IconDelete } from '@phosphor-icons/react'
 import { CategoryType } from '../types'
 
 type ComboboxProps = {
 	title: string
 	data: CategoryType[]
-	newItemAction: (title: string) => void
+	newItemAction: (title: string) => string
+	deleteItemAction: (title: string) => void
 	disabled?: boolean
 }
 
-export function Combobox({ title, data, newItemAction, disabled }: ComboboxProps) {
+export function Combobox({ title, data, newItemAction, deleteItemAction, disabled }: ComboboxProps) {
 	const wrapperRef = useRef<HTMLDivElement | null>(null)
 	const inputRef = useRef<HTMLInputElement>(null)
+	const uniqueId = `combobox:${useId()}:`
+	const createNewId = `${uniqueId}-create-new`
 
 	const [isOpen, setIsOpen] = useState(false)
-	const [selectedId, setSelectedId] = useState('')
-	const [currentTaskName, setCurrentTaskName] = useState('')
 	const [query, setQuery] = useState('')
+	const [selectedId, setSelectedId] = useState('')
+	const selectedItem = useMemo(() => data.find((item) => item._id === selectedId), [selectedId, data])
 
-	const uniqueId = `combobox:${useId()}:`
-	const filteredData = data.filter((elem) => elem.title.toLowerCase().includes(query.toLowerCase()))
+	const filteredData = useMemo(
+		() => data.filter((elem) => elem.title.toLowerCase().includes(query.trim().toLowerCase())),
+		[data, query]
+	)
+
+	const hasCreateNew = query.trim().length > 0 && !filteredData.some((elem) => elem.title === query.trim())
+	const createNewIndex = !hasCreateNew ? null : filteredData?.length > 0 ? filteredData.length : 0
+	const [highlightedIndex, setHighlightedIndex] = useState<number | null>(null)
+	const highlightedId = ''
 
 	const handleFocus = () => {
 		setIsOpen(true)
 	}
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const formValue = event.target.value
-		setQuery(formValue)
+		const inputValue = event.target.value
+		setQuery(inputValue)
+		if (!isOpen && inputValue.length > 0) setIsOpen(true)
 	}
 
 	const handleClear = () => {
 		setSelectedId('')
-		setCurrentTaskName('')
 		inputRef.current?.focus()
 	}
 
-	const handleSelect = (id: string, title: string) => {
+	const handleSelect = (id: string) => (event: React.SyntheticEvent<HTMLDivElement>) => {
+		event?.stopPropagation()
 		setSelectedId(id)
-		setCurrentTaskName(title)
-
 		setQuery('')
 		setIsOpen(false)
+		inputRef.current?.focus()
 	}
 
-	const handleAddNewTask = () => {
-		newItemAction(query)
-		setCurrentTaskName(query)
-
+	const handleAddNew = () => {
+		if (query.trim().length < 1) return
+		const id = newItemAction(query)
+		setSelectedId(id)
 		setQuery('')
-		setIsOpen(false)
 	}
 
-	// useCloseOnClickOutside({
-	// 	ref: wrapperRef,
-	// 	onCloseAction: () => setIsOpen(false),
-	// })
+	const handleDelete = (id: string) => (event: React.SyntheticEvent<HTMLButtonElement>) => {
+		event.stopPropagation()
+		if (selectedId === id) setSelectedId('')
+		deleteItemAction(id)
+		inputRef.current?.focus()
+	}
+
+	const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+		if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp' && event.key !== 'Enter') {
+			setHighlightedIndex(null)
+		}
+
+		if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+			const hasNoData = (!filteredData || filteredData.length === 0) && !hasCreateNew
+
+			if (hasNoData) return
+
+			if (!isOpen) {
+				setIsOpen(true)
+			}
+
+			const dataLength = hasCreateNew ? filteredData.length + 1 : filteredData.length
+			const lastIndex = dataLength - 1
+
+			if (event.key === 'ArrowDown') {
+				setHighlightedIndex((prev) => (prev === null || prev === lastIndex ? 0 : prev + 1))
+			}
+			if (event.key === 'ArrowUp') {
+				setHighlightedIndex((prev) => (prev === null || prev === 0 ? lastIndex : prev - 1))
+			}
+		}
+
+		if (event.key === 'Enter') {
+			event.preventDefault()
+			const hasQuery = query.trim().length > 0
+			const hasHighlighted = highlightedIndex !== null && highlightedIndex !== createNewIndex
+
+			if (hasHighlighted) {
+				const id = filteredData[highlightedIndex]._id
+				setSelectedId(id)
+				setHighlightedIndex(null)
+				return
+			}
+			if (hasQuery) {
+				const existingItem = query.trim().length > 0 && data.find((elem) => elem.title === query)
+
+				if (existingItem) {
+					setSelectedId(existingItem._id)
+					setQuery('')
+				} else {
+					handleAddNew()
+				}
+				setHighlightedIndex(null)
+			}
+		}
+
+		if (event.key === 'Escape') {
+			event.preventDefault()
+
+			if (highlightedIndex !== null) {
+				event.stopPropagation()
+				setHighlightedIndex(null)
+				setIsOpen(false)
+				return
+			}
+
+			if (query) {
+				event.stopPropagation()
+				setQuery('')
+			} else if (!query && isOpen) {
+				event.stopPropagation()
+				setIsOpen(false)
+			}
+		}
+
+		if (event.key === 'Backspace' && query.length === 0 && selectedItem?.title !== '') {
+			setSelectedId('')
+		}
+	}
+
+	useLayoutEffect(() => {
+		const selectedItemStillValid = data.some((elem) => elem._id === selectedId)
+
+		if (!selectedItemStillValid) {
+			setSelectedId('')
+		}
+	}, [data])
+
+	// useEffect(() => {
+	// 	const handleClickOrFocus = (event: MouseEvent | FocusEvent) => {
+	// 		const target = event.target
+	// 		console.log('target', target)
+
+	// 		if (target instanceof HTMLElement) {
+	// 			console.log('data part', target.getAttribute('data-part'))
+	// 		}
+
+	// 		// if (wrapperRef.current && event.target instanceof Node && !wrapperRef.current.contains(event.target)) {
+	// 		// 	setIsOpen(false)
+	// 		// }
+	// 	}
+
+	// 	document.addEventListener('mousedown', handleClickOrFocus)
+	// 	document.addEventListener('focusin', handleClickOrFocus)
+
+	// 	return () => {
+	// 		document.removeEventListener('mousedown', handleClickOrFocus)
+	// 		document.removeEventListener('focusin', handleClickOrFocus)
+	// 	}
+	// }, [wrapperRef])
 
 	return (
 		<>
@@ -72,23 +186,23 @@ export function Combobox({ title, data, newItemAction, disabled }: ComboboxProps
 						aria-expanded={isOpen}
 						aria-haspopup="listbox"
 						role="combobox">
-						{currentTaskName && (
+						{selectedItem && (
 							<>
 								<div data-part="selected-item">
 									<strong id={`${uniqueId}selected-value-desc`} className="sr-only">
-										Selected task:
+										Selected {title.toLowerCase()}:
 									</strong>
 									<div id={`${uniqueId}selected-value`} aria-describedby={`${uniqueId}selected-value-desc`}>
-										{currentTaskName}
+										{selectedItem.title}
 									</div>
 									<button
+										type="button"
 										data-part="clear-trigger"
 										id={`${uniqueId}clear-btn`}
-										type="button"
-										aria-label={`remove selected task ${currentTaskName}`}
-										aria-controls={`${uniqueId}input`}
+										className="btn-icon-mini"
+										aria-label={`remove selected ${title.toLowerCase()} "${selectedItem.title}"`}
 										onClick={handleClear}>
-										<IconClose aria-hidden="true" weight="bold" />
+										<IconDelete aria-hidden="true" weight="bold" />
 									</button>
 								</div>
 							</>
@@ -97,7 +211,7 @@ export function Combobox({ title, data, newItemAction, disabled }: ComboboxProps
 							type="text"
 							id={`${uniqueId}input`}
 							data-part="input"
-							aria-activedescendant={''}
+							aria-activedescendant={highlightedId}
 							autoComplete="off"
 							autoCorrect="off"
 							autoCapitalize="none"
@@ -107,38 +221,64 @@ export function Combobox({ title, data, newItemAction, disabled }: ComboboxProps
 							aria-expanded={isOpen}
 							aria-haspopup="listbox"
 							disabled={disabled}
+							placeholder={selectedId ? '' : 'Search for an option …'}
 							value={query}
 							onFocus={handleFocus}
 							onChange={handleChange}
+							onKeyDown={handleKeyDown}
 							ref={inputRef}
 						/>
 					</div>
 				</div>
-
-				<div data-part="positioner" id={`${uniqueId}popper`} aria-hidden={!isOpen}>
+				<div data-part="positioner" id={`${uniqueId}popper`}>
 					<div
 						data-part="content"
 						id={`${uniqueId}content`}
 						role="listbox"
 						hidden={!isOpen}
 						aria-labelledby={`${uniqueId}label`}>
-						{filteredData?.map((elem) => (
-							<div
-								key={elem._id}
-								role="option"
-								aria-selected={elem._id === selectedId}
-								onClick={() => handleSelect(elem._id, elem.title)}
-								data-part="item"
-								data-value={elem._id}>
-								<span data-part="item-text">{elem.title}</span>
-							</div>
-						))}
-						{query.length > 0 && !filteredData.some((elem) => elem.title === query) && (
-							<>
-								<hr />
-								<div role="option" aria-selected="false" data-part="item" onClick={handleAddNewTask} data-value={''}>
+						{filteredData?.map((elem, index) => {
+							const isHighlighted = highlightedIndex === index
+							const isSelected = elem._id === selectedId
+
+							return (
+								<div
+									key={elem._id}
+									id={`${uniqueId}-${elem._id}`}
+									role="option"
+									data-part="item"
+									data-highlighted={isHighlighted}
+									onClick={(event) => handleSelect(elem._id)(event)}
+									onMouseEnter={() => setHighlightedIndex(index)}
+									onMouseLeave={() => setHighlightedIndex(null)}
+									aria-selected={isSelected}>
 									<span data-part="item-text">
-										create <strong>{query}</strong>
+										{elem.title}
+										{isSelected && ' 👈'}
+									</span>
+									<button
+										type="button"
+										className="btn-icon-mini"
+										aria-label={`delete ${elem.title}`}
+										onClick={(event) => handleDelete(elem._id)(event)}>
+										<IconDelete aria-hidden="true" weight="bold" />
+									</button>
+								</div>
+							)
+						})}
+						{hasCreateNew && (
+							<>
+								<div
+									key={'create-option'}
+									id={createNewId}
+									role="option"
+									data-part="item"
+									data-highlighted={highlightedIndex === createNewIndex}
+									onMouseEnter={() => setHighlightedIndex(createNewIndex)}
+									onMouseLeave={() => setHighlightedIndex(null)}
+									onClick={handleAddNew}>
+									<span data-part="item-text">
+										create <strong>“{query}”</strong>
 									</span>
 								</div>
 							</>

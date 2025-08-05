@@ -197,7 +197,7 @@ main {
 	--padding-cell-y: 0.75rem;
 
 	display: grid;
-	grid-template-columns: auto repeat(7, 1fr);
+	grid-template-columns: auto repeat(7, minmax(175px, 1fr));
 	overflow-x: scroll;
 	position: relative;
 
@@ -492,6 +492,16 @@ button {
 	&[aria-disabled='true'] {
 		cursor: default;
 	}
+
+	&.btn-icon-mini {
+		background: transparent;
+		display: flex;
+		align-items: center;
+		border: none;
+		aspect-ratio: 1/1;
+		padding: 0.25rem;
+		width: 1.5rem;
+	}
 }
 
 .btn-round {
@@ -692,6 +702,7 @@ fieldset {
 
 [data-scope='combobox'] {
 	margin-bottom: 1rem;
+	position: relative;
 
 	[data-part='label']:has(+ [data-part='control'] input:disabled),
 	[data-part='label']:has(+ [data-part='control'] input[aria-disabled='true']) {
@@ -736,15 +747,6 @@ fieldset {
 			}
 		}
 
-		[data-part='clear-trigger'] {
-			background: transparent;
-			display: flex;
-			align-items: center;
-			border: none;
-			aspect-ratio: 1/1;
-			padding: 0.25rem;
-		}
-
 		[data-part='input'] {
 			background-color: transparent;
 			border: none;
@@ -770,12 +772,15 @@ fieldset {
 
 	[data-part='positioner'] {
 		position: absolute;
+		width: 100%;
 
 		[data-part='content']:not(:empty) {
 			background-color: var(--background-popover);
 			border: var(--border-popover);
 			box-shadow: var(--box-shadow-popover);
+			box-sizing: border-box;
 			padding: 1rem 0.75rem;
+			width: 100%;
 		}
 	}
 
@@ -785,17 +790,28 @@ fieldset {
 
 	[data-part='item'] {
 		border-radius: var(--border-radius);
-		display: flex;
-		gap: 0.25rem;
-		padding-inline: 0.5rem;
+		display: grid;
+		grid-template-columns: 1fr auto;
+		gap: 0.5rem;
+		padding: 0.125rem 0 0.125rem 0.5rem;
 
-		&:hover,
-		&:focus,
-		&:active {
+		&[data-highlighted='true'] {
 			background-color: violet !important;
 			color: blue !important;
 		}
 	}
+}
+
+.popover-backdrop {
+	background: rgba(0, 0, 0, 0.2);
+	position: fixed;
+	top: 0;
+	right: 0;
+	left: 0;
+	bottom: 0;
+	width: 100dvw;
+	height: 100dvh;
+	z-index: 5;
 }
 
 // FORM NEW CATEGORY
