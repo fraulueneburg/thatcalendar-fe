@@ -11,14 +11,13 @@ export function useCloseOnClickOutside<T extends HTMLElement>({ ref, onCloseActi
 
 		const handleEscape = (event: KeyboardEvent) => {
 			if (event.key === 'Escape') {
+				event.stopPropagation()
 				onCloseAction()
 			}
 		}
 
 		const handleClickOutside = (event: MouseEvent | FocusEvent) => {
-			console.log('CLICK')
-			console.log('clicked target:', event.target)
-			console.log('inside?', ref.current?.contains(event.target as Node))
+			event.stopPropagation()
 
 			if (ref.current && !ref.current.contains(event.target as Node)) {
 				onCloseAction()

@@ -78,11 +78,12 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 
 		if (event.key === 'Escape') {
 			event.preventDefault()
-			event.stopPropagation()
 
 			if (query) {
+				event.stopPropagation()
 				setQuery('')
-			} else {
+			} else if (!query && isOpen) {
+				event.stopPropagation()
 				setIsOpen(false)
 			}
 		}
