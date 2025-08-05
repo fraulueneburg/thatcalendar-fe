@@ -14,6 +14,7 @@ type ComboboxProps = {
 export function Combobox({ title, data, newItemAction, deleteItemAction, disabled }: ComboboxProps) {
 	const wrapperRef = useRef<HTMLDivElement | null>(null)
 	const inputRef = useRef<HTMLInputElement>(null)
+	const uniqueId = `combobox:${useId()}:`
 
 	const [isOpen, setIsOpen] = useState(false)
 	const [query, setQuery] = useState('')
@@ -41,7 +42,6 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 	const handleSelect = (id: string) => (event: React.SyntheticEvent<HTMLDivElement>) => {
 		event.stopPropagation()
 		setSelectedId(id)
-
 		setQuery('')
 		setIsOpen(false)
 	}
@@ -134,7 +134,6 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 										id={`${uniqueId}clear-btn`}
 										className="btn-icon-mini"
 										aria-label={`remove selected ${title.toLowerCase()} "${selectedItem.title}"`}
-										aria-controls={`${uniqueId}input`}
 										onClick={handleClear}>
 										<IconDelete aria-hidden="true" weight="bold" />
 									</button>
@@ -145,7 +144,7 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 							type="text"
 							id={`${uniqueId}input`}
 							data-part="input"
-							aria-activedescendant={''}
+							aria-activedescendant={`${uniqueId}role-${selectedId}`}
 							autoComplete="off"
 							autoCorrect="off"
 							autoCapitalize="none"
@@ -155,6 +154,7 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 							aria-expanded={isOpen}
 							aria-haspopup="listbox"
 							disabled={disabled}
+							placeholder={selectedId ? '' : 'Search for an option …'}
 							value={query}
 							onFocus={handleFocus}
 							onChange={handleChange}
@@ -163,7 +163,6 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 						/>
 					</div>
 				</div>
-
 				<div data-part="positioner" id={`${uniqueId}popper`}>
 					<div
 						data-part="content"
@@ -175,6 +174,7 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 							<div
 								key={elem._id}
 								role="option"
+								id={`${uniqueId}role-${elem._id}`}
 								aria-selected={elem._id === selectedId}
 								onClick={(event) => handleSelect(elem._id)(event)}
 								data-part="item"
