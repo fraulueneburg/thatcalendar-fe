@@ -27,7 +27,6 @@ export const Popover = ({
 	withArrow,
 }: PopoverProps) => {
 	const [isOpen, setIsOpen] = useState(false)
-
 	const ref = useRef<HTMLDivElement>(null)
 
 	useCloseOnClickOutside({
@@ -43,18 +42,21 @@ export const Popover = ({
 						{trigger}
 					</ArkPopover.Trigger>
 				)}
-				<ArkPopover.Positioner ref={ref} className={`${isModal ? 'modal' : ''}${className ? ` ${className}` : ''}`}>
-					<ArkPopover.Content>
-						{withArrow && <ArkPopover.Arrow />}
-						{title && <ArkPopover.Title>{title}</ArkPopover.Title>}
-						{description && <ArkPopover.Description>{description}</ArkPopover.Description>}
-						{children}
-						<ArkPopover.CloseTrigger className="btn-round" onClick={() => setIsOpen(false)}>
-							<IconClose />
-						</ArkPopover.CloseTrigger>
-					</ArkPopover.Content>
-				</ArkPopover.Positioner>
+				{isOpen && (
+					<ArkPopover.Positioner ref={ref} className={`${isModal ? 'modal' : ''}${className ? ` ${className}` : ''}`}>
+						<ArkPopover.Content>
+							{withArrow && <ArkPopover.Arrow />}
+							{title && <ArkPopover.Title>{title}</ArkPopover.Title>}
+							{description && <ArkPopover.Description>{description}</ArkPopover.Description>}
+							{children}
+							<ArkPopover.CloseTrigger className="btn-round" onClick={() => setIsOpen((prev) => !prev)}>
+								<IconClose />
+							</ArkPopover.CloseTrigger>
+						</ArkPopover.Content>
+					</ArkPopover.Positioner>
+				)}
 			</ArkPopover.Root>
+			{isOpen && <div className="popover-backdrop"></div>}
 		</>
 	)
 }
