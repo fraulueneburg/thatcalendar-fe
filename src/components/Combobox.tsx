@@ -1,5 +1,4 @@
 import { useId, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { useCloseOnClickOutside } from '../utils/useCloseOnClickOutside'
 import { XIcon as IconDelete } from '@phosphor-icons/react'
 import { CategoryType } from '../types'
 
@@ -15,6 +14,7 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 	const wrapperRef = useRef<HTMLDivElement | null>(null)
 	const inputRef = useRef<HTMLInputElement>(null)
 	const uniqueId = `combobox:${useId()}:`
+	const createNewId = `${uniqueId}-create-new`
 
 	const [isOpen, setIsOpen] = useState(false)
 	const [query, setQuery] = useState('')
@@ -26,7 +26,10 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 		[data, query]
 	)
 
-	const showCreateNew = query.trim().length > 0 && !filteredData.some((elem) => elem.title === query.trim())
+	const hasCreateNew = query.trim().length > 0 && !filteredData.some((elem) => elem.title === query.trim())
+	const createNewIndex = !hasCreateNew ? null : filteredData?.length > 0 ? filteredData.length : 0
+	const [highlightedIndex, setHighlightedIndex] = useState<number | null>(null)
+	const highlightedId = ''
 
 	const handleFocus = () => {
 		setIsOpen(true)
@@ -44,13 +47,15 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 	}
 
 	const handleSelect = (id: string) => (event: React.SyntheticEvent<HTMLDivElement>) => {
-		event.stopPropagation()
+		event?.stopPropagation()
 		setSelectedId(id)
 		setQuery('')
 		setIsOpen(false)
+		inputRef.current?.focus()
 	}
 
 	const handleAddNew = () => {
+		if (query.trim().length < 1) return
 		const id = newItemAction(query)
 		setSelectedId(id)
 		setQuery('')
@@ -60,24 +65,67 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 		event.stopPropagation()
 		if (selectedId === id) setSelectedId('')
 		deleteItemAction(id)
+		inputRef.current?.focus()
 	}
 
 	const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+		if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp' && event.key !== 'Enter') {
+			setHighlightedIndex(null)
+		}
+
+		if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+			const hasNoData = (!filteredData || filteredData.length === 0) && !hasCreateNew
+
+			if (hasNoData) return
+
+			if (!isOpen) {
+				setIsOpen(true)
+			}
+
+			const dataLength = hasCreateNew ? filteredData.length + 1 : filteredData.length
+			const lastIndex = dataLength - 1
+
+			if (event.key === 'ArrowDown') {
+				setHighlightedIndex((prev) => (prev === null || prev === lastIndex ? 0 : prev + 1))
+			}
+			if (event.key === 'ArrowUp') {
+				setHighlightedIndex((prev) => (prev === null || prev === 0 ? lastIndex : prev - 1))
+			}
+		}
+
 		if (event.key === 'Enter') {
 			event.preventDefault()
+			const hasQuery = query.trim().length > 0
+			const hasHighlighted = highlightedIndex !== null && highlightedIndex !== createNewIndex
 
-			const existingItem = data.find((elem) => elem.title === query)
+			if (hasHighlighted) {
+				const id = filteredData[highlightedIndex]._id
+				setSelectedId(id)
+				setHighlightedIndex(null)
+				return
+			}
+			if (hasQuery) {
+				const existingItem = query.trim().length > 0 && data.find((elem) => elem.title === query)
 
-			if (existingItem) {
-				setSelectedId(existingItem._id)
-				setQuery('')
-			} else {
-				handleAddNew()
+				if (existingItem) {
+					setSelectedId(existingItem._id)
+					setQuery('')
+				} else {
+					handleAddNew()
+				}
+				setHighlightedIndex(null)
 			}
 		}
 
 		if (event.key === 'Escape') {
 			event.preventDefault()
+
+			if (highlightedIndex !== null) {
+				event.stopPropagation()
+				setHighlightedIndex(null)
+				setIsOpen(false)
+				return
+			}
 
 			if (query) {
 				event.stopPropagation()
@@ -101,10 +149,28 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 		}
 	}, [data])
 
-	// useCloseOnClickOutside({
-	// 	ref: wrapperRef,
-	// 	onCloseAction: () => setIsOpen(false),
-	// })
+	// useEffect(() => {
+	// 	const handleClickOrFocus = (event: MouseEvent | FocusEvent) => {
+	// 		const target = event.target
+	// 		console.log('target', target)
+
+	// 		if (target instanceof HTMLElement) {
+	// 			console.log('data part', target.getAttribute('data-part'))
+	// 		}
+
+	// 		// if (wrapperRef.current && event.target instanceof Node && !wrapperRef.current.contains(event.target)) {
+	// 		// 	setIsOpen(false)
+	// 		// }
+	// 	}
+
+	// 	document.addEventListener('mousedown', handleClickOrFocus)
+	// 	document.addEventListener('focusin', handleClickOrFocus)
+
+	// 	return () => {
+	// 		document.removeEventListener('mousedown', handleClickOrFocus)
+	// 		document.removeEventListener('focusin', handleClickOrFocus)
+	// 	}
+	// }, [wrapperRef])
 
 	return (
 		<>
@@ -145,7 +211,7 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 							type="text"
 							id={`${uniqueId}input`}
 							data-part="input"
-							aria-activedescendant={`${uniqueId}role-${selectedId}`}
+							aria-activedescendant={highlightedId}
 							autoComplete="off"
 							autoCorrect="off"
 							autoCapitalize="none"
@@ -171,35 +237,48 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 						role="listbox"
 						hidden={!isOpen}
 						aria-labelledby={`${uniqueId}label`}>
-						{filteredData?.map((elem) => (
-							<div
-								key={elem._id}
-								role="option"
-								id={`${uniqueId}role-${elem._id}`}
-								aria-selected={elem._id === selectedId}
-								onClick={(event) => handleSelect(elem._id)(event)}
-								data-part="item"
-								data-value={elem._id}>
-								<span data-part="item-text">{elem.title}</span>
-								<button
-									type="button"
-									className="btn-icon-mini"
-									aria-label={`delete ${elem.title}`}
-									onClick={(event) => handleDelete(elem._id)(event)}>
-									<IconDelete aria-hidden="true" weight="bold" />
-								</button>
-							</div>
-						))}
-						{showCreateNew && (
+						{filteredData?.map((elem, index) => {
+							const isHighlighted = highlightedIndex === index
+							const isSelected = elem._id === selectedId
+
+							return (
+								<div
+									key={elem._id}
+									id={`${uniqueId}-${elem._id}`}
+									role="option"
+									data-part="item"
+									data-highlighted={isHighlighted}
+									onClick={(event) => handleSelect(elem._id)(event)}
+									onMouseEnter={() => setHighlightedIndex(index)}
+									onMouseLeave={() => setHighlightedIndex(null)}
+									aria-selected={isSelected}>
+									<span data-part="item-text">
+										{elem.title}
+										{isSelected && ' 👈'}
+									</span>
+									<button
+										type="button"
+										className="btn-icon-mini"
+										aria-label={`delete ${elem.title}`}
+										onClick={(event) => handleDelete(elem._id)(event)}>
+										<IconDelete aria-hidden="true" weight="bold" />
+									</button>
+								</div>
+							)
+						})}
+						{hasCreateNew && (
 							<>
 								<div
+									key={'create-option'}
+									id={createNewId}
 									role="option"
-									aria-selected={!selectedId && query.length > 0}
 									data-part="item"
-									onClick={handleAddNew}
-									data-value={''}>
+									data-highlighted={highlightedIndex === createNewIndex}
+									onMouseEnter={() => setHighlightedIndex(createNewIndex)}
+									onMouseLeave={() => setHighlightedIndex(null)}
+									onClick={handleAddNew}>
 									<span data-part="item-text">
-										create <strong>{query}</strong>
+										create <strong>“{query}”</strong>
 									</span>
 								</div>
 							</>

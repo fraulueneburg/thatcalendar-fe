@@ -795,9 +795,7 @@ fieldset {
 		gap: 0.5rem;
 		padding: 0.125rem 0 0.125rem 0.5rem;
 
-		&:hover,
-		&:focus,
-		&:active {
+		&[data-highlighted='true'] {
 			background-color: violet !important;
 			color: blue !important;
 		}
