@@ -1,13 +1,15 @@
-import { format, subDays, isToday } from 'date-fns'
+import { format, isToday } from 'date-fns'
+import { useDroppable } from '@dnd-kit/core'
 
 import { sessionsArr, sessionIndex } from '../data/dummydata'
-import { hoursArr, weekStartsOnMonday } from '../data/user-settings'
+import { hoursArr } from '../data/user-settings'
 
 import Session from './Session'
 import SessionForm from './Forms/SessionForm'
 import { PlusIcon as IconAdd } from '@phosphor-icons/react'
 import { Popover } from './Popover'
-import { useDroppable } from '@dnd-kit/core'
+
+import { useDataContext } from '../context/Data.context'
 
 type DayType = {
 	dayDate: Date
@@ -19,6 +21,11 @@ type DayProps = {
 }
 
 export default function Day({ data }: DayProps) {
+	const { sessionData, setSessionData } = useDataContext()
+
+	// const sessionsArr = sessionsData.data
+	// const sessionsIndex = sessionsData.index
+
 	const { dayDate, dayName } = data
 
 	const dayNum = dayDate.getDate()
