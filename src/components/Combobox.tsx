@@ -1,4 +1,4 @@
-import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
+import { useId, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useCloseOnClickOutside } from '../utils/useCloseOnClickOutside'
 import { XIcon as IconDelete } from '@phosphor-icons/react'
 import { CategoryType } from '../types'
@@ -19,19 +19,23 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 	const [isOpen, setIsOpen] = useState(false)
 	const [query, setQuery] = useState('')
 	const [selectedId, setSelectedId] = useState('')
-	const selectedItem = data.find((item) => item._id === selectedId)
+	const selectedItem = useMemo(() => data.find((item) => item._id === selectedId), [selectedId, data])
 
-	const uniqueId = `combobox:${useId()}:`
-	const filteredData = data.filter((elem) => elem.title.toLowerCase().includes(query.toLowerCase()))
+	const filteredData = useMemo(
+		() => data.filter((elem) => elem.title.toLowerCase().includes(query.toLowerCase())),
+		[data, query]
+	)
+
+	const showCreateNew = query.length > 0 && !filteredData.some((elem) => elem.title === query)
 
 	const handleFocus = () => {
 		setIsOpen(true)
 	}
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const formValue = event.target.value
-		setQuery(formValue)
-		if (!isOpen && formValue.length > 0) setIsOpen(true)
+		const inputValue = event.target.value
+		setQuery(inputValue)
+		if (!isOpen && inputValue.length > 0) setIsOpen(true)
 	}
 
 	const handleClear = () => {
@@ -54,11 +58,7 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 
 	const handleDelete = (id: string) => (event: React.SyntheticEvent<HTMLButtonElement>) => {
 		event.stopPropagation()
-
-		if (selectedId === id) {
-			setSelectedId('')
-		}
-
+		if (selectedId === id) setSelectedId('')
 		deleteItemAction(id)
 	}
 
@@ -189,10 +189,14 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 								</button>
 							</div>
 						))}
-						{query.length > 0 && !filteredData.some((elem) => elem.title === query) && (
+						{showCreateNew && (
 							<>
-								<hr />
-								<div role="option" aria-selected="false" data-part="item" onClick={handleAddNew} data-value={''}>
+								<div
+									role="option"
+									aria-selected={!selectedId && query.length > 0}
+									data-part="item"
+									onClick={handleAddNew}
+									data-value={''}>
 									<span data-part="item-text">
 										create <strong>{query}</strong>
 									</span>
