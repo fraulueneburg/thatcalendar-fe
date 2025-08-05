@@ -22,11 +22,11 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 	const selectedItem = useMemo(() => data.find((item) => item._id === selectedId), [selectedId, data])
 
 	const filteredData = useMemo(
-		() => data.filter((elem) => elem.title.toLowerCase().includes(query.toLowerCase())),
+		() => data.filter((elem) => elem.title.toLowerCase().includes(query.trim().toLowerCase())),
 		[data, query]
 	)
 
-	const showCreateNew = query.length > 0 && !filteredData.some((elem) => elem.title === query)
+	const showCreateNew = query.trim().length > 0 && !filteredData.some((elem) => elem.title === query.trim())
 
 	const handleFocus = () => {
 		setIsOpen(true)
