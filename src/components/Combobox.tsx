@@ -167,28 +167,18 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 		}
 	}, [data])
 
-	// useEffect(() => {
-	// 	const handleClickOrFocus = (event: MouseEvent | FocusEvent) => {
-	// 		const target = event.target
-	// 		console.log('target', target)
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+				setIsOpen(false)
+			}
+		}
+		document.addEventListener('mousedown', handleClickOutside)
 
-	// 		if (target instanceof HTMLElement) {
-	// 			console.log('data part', target.getAttribute('data-part'))
-	// 		}
-
-	// 		// if (wrapperRef.current && event.target instanceof Node && !wrapperRef.current.contains(event.target)) {
-	// 		// 	setIsOpen(false)
-	// 		// }
-	// 	}
-
-	// 	document.addEventListener('mousedown', handleClickOrFocus)
-	// 	document.addEventListener('focusin', handleClickOrFocus)
-
-	// 	return () => {
-	// 		document.removeEventListener('mousedown', handleClickOrFocus)
-	// 		document.removeEventListener('focusin', handleClickOrFocus)
-	// 	}
-	// }, [wrapperRef])
+		return () => {
+			document.removeEventListener('mousedown', handleClickOutside)
+		}
+	}, [])
 
 	return (
 		<>
