@@ -68,6 +68,7 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 		if (selectedId === id) setSelectedId('')
 		deleteItemAction(id)
 		inputRef.current?.focus()
+		setIsOpen(true)
 	}
 
 	const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -152,6 +153,7 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 
 		if (event.key === 'Backspace' && query.length === 0 && selectedItem?.title !== '') {
 			setSelectedId('')
+			setIsOpen(true)
 		}
 	}
 
