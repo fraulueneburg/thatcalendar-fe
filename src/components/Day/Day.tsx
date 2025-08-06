@@ -1,15 +1,17 @@
+import './day.scss'
+
 import { format, isToday } from 'date-fns'
 import { useDroppable } from '@dnd-kit/core'
 
-import { sessionsArr, sessionIndex } from '../data/dummydata'
-import { hoursArr } from '../data/user-settings'
+import { sessionsArr, sessionIndex } from '../../data/dummydata'
+import { hoursArr } from '../../data/user-settings'
 
-import Session from './Session'
-import SessionForm from './Forms/SessionForm'
+import { Session } from '../Session'
+import { SessionForm } from '../Forms'
 import { PlusIcon as IconAdd } from '@phosphor-icons/react'
-import { Popover } from './Popover'
+import { Popover } from '../Popover/Popover'
 
-import { useDataContext } from '../context/Data.context'
+import { useDataContext } from '../../context/Data.context'
 
 type DayType = {
 	dayDate: Date
@@ -20,7 +22,7 @@ type DayProps = {
 	data: DayType
 }
 
-export default function Day({ data }: DayProps) {
+export function Day({ data }: DayProps) {
 	const { sessionData, setSessionData } = useDataContext()
 
 	// const sessionsArr = sessionsData.data

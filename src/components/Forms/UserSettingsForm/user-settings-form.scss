@@ -1,0 +1,27 @@
+.form-user-settings {
+	--button-width: 34px;
+
+	ul.list-categories {
+		li {
+			display: grid;
+			grid-template-columns: 1fr var(--button-width);
+			grid-template-rows: repeat(2, auto);
+			grid-column-gap: 0px;
+			grid-row-gap: 0px;
+
+			span {
+				grid-area: 1 / 1 / 2 / 2;
+			}
+
+			button {
+				grid-area: 1 / 2 / 2 / 3;
+				padding: 0;
+				aspect-ratio: 1 / 1;
+			}
+
+			ul {
+				grid-area: 2 / 1 / 3 / 3;
+			}
+		}
+	}
+}

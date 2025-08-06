@@ -6,7 +6,7 @@ export type PeriodHeadlineProps = {
 	endDay: Date
 }
 
-export default function PeriodHeadline({ today, startDay, endDay }: PeriodHeadlineProps) {
+export function PeriodHeadline({ today, startDay, endDay }: PeriodHeadlineProps) {
 	const yearToday = today.getFullYear()
 	const startMonth = format(new Date(startDay), 'MMM')
 	const endMonth = format(new Date(endDay), 'MMM')

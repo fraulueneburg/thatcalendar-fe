@@ -1,7 +1,8 @@
+import './popover.scss'
 import { Popover as ArkPopover } from '@ark-ui/react'
 import { XIcon as IconClose } from '@phosphor-icons/react'
 import { ReactNode, useRef, useState } from 'react'
-import { useCloseOnClickOutside } from '../utils/useCloseOnClickOutside'
+import { useCloseOnClickOutside } from '../../utils/useCloseOnClickOutside'
 
 type PopoverProps = {
 	trigger: ReactNode

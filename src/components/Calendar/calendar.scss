@@ -1,0 +1,35 @@
+.week {
+	--padding-cell-x: 0.5rem;
+	--padding-cell-y: 0.75rem;
+
+	display: grid;
+	grid-template-columns: auto repeat(7, minmax(175px, 1fr));
+	overflow-x: scroll;
+	position: relative;
+
+	h2 {
+		font-size: 1.15rem;
+		font-weight: normal;
+		opacity: 0.3;
+		position: absolute;
+		top: var(--padding-cell-y);
+		left: var(--padding-cell-x);
+	}
+
+	.weekend {
+		background-color: 1e1F25;
+	}
+
+	.hours-range {
+		color: var(--color-text-secondary);
+		display: flex;
+		flex-direction: column;
+		font-size: 0.9rem;
+		font-weight: bold;
+		justify-content: space-around;
+		margin: 4rem 0 1rem;
+		padding: 0 0.75rem 0 1rem;
+		text-align: right;
+		white-space: nowrap;
+	}
+}

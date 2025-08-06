@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react'
-import { useDataContext } from '../../context/Data.context'
-import { TaskType } from '../../types'
+import { useDataContext } from '../../../context/Data.context'
+import { TaskType } from '../../../types'
 
-import { dayStartHour, dayEndHour } from '../../data/user-settings'
-import { convertToTime } from '../../utils/time'
-import { Combobox } from '../Combobox'
+import { dayStartHour, dayEndHour } from '../../../data/user-settings'
+import { convertToTime } from '../../../utils/time'
+import { Combobox } from '../../Combobox'
 import { nanoid } from 'nanoid'
 
 type SessionFormProps = {
 	onSubmitAction?: React.FormEvent<HTMLFormElement>
 }
 
-export default function SessionForm({ onSubmitAction }: SessionFormProps) {
+export function SessionForm({ onSubmitAction }: SessionFormProps) {
 	const { categoryData, taskData, setTaskData } = useDataContext()
 	const { data: categoryArr } = categoryData
 

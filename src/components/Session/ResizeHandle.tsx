@@ -1,6 +1,6 @@
 import { DotsThreeIcon as IconResize } from '@phosphor-icons/react'
 
-export default function ResizeHandle() {
+export function ResizeHandle() {
 	return (
 		<>
 			<div className="resize-handle">

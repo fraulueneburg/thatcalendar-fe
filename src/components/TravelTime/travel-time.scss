@@ -1,0 +1,38 @@
+@use '../../styles/variables';
+
+.travel-time {
+	--border: 1px dashed currentColor;
+	--padding: 0.25rem;
+	align-items: center;
+	display: flex;
+	gap: 0.25rem;
+	font-size: 0.8rem;
+	font-weight: 500;
+	padding-block: var(--padding);
+
+	// start time
+	&:has(+ .text) {
+		border-bottom: var(--border);
+		padding-top: 0;
+	}
+
+	// return time
+	.text + & {
+		border-top: var(--border);
+		padding-bottom: 2px;
+	}
+
+	@container (max-height: #{variables.$breakpoint-height-smallest-session}) {
+		height: 0;
+		overflow: hidden;
+		padding: 0 !important;
+
+		&:has(+ .text) {
+			margin-top: 4px !important;
+		}
+
+		.text + & {
+			margin-bottom: 4px !important;
+		}
+	}
+}
