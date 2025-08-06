@@ -278,6 +278,7 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 									<button
 										type="button"
 										className="btn-icon-mini"
+										tabIndex={-1}
 										aria-label={`delete ${elem.title}`}
 										onClick={(event) => handleDelete(elem._id)(event)}>
 										<IconDelete aria-hidden="true" weight="bold" />
