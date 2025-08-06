@@ -171,7 +171,7 @@ export function Combobox({ title, itemSingular, data, newItemAction, deleteItemA
 		const handleClickOutside = (event: MouseEvent) => {
 			if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
 				setIsOpen(false)
-				setSelectedId('')
+				setHighlightedIndex(null)
 			}
 		}
 		document.addEventListener('mousedown', handleClickOutside)
