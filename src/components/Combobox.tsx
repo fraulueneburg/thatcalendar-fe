@@ -14,7 +14,7 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 	const wrapperRef = useRef<HTMLDivElement | null>(null)
 	const inputRef = useRef<HTMLInputElement>(null)
 	const uniqueId = `combobox:${useId()}:`
-	const createNewId = `${uniqueId}-create-new`
+	const createNewId = `${uniqueId}create-new`
 
 	const [isOpen, setIsOpen] = useState(false)
 	const [query, setQuery] = useState('')
