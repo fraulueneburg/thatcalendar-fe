@@ -1,20 +1,21 @@
-import { useId, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { XIcon as IconDelete } from '@phosphor-icons/react'
 import { CategoryType } from '../types'
 
 type ComboboxProps = {
 	title: string
+	itemSingular: string
 	data: CategoryType[]
 	newItemAction: (title: string) => string
 	deleteItemAction: (title: string) => void
 	disabled?: boolean
 }
 
-export function Combobox({ title, data, newItemAction, deleteItemAction, disabled }: ComboboxProps) {
+export function Combobox({ title, itemSingular, data, newItemAction, deleteItemAction, disabled }: ComboboxProps) {
 	const wrapperRef = useRef<HTMLDivElement | null>(null)
 	const inputRef = useRef<HTMLInputElement>(null)
 	const uniqueId = `combobox:${useId()}:`
-	const createNewId = `${uniqueId}-create-new`
+	const createNewId = `${uniqueId}create-new`
 
 	const [isOpen, setIsOpen] = useState(false)
 	const [query, setQuery] = useState('')
@@ -50,8 +51,8 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 		event?.stopPropagation()
 		setSelectedId(id)
 		setQuery('')
-		setIsOpen(false)
 		inputRef.current?.focus()
+		setIsOpen(false)
 	}
 
 	const handleAddNew = () => {
@@ -59,6 +60,8 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 		const id = newItemAction(query)
 		setSelectedId(id)
 		setQuery('')
+		inputRef.current?.focus()
+		setIsOpen(false)
 	}
 
 	const handleDelete = (id: string) => (event: React.SyntheticEvent<HTMLButtonElement>) => {
@@ -66,11 +69,24 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 		if (selectedId === id) setSelectedId('')
 		deleteItemAction(id)
 		inputRef.current?.focus()
+		setIsOpen(true)
 	}
 
 	const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-		if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp' && event.key !== 'Enter') {
-			setHighlightedIndex(null)
+		if (event.altKey && event.key === 'ArrowDown') {
+			if (!isOpen) {
+				setIsOpen(true)
+				setHighlightedIndex(null)
+			}
+			return
+		}
+
+		if (event.altKey && event.key === 'ArrowUp') {
+			if (isOpen) {
+				setIsOpen(false)
+				setHighlightedIndex(null)
+			}
+			return
 		}
 
 		if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
@@ -138,46 +154,39 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 
 		if (event.key === 'Backspace' && query.length === 0 && selectedItem?.title !== '') {
 			setSelectedId('')
+			setIsOpen(true)
 		}
 	}
 
+	useEffect(() => {
+		if (query.length > 0) setHighlightedIndex(null)
+	}, [query])
+
 	useLayoutEffect(() => {
 		const selectedItemStillValid = data.some((elem) => elem._id === selectedId)
-
-		if (!selectedItemStillValid) {
-			setSelectedId('')
-		}
+		if (!selectedItemStillValid) setSelectedId('')
 	}, [data])
 
-	// useEffect(() => {
-	// 	const handleClickOrFocus = (event: MouseEvent | FocusEvent) => {
-	// 		const target = event.target
-	// 		console.log('target', target)
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+				setIsOpen(false)
+				setSelectedId('')
+			}
+		}
+		document.addEventListener('mousedown', handleClickOutside)
 
-	// 		if (target instanceof HTMLElement) {
-	// 			console.log('data part', target.getAttribute('data-part'))
-	// 		}
-
-	// 		// if (wrapperRef.current && event.target instanceof Node && !wrapperRef.current.contains(event.target)) {
-	// 		// 	setIsOpen(false)
-	// 		// }
-	// 	}
-
-	// 	document.addEventListener('mousedown', handleClickOrFocus)
-	// 	document.addEventListener('focusin', handleClickOrFocus)
-
-	// 	return () => {
-	// 		document.removeEventListener('mousedown', handleClickOrFocus)
-	// 		document.removeEventListener('focusin', handleClickOrFocus)
-	// 	}
-	// }, [wrapperRef])
+		return () => {
+			document.removeEventListener('mousedown', handleClickOutside)
+		}
+	}, [])
 
 	return (
 		<>
 			<div ref={wrapperRef} data-scope="combobox">
 				<div data-part="root" id={`${uniqueId}`}>
-					<label data-part="label" htmlFor={`${uniqueId}input`} id={`${uniqueId}label`}>
-						{title} <small>(select an option or create a new one)</small>
+					<label data-part="label" htmlFor={`${uniqueId}input`}>
+						{title}
 					</label>
 					<div
 						data-part="control"
@@ -190,7 +199,7 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 							<>
 								<div data-part="selected-item">
 									<strong id={`${uniqueId}selected-value-desc`} className="sr-only">
-										Selected {title.toLowerCase()}:
+										Selected {itemSingular}:
 									</strong>
 									<div id={`${uniqueId}selected-value`} aria-describedby={`${uniqueId}selected-value-desc`}>
 										{selectedItem.title}
@@ -200,7 +209,7 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 										data-part="clear-trigger"
 										id={`${uniqueId}clear-btn`}
 										className="btn-icon-mini"
-										aria-label={`remove selected ${title.toLowerCase()} "${selectedItem.title}"`}
+										aria-label={`remove selected ${itemSingular} "${selectedItem.title}"`}
 										onClick={handleClear}>
 										<IconDelete aria-hidden="true" weight="bold" />
 									</button>
@@ -221,9 +230,16 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 							aria-expanded={isOpen}
 							aria-haspopup="listbox"
 							disabled={disabled}
-							placeholder={selectedId ? '' : 'Search for an option …'}
+							placeholder={
+								selectedId
+									? ''
+									: filteredData.length > 0
+									? `Search for a ${itemSingular} or create a new one`
+									: `Create your first ${itemSingular}.`
+							}
 							value={query}
 							onFocus={handleFocus}
+							onClick={handleFocus}
 							onChange={handleChange}
 							onKeyDown={handleKeyDown}
 							ref={inputRef}
@@ -236,7 +252,10 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 						id={`${uniqueId}content`}
 						role="listbox"
 						hidden={!isOpen}
-						aria-labelledby={`${uniqueId}label`}>
+						aria-labelledby={`${uniqueId}listbox-desc`}>
+						<small id={`${uniqueId}listbox-desc`}>
+							{filteredData.length > 0 ? `Select a ${itemSingular} or create a new one` : 'No options yet'}
+						</small>
 						{filteredData?.map((elem, index) => {
 							const isHighlighted = highlightedIndex === index
 							const isSelected = elem._id === selectedId
@@ -259,6 +278,7 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 									<button
 										type="button"
 										className="btn-icon-mini"
+										tabIndex={-1}
 										aria-label={`delete ${elem.title}`}
 										onClick={(event) => handleDelete(elem._id)(event)}>
 										<IconDelete aria-hidden="true" weight="bold" />

@@ -7,8 +7,6 @@ type useCloseOnClickOutsideProps<T extends HTMLElement> = {
 
 export function useCloseOnClickOutside<T extends HTMLElement>({ ref, onCloseAction }: useCloseOnClickOutsideProps<T>) {
 	useEffect(() => {
-		console.log('ref.current', ref.current)
-
 		const handleEscape = (event: KeyboardEvent) => {
 			if (event.key === 'Escape') {
 				event.stopPropagation()
