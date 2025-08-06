@@ -1,0 +1,61 @@
+.page-header {
+	--padding: 0.75rem;
+
+	border-right: 1px solid var(--color-line);
+	position: relative;
+	min-width: 40px;
+	z-index: 2;
+
+	.logo {
+		font-size: 1.25rem;
+		display: flex;
+		gap: 0.5rem;
+		margin-bottom: 2rem;
+		padding: 1.5rem var(--padding) var(--padding);
+		white-space: nowrap;
+	}
+
+	&.expanded {
+		width: 250px;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		transition: width 0.2s ease-out;
+	}
+
+	.nav-header {
+		display: grid;
+		grid-template-columns: 1fr auto;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	nav.nav-main {
+		--padding: 1rem 1.5rem 1.5rem;
+		border-block: 2px solid rgba(255, 255, 255, 0.2);
+		border-inline: 0;
+		font-weight: 500;
+		overflow: hidden;
+		padding: var(--padding);
+		width: auto;
+
+		h2 {
+			font-size: 1.125rem;
+			padding: 0.75rem 0;
+			font-weight: 800;
+		}
+
+		ul > li {
+			ul {
+				display: none;
+				height: 0;
+			}
+		}
+	}
+}
+
+.btn-expand-header {
+	position: absolute;
+	right: -1rem;
+	top: 4rem;
+}

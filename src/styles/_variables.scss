@@ -1,0 +1,23 @@
+:root {
+	--color: #e5e5e5;
+	--color-primary: #646cff;
+	--color-text-secondary: #86888f;
+	--color-line: #35353b;
+	--color-error: #ff00ff;
+	--color-text-disabled: rgb(133, 133, 133);
+
+	--background-button: #1a1a1a;
+	--background-popover: #1a1a1a;
+	--background-field-disabled: #313131;
+	--background-form-field: rgb(59, 59, 59);
+
+	--border-radius: 5px;
+	--border-width: 1px;
+	--border: var(--border-width) solid #494843;
+	--border-field-disabled: var(--border-width) solid #4c4c4c;
+	--border-popover: 1px solid rgba(255, 251, 237, 0.08);
+
+	--box-shadow-popover: 0px 8px 16px rgba(0, 0, 0, 0.8);
+}
+
+$breakpoint-height-smallest-session: 60px;

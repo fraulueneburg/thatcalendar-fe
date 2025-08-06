@@ -11,7 +11,6 @@ node_modules
 dist
 dist-ssr
 *.local
-src/data/ical/*
 
 # Editor directories and files
 .vscode/*
@@ -26,6 +25,3 @@ src/data/ical/*
 
 # other
 TODO.md
-
-# any files (but not directories) inside components/ starting with _
-src/components/**/_*.tsx

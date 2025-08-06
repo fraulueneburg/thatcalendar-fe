@@ -1,0 +1,37 @@
+import { useEffect } from 'react'
+
+type useCloseOnClickOutsideProps<T extends HTMLElement> = {
+	ref: React.RefObject<T | null>
+	onCloseAction: () => void
+}
+
+export function useCloseOnClickOutside<T extends HTMLElement>({ ref, onCloseAction }: useCloseOnClickOutsideProps<T>) {
+	useEffect(() => {
+		const handleEscape = (event: KeyboardEvent) => {
+			if (event.key === 'Escape') {
+				event.stopPropagation()
+				onCloseAction()
+			}
+		}
+
+		const handleClickOutside = (event: MouseEvent | FocusEvent) => {
+			event.stopPropagation()
+
+			if (ref.current && !ref.current.contains(event.target as Node)) {
+				onCloseAction()
+			}
+		}
+
+		const listeners = [
+			{ target: window, type: 'keydown', handler: handleEscape },
+			{ target: document, type: 'pointerdown', handler: handleClickOutside },
+			{ target: document, type: 'focusin', handler: handleClickOutside },
+		]
+
+		listeners.forEach(({ target, type, handler }) => target.addEventListener(type, handler as EventListener))
+
+		return () => {
+			listeners.forEach(({ target, type, handler }) => target.removeEventListener(type, handler as EventListener))
+		}
+	}, [ref, onCloseAction])
+}
