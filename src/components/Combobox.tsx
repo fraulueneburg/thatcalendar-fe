@@ -6,16 +6,16 @@ type ComboboxProps = {
 	title: string
 	itemSingular: string
 	data: CategoryType[]
-	newItemAction: (title: string) => string
+	addItemAction: (title: string) => string
 	deleteItemAction: (title: string) => void
 	disabled?: boolean
 }
 
-export function Combobox({ title, itemSingular, data, newItemAction, deleteItemAction, disabled }: ComboboxProps) {
+export function Combobox({ title, itemSingular, data, addItemAction, deleteItemAction, disabled }: ComboboxProps) {
 	const wrapperRef = useRef<HTMLDivElement | null>(null)
 	const inputRef = useRef<HTMLInputElement>(null)
-	const uniqueId = `combobox:${useId()}:`
-	const createNewId = `${uniqueId}create-new`
+	const componentId = `combobox:${useId()}:`
+	const createNewId = `${componentId}create-new`
 
 	const [isOpen, setIsOpen] = useState(false)
 	const [query, setQuery] = useState('')
@@ -30,7 +30,21 @@ export function Combobox({ title, itemSingular, data, newItemAction, deleteItemA
 	const hasCreateNew = query.trim().length > 0 && !filteredData.some((elem) => elem.title === query.trim())
 	const createNewIndex = !hasCreateNew ? null : filteredData?.length > 0 ? filteredData.length : 0
 	const [highlightedIndex, setHighlightedIndex] = useState<number | null>(null)
-	const highlightedId = ''
+
+	const getItemDomId = (id: string) => {
+		return `${componentId}${id}`
+	}
+
+	const highlightedId = useMemo(() => {
+		if (highlightedIndex === null) return null
+
+		if (filteredData.length > 0 && highlightedIndex !== filteredData.length) {
+			const item = filteredData[highlightedIndex]
+			return item ? getItemDomId(item._id) : null
+		} else {
+			return createNewId
+		}
+	}, [highlightedIndex, filteredData, createNewId])
 
 	const handleFocus = () => {
 		setIsOpen(true)
@@ -57,7 +71,7 @@ export function Combobox({ title, itemSingular, data, newItemAction, deleteItemA
 
 	const handleAddNew = () => {
 		if (query.trim().length < 1) return
-		const id = newItemAction(query)
+		const id = addItemAction(query)
 		setSelectedId(id)
 		setQuery('')
 		inputRef.current?.focus()
@@ -184,30 +198,30 @@ export function Combobox({ title, itemSingular, data, newItemAction, deleteItemA
 	return (
 		<>
 			<div ref={wrapperRef} data-scope="combobox">
-				<div data-part="root" id={`${uniqueId}`}>
-					<label data-part="label" htmlFor={`${uniqueId}input`}>
+				<div data-part="root" id={`${componentId}`}>
+					<label data-part="label" htmlFor={`${componentId}input`}>
 						{title}
 					</label>
 					<div
 						data-part="control"
-						id={`${uniqueId}control`}
-						aria-controls={`${uniqueId}content`}
+						id={`${componentId}control`}
+						aria-controls={`${componentId}content`}
 						aria-expanded={isOpen}
 						aria-haspopup="listbox"
 						role="combobox">
 						{selectedItem && (
 							<>
 								<div data-part="selected-item">
-									<strong id={`${uniqueId}selected-value-desc`} className="sr-only">
+									<strong id={`${componentId}selected-value-desc`} className="sr-only">
 										Selected {itemSingular}:
 									</strong>
-									<div id={`${uniqueId}selected-value`} aria-describedby={`${uniqueId}selected-value-desc`}>
+									<div id={`${componentId}selected-value`} aria-describedby={`${componentId}selected-value-desc`}>
 										{selectedItem.title}
 									</div>
 									<button
 										type="button"
 										data-part="clear-trigger"
-										id={`${uniqueId}clear-btn`}
+										id={`${componentId}clear-btn`}
 										className="btn-icon-mini"
 										aria-label={`remove selected ${itemSingular} "${selectedItem.title}"`}
 										onClick={handleClear}>
@@ -218,15 +232,15 @@ export function Combobox({ title, itemSingular, data, newItemAction, deleteItemA
 						)}
 						<input
 							type="text"
-							id={`${uniqueId}input`}
+							id={`${componentId}input`}
 							data-part="input"
-							aria-activedescendant={highlightedId}
+							aria-activedescendant={highlightedId ? highlightedId : ''}
 							autoComplete="off"
 							autoCorrect="off"
 							autoCapitalize="none"
 							spellCheck="false"
 							aria-autocomplete="list"
-							aria-controls={`${uniqueId}content`}
+							aria-controls={`${componentId}content`}
 							aria-expanded={isOpen}
 							aria-haspopup="listbox"
 							disabled={disabled}
@@ -246,14 +260,14 @@ export function Combobox({ title, itemSingular, data, newItemAction, deleteItemA
 						/>
 					</div>
 				</div>
-				<div data-part="positioner" id={`${uniqueId}popper`}>
+				<div data-part="positioner" id={`${componentId}popper`}>
 					<div
 						data-part="content"
-						id={`${uniqueId}content`}
+						id={`${componentId}content`}
 						role="listbox"
 						hidden={!isOpen}
-						aria-labelledby={`${uniqueId}listbox-desc`}>
-						<small id={`${uniqueId}listbox-desc`}>
+						aria-labelledby={`${componentId}listbox-desc`}>
+						<small id={`${componentId}listbox-desc`}>
 							{filteredData.length > 0 ? `Select a ${itemSingular} or create a new one` : 'No options yet'}
 						</small>
 						{filteredData?.map((elem, index) => {
@@ -263,7 +277,7 @@ export function Combobox({ title, itemSingular, data, newItemAction, deleteItemA
 							return (
 								<div
 									key={elem._id}
-									id={`${uniqueId}-${elem._id}`}
+									id={getItemDomId(elem._id)}
 									role="option"
 									data-part="item"
 									data-highlighted={isHighlighted}

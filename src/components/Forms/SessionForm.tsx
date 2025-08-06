@@ -86,7 +86,7 @@ export default function SessionForm({ onSubmitAction }: SessionFormProps) {
 					title="Task"
 					itemSingular="task"
 					data={filteredTasks}
-					newItemAction={handleAddNewTask}
+					addItemAction={handleAddNewTask}
 					deleteItemAction={handleDeleteTask}
 					disabled={subCategory === ''}
 				/>
