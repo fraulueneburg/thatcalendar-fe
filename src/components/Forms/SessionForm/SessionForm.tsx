@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
 import { useDataContext } from '../../../context/Data.context'
-import { TaskType } from '../../../types'
+import { nanoid } from 'nanoid'
 
 import { dayStartHour, dayEndHour } from '../../../data/user-settings'
 import { convertToTime } from '../../../utils/time'
-import { Combobox } from '../../Combobox'
-import { nanoid } from 'nanoid'
+
+import { TaskType } from '../../../types'
+import { Combobox, Time } from '../../FormFields'
 
 type SessionFormProps = {
 	onSubmitAction?: React.FormEvent<HTMLFormElement>
@@ -108,6 +109,7 @@ export function SessionForm({ onSubmitAction }: SessionFormProps) {
 								disabled={isAllDay}
 								required
 							/>
+							<Time />
 							<div className="validity">enter at least {convertToTime(dayStartHour)}</div>
 						</div>
 						<div>
@@ -138,32 +140,32 @@ export function SessionForm({ onSubmitAction }: SessionFormProps) {
 				</p>
 				{hasTravelTime && (
 					<fieldset id="fs-travel-duration">
-						<legend>Travel duration</legend>
-						<div>
-							<label htmlFor="travel-time">
-								travel time
-								<input required id="travel-time" type="time" name="travel-start-time" />
-							</label>
-						</div>
-						<div>
+						<legend>Travel time</legend>
+						<div className="grid">
 							<div>
+								<label htmlFor="travel-time">
+									travel duration
+									<input required id="travel-time" type="time" name="travel-start-time" />
+								</label>
 								<label>
 									<input type="checkbox" checked={!isSameReturnTime} onChange={() => setIsSameReturnTime((prev) => !prev)} />
-									same return time
+									same for return
 								</label>
 							</div>
-							{isSameReturnTime && (
-								<label htmlFor="travel-return-time">
-									travel return time
-									<input
-										required
-										id="travel-return-time"
-										type="time"
-										name="travel-return-time"
-										disabled={!isSameReturnTime}
-									/>
-								</label>
-							)}
+							<div>
+								{isSameReturnTime && (
+									<label htmlFor="travel-return-time">
+										return duration
+										<input
+											required
+											id="travel-return-time"
+											type="time"
+											name="travel-return-time"
+											disabled={!isSameReturnTime}
+										/>
+									</label>
+								)}
+							</div>
 						</div>
 					</fieldset>
 				)}

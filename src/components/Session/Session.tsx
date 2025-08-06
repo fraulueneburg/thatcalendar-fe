@@ -8,7 +8,7 @@ import { getGridPosition } from '../../utils/grid'
 import { calculateDuration } from '../../utils/duration'
 import { convertToTime, shiftTimeByMinutes, stripLeadingZero } from '../../utils/time'
 
-import { TravelTime } from '../TravelTime'
+import { TravelTime } from './TravelTime'
 import { TimerIcon as IconDuration } from '@phosphor-icons/react'
 import { useDndMonitor, useDraggable } from '@dnd-kit/core'
 import { CSS } from '@dnd-kit/utilities'

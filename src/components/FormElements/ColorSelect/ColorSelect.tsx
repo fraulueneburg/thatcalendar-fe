@@ -1,4 +1,4 @@
-import 'color-select.scss'
+import './color-select.scss'
 import { useEffect, useMemo, useRef, useState, useId } from 'react'
 
 type DropdownListProps = {
