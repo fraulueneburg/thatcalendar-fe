@@ -84,6 +84,7 @@ export default function SessionForm({ onSubmitAction }: SessionFormProps) {
 				</p>
 				<Combobox
 					title="Task"
+					itemSingular="task"
 					data={filteredTasks}
 					newItemAction={handleAddNewTask}
 					deleteItemAction={handleDeleteTask}
