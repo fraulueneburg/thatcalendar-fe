@@ -1,4 +1,4 @@
-import { useId, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { XIcon as IconDelete } from '@phosphor-icons/react'
 import { CategoryType } from '../types'
 
@@ -50,8 +50,8 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 		event?.stopPropagation()
 		setSelectedId(id)
 		setQuery('')
-		setIsOpen(false)
 		inputRef.current?.focus()
+		setIsOpen(false)
 	}
 
 	const handleAddNew = () => {
@@ -59,6 +59,8 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 		const id = newItemAction(query)
 		setSelectedId(id)
 		setQuery('')
+		inputRef.current?.focus()
+		setIsOpen(false)
 	}
 
 	const handleDelete = (id: string) => (event: React.SyntheticEvent<HTMLButtonElement>) => {
@@ -153,6 +155,10 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 		}
 	}
 
+	useEffect(() => {
+		if (query.length > 0) setHighlightedIndex(null)
+	}, [query])
+
 	useLayoutEffect(() => {
 		const selectedItemStillValid = data.some((elem) => elem._id === selectedId)
 
@@ -236,6 +242,7 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 							placeholder={selectedId ? '' : 'Search for an option …'}
 							value={query}
 							onFocus={handleFocus}
+							onClick={handleFocus}
 							onChange={handleChange}
 							onKeyDown={handleKeyDown}
 							ref={inputRef}
