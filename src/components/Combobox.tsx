@@ -234,7 +234,7 @@ export function Combobox({ title, itemSingular, data, addItemAction, deleteItemA
 							type="text"
 							id={`${componentId}input`}
 							data-part="input"
-							aria-activedescendant={highlightedId ? highlightedId : ''}
+							aria-activedescendant={highlightedId ?? undefined}
 							autoComplete="off"
 							autoCorrect="off"
 							autoCapitalize="none"
