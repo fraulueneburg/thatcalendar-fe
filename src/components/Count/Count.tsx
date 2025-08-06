@@ -1,9 +1,11 @@
+import './count.scss'
+
 export type CountProps = {
 	quantity: number
 	itemType: string
 }
 
-export default function Count({ quantity, itemType }: CountProps) {
+export function Count({ quantity, itemType }: CountProps) {
 	return (
 		<>
 			<small className="count">

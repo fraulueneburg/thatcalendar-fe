@@ -1,0 +1,116 @@
+@use './mixins.scss';
+
+button {
+	border-radius: var(--border-radius);
+	border: 1px solid var(--color-line);
+	padding: 0.6em 1.2em;
+	font-size: 1em;
+	font-weight: 500;
+	font-family: inherit;
+	background-color: var(--background-button);
+	cursor: pointer;
+	transition: border-color 0.25s;
+
+	&:not(:disabled, [aria-disabled='true']):hover {
+		border-color: var(--color-primary);
+	}
+
+	&:focus,
+	&:focus-visible {
+		outline: 4px auto var(--color-primary);
+	}
+
+	&:disabled,
+	&[aria-disabled='true'] {
+		cursor: default;
+	}
+
+	&.btn-icon-mini {
+		background: transparent;
+		display: flex;
+		align-items: center;
+		border: none;
+		aspect-ratio: 1/1;
+		padding: 0.25rem;
+		width: 1.5rem;
+	}
+}
+
+.btn-round {
+	aspect-ratio: 1 / 1;
+	border-radius: 50%;
+	padding: 0.25rem 0.25rem 0;
+	height: 2rem;
+}
+
+input[type='text'],
+input[type='time'],
+input[type='color'],
+input[type='checkbox'],
+select,
+textarea {
+	background-color: var(--background-form-field);
+	box-sizing: border-box;
+	border: var(--border);
+	border-radius: var(--border-radius);
+	display: block;
+	font-size: 1rem;
+	margin: 0.25rem 0 0;
+	padding: 0.5rem;
+	outline-width: 0;
+	transition: none 0.2s ease;
+	transition-property: border-color, outline;
+	width: 100%;
+
+	&:focus {
+		@include mixins.focus-style;
+	}
+
+	&:disabled,
+	&[aria-disabled='true'] {
+		background-color: var(--background-field-disabled);
+		border: var(--border-field-disabled);
+		color: var(--color-text-disabled);
+	}
+}
+
+input[type='color'] {
+	box-sizing: content-box;
+	padding: 0.25rem 0;
+}
+
+label {
+	&:has(:disabled),
+	&:has(+ :disabled),
+	&:has([aria-disabled='true']),
+	&:has(+ [aria-disabled='true']) {
+		color: var(--color-text-disabled);
+	}
+
+	&:has(input[type='checkbox']) {
+		display: grid;
+		gap: 0.5rem;
+		grid-template-columns: auto 1fr;
+		align-items: baseline;
+	}
+}
+
+form h4,
+form p,
+form > .field,
+fieldset {
+	margin: 0 0 1rem;
+}
+
+.field-time-slot {
+	label {
+		display: block;
+	}
+}
+
+.error-message {
+	display: block;
+	color: var(--color-error);
+	font-size: 0.9rem;
+	margin-top: 0.25rem;
+}

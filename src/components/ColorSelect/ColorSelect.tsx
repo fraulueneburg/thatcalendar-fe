@@ -1,3 +1,4 @@
+import 'color-select.scss'
 import { useEffect, useMemo, useRef, useState, useId } from 'react'
 
 type DropdownListProps = {
@@ -5,7 +6,7 @@ type DropdownListProps = {
 	selected?: string
 }
 
-export default function ColorSelect({ selected, onColorChange }: DropdownListProps) {
+export function ColorSelect({ selected, onColorChange }: DropdownListProps) {
 	const colors = [
 		{ value: '#04725D', bgValue: '#04493c' },
 		{ value: '#15bca6', bgValue: '#0b6559' },

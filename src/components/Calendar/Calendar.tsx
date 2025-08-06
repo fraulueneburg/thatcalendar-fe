@@ -1,15 +1,16 @@
+import './calendar.scss'
 import { useState } from 'react'
 import { endOfWeek, format, getISOWeek, startOfWeek, subDays, subWeeks } from 'date-fns'
 
-import { hoursArr, weekStartsOnMonday } from '../data/user-settings'
+import { hoursArr, weekStartsOnMonday } from '../../data/user-settings'
 
-import PeriodHeadline from './PeriodHeadline'
-import Day from './Day'
+import { PeriodHeadline } from './PeriodHeadline'
+import { Day } from '../Day'
 import { CaretLeftIcon as IconPrev, CaretRightIcon as IconNext } from '@phosphor-icons/react'
 import { DndContext } from '@dnd-kit/core'
-import { createCustomSnapModifier } from '../utils/dndkit'
+import { createCustomSnapModifier } from '../../utils/dndkit'
 
-export default function Calendar() {
+export function Calendar() {
 	const [offsetDays, setOffsetDays] = useState(0)
 
 	const today = new Date()

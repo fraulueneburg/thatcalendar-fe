@@ -1,20 +1,21 @@
-import { SessionProps } from './Session.types'
-import { CategoryType } from '../types/category'
+import './session.scss'
+import { SessionProps } from '../../types'
+import { CategoryType } from '../../types/category'
 
-import { categoryArr, tasksArr } from '../data/dummydata'
+import { categoryArr, tasksArr } from '../../data/dummydata'
 
-import { getGridPosition } from '../utils/grid/'
-import { calculateDuration } from '../utils/duration/'
-import { convertToTime, shiftTimeByMinutes, stripLeadingZero } from '../utils/time'
+import { getGridPosition } from '../../utils/grid'
+import { calculateDuration } from '../../utils/duration'
+import { convertToTime, shiftTimeByMinutes, stripLeadingZero } from '../../utils/time'
 
-import TravelTime from './TravelTime'
+import { TravelTime } from '../TravelTime'
 import { TimerIcon as IconDuration } from '@phosphor-icons/react'
 import { useDndMonitor, useDraggable } from '@dnd-kit/core'
 import { CSS } from '@dnd-kit/utilities'
 import { useRef, useState } from 'react'
-import ResizeHandle from './ResizeHandle'
+import { ResizeHandle } from './ResizeHandle'
 
-export default function Session({ data }: SessionProps) {
+export function Session({ data }: SessionProps) {
 	const { _id, dtStart, dtEnd, parent: sessionParent } = data
 	const [startTime, setStartTime] = useState(convertToTime(dtStart))
 	const [endTime, setEndTime] = useState(convertToTime(dtEnd))

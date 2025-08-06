@@ -1,10 +1,11 @@
+import './user-settings-form.scss'
 import { useMemo, useState } from 'react'
-import { dayStartHour, dayEndHour, weekStartsOnMonday } from '../../data/user-settings'
-import { useDataContext } from '../../context/Data.context'
-import { CategoryType } from '../../types'
+import { dayStartHour, dayEndHour, weekStartsOnMonday } from '../../../data/user-settings'
+import { useDataContext } from '../../../context/Data.context'
+import { CategoryType } from '../../../types'
 import { TrashIcon as IconDelete } from '@phosphor-icons/react'
 
-export default function UserSettingsForm() {
+export function UserSettingsForm() {
 	const { categoryData, setCategoryData } = useDataContext()
 	const { data: categoryArr, index: categoryIndex } = categoryData
 	const mainCategories: CategoryType[] = useMemo(() => categoryArr.filter((elem) => !elem.parent), [categoryData])

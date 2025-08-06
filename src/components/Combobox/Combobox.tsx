@@ -1,6 +1,7 @@
+import './combobox.scss'
 import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { XIcon as IconDelete } from '@phosphor-icons/react'
-import { CategoryType } from '../types'
+import { CategoryType } from '../../types'
 
 type ComboboxProps = {
 	title: string

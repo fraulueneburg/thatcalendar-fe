@@ -1,0 +1,117 @@
+@use '../../styles/mixins';
+
+[data-scope='combobox'] {
+	margin-bottom: 1rem;
+	position: relative;
+
+	[data-part='label'] {
+		display: block;
+		padding-bottom: 0.25rem;
+
+		&:has(+ [data-part='control'] input:disabled),
+		&:has(+ [data-part='control'] input[aria-disabled='true']) {
+			color: var(--color-text-disabled);
+		}
+	}
+
+	[data-part='control'] {
+		background-color: var(--background-form-field);
+		border: var(--border);
+		border-radius: var(--border-radius);
+		box-sizing: border-box;
+		display: flex;
+		margin: 0;
+		padding: 0.25rem;
+		position: relative;
+		outline-width: 0;
+		transition: none 0.2s ease;
+		transition-property: border-color, outline;
+
+		&:focus-within {
+			@include mixins.focus-style;
+		}
+
+		&:has(:disabled),
+		&:has([aria-disabled='true']) {
+			background-color: var(--background-field-disabled);
+		}
+
+		[data-part='selected-item'] {
+			align-items: center;
+			background-color: black;
+			border-radius: var(--border-radius);
+			display: flex;
+			flex-wrap: nowrap;
+			padding-inline: 0.25rem;
+
+			div {
+				max-width: 155px;
+				text-overflow: ellipsis;
+				overflow: hidden;
+				white-space: nowrap;
+			}
+		}
+
+		[data-part='input'] {
+			background-color: transparent;
+			border: none;
+			margin: 0;
+			padding-block: 0.3rem;
+			width: 100%;
+
+			&:focus {
+				border: none;
+				outline: none;
+			}
+		}
+
+		[data-part='trigger'] {
+			aspect-ratio: 1/1;
+			height: 100%;
+			padding: 0;
+			position: absolute;
+			right: 2.25rem;
+			top: 0;
+		}
+	}
+
+	[data-part='positioner'] {
+		position: absolute;
+		width: 100%;
+
+		[data-part='content']:not(:empty) {
+			background-color: var(--background-popover);
+			border: var(--border-popover);
+			box-shadow: var(--box-shadow-popover);
+			box-sizing: border-box;
+			padding: 1rem 0.75rem;
+			width: 100%;
+		}
+	}
+
+	&[data-part='item-group-label'] {
+		font-weight: bold;
+	}
+
+	[data-part='item'] {
+		border-radius: var(--border-radius);
+		display: grid;
+		grid-template-columns: 1fr auto;
+		gap: 0.5rem;
+		padding: 0.125rem 0 0.125rem 0.5rem;
+
+		&[data-highlighted='true'] {
+			background-color: violet !important;
+			color: blue !important;
+		}
+	}
+
+	[role='listbox'] small {
+		font-weight: bold;
+		display: inline-block;
+		font-size: 0.75rem;
+		opacity: 0.7;
+		padding: 0 0.5rem 0.35rem;
+		text-transform: uppercase;
+	}
+}

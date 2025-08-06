@@ -1,12 +1,12 @@
 import { useMemo, useState } from 'react'
-import { CategoryType } from '../types/category'
-import { Popover } from './Popover'
-import Count from './Count'
-import CategoryForm from './Forms/CategoryForm'
+import { CategoryType } from '../../types/category'
+import { Popover } from '../Popover/Popover'
+import { Count } from '../Count'
+import { CategoryForm } from '../Forms'
 import { CaretRightIcon as IconExpand, PlusIcon as IconAdd } from '@phosphor-icons/react'
-import { useDataContext } from '../context/Data.context'
+import { useDataContext } from '../../context/Data.context'
 
-export default function NavMain() {
+export function NavMain() {
 	const { categoryData } = useDataContext()
 	const { data: categoryArr, index: categoryIndex } = categoryData
 

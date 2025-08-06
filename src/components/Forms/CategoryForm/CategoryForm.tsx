@@ -1,9 +1,10 @@
+import './category-form.scss'
 import { useState, useId } from 'react'
-import { useDataContext } from '../../context/Data.context'
-import { CategoryType } from '../../types'
+import { useDataContext } from '../../../context/Data.context'
+import { CategoryType } from '../../../types'
 import { nanoid } from 'nanoid'
 
-export default function NewCategoryForm() {
+export function CategoryForm() {
 	const { categoryData, setCategoryData } = useDataContext()
 	const mainCategories = categoryData.data.filter((elem) => !elem.parent)
 

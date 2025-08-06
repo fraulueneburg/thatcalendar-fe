@@ -1,0 +1,139 @@
+@use '../../styles/variables';
+@use '../../styles/mixins';
+
+.session {
+	background-color: var(--color-primary);
+	border-radius: 0 var(--border-radius) var(--border-radius) 0;
+	border-left: 3px solid currentColor;
+	box-sizing: border-box;
+	container-type: size;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	position: absolute;
+	text-wrap: balance;
+	width: 100%;
+	z-index: 1;
+
+	&:not(:last-child) {
+		margin-bottom: var(--padding-cell-y);
+	}
+
+	.resize-handle {
+		cursor: ns-resize;
+		height: 6px;
+		overflow: hidden;
+		margin: 0;
+		padding: 0;
+		flex-shrink: 0;
+		flex-grow: 0;
+
+		svg {
+			margin: 0 auto;
+			display: block;
+		}
+
+		&:first-of-type svg {
+			margin-top: -3px;
+		}
+
+		&:last-of-type svg {
+			margin-top: -6px;
+		}
+	}
+
+	.content {
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+		cursor: grab;
+
+		&:active {
+			cursor: grabbing;
+		}
+
+		* {
+			margin: 0;
+		}
+
+		> {
+			* {
+				padding-inline: 0.75rem;
+			}
+		}
+	}
+
+	.text {
+		height: 100%;
+		padding-block: 0.65rem;
+	}
+
+	.title {
+		color: var(--color);
+		font-size: 0.9rem;
+		line-height: 1.3;
+	}
+
+	.time {
+		color: var(--color);
+		display: flex;
+		justify-content: space-between;
+		margin-bottom: 0.25rem;
+	}
+
+	.duration {
+		color: var(--color-text-secondary);
+		display: flex;
+		align-items: center;
+		gap: 0.1rem;
+	}
+
+	small {
+		display: block;
+		font-size: 0.8rem;
+		line-height: 1.2;
+	}
+
+	.cal {
+		margin-top: 0.25rem;
+	}
+
+	.sub-cal {
+		color: currentColor;
+	}
+
+	.main-cal {
+		color: var(--color-text-secondary);
+	}
+
+	@container (max-height: #{variables.$breakpoint-height-smallest-session}) {
+		.content {
+			justify-content: space-between;
+		}
+
+		.text {
+			display: flex;
+			gap: 0.25rem;
+			height: auto;
+			padding-block: 0.25rem;
+		}
+
+		.time {
+			height: min-content;
+			margin: 0;
+		}
+
+		.title {
+			font-size: 0.8rem;
+			height: min-content;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+
+		.duration,
+		.cal {
+			@include mixins.sr-only;
+		}
+	}
+}
