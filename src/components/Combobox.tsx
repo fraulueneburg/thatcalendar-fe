@@ -69,8 +69,20 @@ export function Combobox({ title, data, newItemAction, deleteItemAction, disable
 	}
 
 	const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-		if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp' && event.key !== 'Enter') {
-			setHighlightedIndex(null)
+		if (event.altKey && event.key === 'ArrowDown') {
+			if (!isOpen) {
+				setIsOpen(true)
+				setHighlightedIndex(null)
+			}
+			return
+		}
+
+		if (event.altKey && event.key === 'ArrowUp') {
+			if (isOpen) {
+				setIsOpen(false)
+				setHighlightedIndex(null)
+			}
+			return
 		}
 
 		if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
