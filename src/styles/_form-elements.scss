@@ -44,6 +44,7 @@ button {
 }
 
 input[type='text'],
+input[type='number'],
 input[type='time'],
 input[type='color'],
 input[type='checkbox'],
@@ -79,6 +80,10 @@ input[type='color'] {
 	padding: 0.25rem 0;
 }
 
+input[type='number'].hour {
+	text-align: right;
+}
+
 label {
 	&:has(:disabled),
 	&:has(+ :disabled),
@@ -102,10 +107,17 @@ fieldset {
 	margin: 0 0 1rem;
 }
 
-.field-time-slot {
-	label {
-		display: block;
-	}
+fieldset {
+	width: fit-content;
+}
+
+label,
+legend {
+	font-weight: bold;
+}
+
+label:has(input[type='checkbox']) {
+	font-weight: normal;
 }
 
 .error-message {
@@ -113,4 +125,21 @@ fieldset {
 	color: var(--color-error);
 	font-size: 0.9rem;
 	margin-top: 0.25rem;
+}
+
+.field-group {
+	align-items: baseline;
+	display: flex;
+	gap: 0.25rem;
+}
+
+input[type='number'] {
+	appearance: textfield;
+	-moz-appearance: textfield;
+
+	&::-webkit-outer-spin-button,
+	&::-webkit-inner-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
 }
