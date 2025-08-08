@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react'
-import { useDataContext } from '../../../context/Data.context'
+import { format } from 'date-fns'
 import { nanoid } from 'nanoid'
 
-import { dayStartHour, dayEndHour } from '../../../data/user-settings'
-import { convertToTime } from '../../../utils/time'
-
+import { useDataContext } from '../../../context/Data.context'
 import { TaskType } from '../../../types'
-import { Combobox, Time } from '../../FormFields'
+import { Combobox, Time } from '../../FormElements'
 
 type SessionFormProps = {
 	onSubmitAction?: React.FormEvent<HTMLFormElement>
@@ -26,6 +24,10 @@ export function SessionForm({ onSubmitAction }: SessionFormProps) {
 	const [isAllDay, setisAllDay] = useState(false)
 	const [hasTravelTime, setHasTravelTime] = useState(false)
 	const [isSameReturnTime, setIsSameReturnTime] = useState(false)
+
+	const now = new Date()
+	const hourNow = format(now, 'HH')
+	const minuteNow = format(now, 'mm')
 
 	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault()
@@ -97,34 +99,9 @@ export function SessionForm({ onSubmitAction }: SessionFormProps) {
 						<input type="checkbox" name="isAllDay" checked={isAllDay} onChange={() => setisAllDay((prev) => !prev)} />
 						all day
 					</label>
-					<div className="grid field-time-slot">
-						<div>
-							<label htmlFor="slot-start-time">starts at</label>
-							<input
-								type="time"
-								name="dtStartTime"
-								id="slot-start-time"
-								min={convertToTime(dayStartHour)}
-								max={convertToTime(dayEndHour)}
-								disabled={isAllDay}
-								required
-							/>
-							<Time />
-							<div className="validity">enter at least {convertToTime(dayStartHour)}</div>
-						</div>
-						<div>
-							<label htmlFor="slot-end-time">ends at</label>
-							<input
-								type="time"
-								name="dtEndTime"
-								id="slot-end-time"
-								min={convertToTime(dayStartHour)}
-								max={convertToTime(dayEndHour)}
-								disabled={isAllDay}
-								required
-							/>
-							<div className="validity">enter at most {convertToTime(dayEndHour)}</div>
-						</div>
+					<div className="grid">
+						<Time title="starts at" defaultHour={hourNow} defaultMinute={minuteNow} />
+						<Time title="ends at" defaultHour={''} defaultMinute={''} />
 					</div>
 				</fieldset>
 				<p>
@@ -143,29 +120,13 @@ export function SessionForm({ onSubmitAction }: SessionFormProps) {
 						<legend>Travel time</legend>
 						<div className="grid">
 							<div>
-								<label htmlFor="travel-time">
-									travel duration
-									<input required id="travel-time" type="time" name="travel-start-time" />
-								</label>
+								<Time title="travel duration" isDuration={true} />
 								<label>
 									<input type="checkbox" checked={!isSameReturnTime} onChange={() => setIsSameReturnTime((prev) => !prev)} />
 									same for return
 								</label>
 							</div>
-							<div>
-								{isSameReturnTime && (
-									<label htmlFor="travel-return-time">
-										return duration
-										<input
-											required
-											id="travel-return-time"
-											type="time"
-											name="travel-return-time"
-											disabled={!isSameReturnTime}
-										/>
-									</label>
-								)}
-							</div>
+							<div>{isSameReturnTime && <Time title="return duration" isDuration={true} />}</div>
 						</div>
 					</fieldset>
 				)}
