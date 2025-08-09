@@ -73,6 +73,20 @@ textarea {
 
 textarea {
 	font-family: var(--font-family);
+
+	&.auto-sized {
+		background-color: transparent;
+		height: 1lh;
+		resize: none;
+		white-space: nowrap;
+		width: auto;
+
+		@supports (field-sizing: content) {
+			field-sizing: content;
+			height: auto;
+			white-space: normal;
+		}
+	}
 }
 
 // .custom-select {
@@ -156,7 +170,8 @@ fieldset {
 }
 
 label,
-legend {
+legend,
+.legend {
 	font-weight: bold;
 }
 

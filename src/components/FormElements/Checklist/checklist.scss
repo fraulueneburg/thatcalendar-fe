@@ -1,0 +1,26 @@
+ul.checklist {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+
+	li {
+		display: grid;
+		grid-template-columns: 1rem 1fr;
+		gap: 0.5rem;
+		align-items: baseline;
+	}
+
+	textarea {
+		background-color: transparent;
+		height: 1lh;
+		resize: none;
+		white-space: nowrap;
+		width: auto;
+
+		@supports (field-sizing: content) {
+			field-sizing: content;
+			height: auto;
+			white-space: normal;
+		}
+	}
+}
