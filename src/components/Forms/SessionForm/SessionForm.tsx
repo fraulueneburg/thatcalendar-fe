@@ -7,6 +7,7 @@ import { useDataContext } from '../../../context/Data.context'
 import { CategoryType, TaskType } from '../../../types'
 import { Combobox, Time } from '../../FormElements'
 import { ArrowRightIcon as IconArrow } from '@phosphor-icons/react'
+import { Checklist } from '../../FormElements/Checklist'
 
 type SessionFormProps = {
 	onSubmitAction?: React.FormEvent<HTMLFormElement>
@@ -21,13 +22,12 @@ export function SessionForm({ onSubmitAction }: SessionFormProps) {
 	const [categoryId, setCategoryId] = useState('')
 	const [subCategoryId, setSubCategoryId] = useState('')
 	const category = categoryArr.find((elem) => elem._id === categoryId)
-	const subCategory = categoryArr.find((elem) => elem._id === subCategoryId)
+	const filteredTasks = taskData.filter((elem: TaskType) => elem.parent === subCategoryId && elem.isDone === false)
+	const [task, setTask] = useState<TaskType | null>(null)
 
 	const filterByParent = (parent: string) => {
 		return categoryArr.filter((elem) => elem.parent === parent) ?? []
 	}
-
-	const filteredTasks = taskData.filter((elem: TaskType) => elem.parent === subCategoryId && elem.isDone === false)
 
 	const [isAllDay, setisAllDay] = useState(false)
 	const [hasTravelTime, setHasTravelTime] = useState(false)
@@ -132,7 +132,12 @@ export function SessionForm({ onSubmitAction }: SessionFormProps) {
 					<label>Notes</label>
 					<textarea className="auto-sized" />
 				</div>
-
+				<fieldset aria-labelledby={`${componentId}checklistlabel`}>
+					<div id={`${componentId}checklistlabel`} className="legend">
+						Checklist
+					</div>
+					<Checklist taskId={task?._id} />
+				</fieldset>
 				<label>
 					<input
 						type="checkbox"
@@ -142,7 +147,6 @@ export function SessionForm({ onSubmitAction }: SessionFormProps) {
 					/>
 					add travel duration
 				</label>
-
 				{hasTravelTime && (
 					<fieldset id="fs-travel-duration">
 						<legend>Travel time</legend>
@@ -158,7 +162,6 @@ export function SessionForm({ onSubmitAction }: SessionFormProps) {
 						</div>
 					</fieldset>
 				)}
-
 				<button type="submit">add session</button>
 			</form>
 		</>
