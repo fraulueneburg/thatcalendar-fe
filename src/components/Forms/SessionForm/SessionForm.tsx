@@ -45,6 +45,11 @@ export function SessionForm({ onSubmitAction }: SessionFormProps) {
 		setSubCategoryId(id)
 	}
 
+	const handleSelectTask = (id: string) => {
+		const selectedTask = taskData.find((elem) => elem._id === id)
+		if (selectedTask) setTask(selectedTask)
+	}
+
 	const handleAddNewTask = (title: string) => {
 		const newTask: TaskType = {
 			_id: nanoid(),
@@ -125,7 +130,7 @@ export function SessionForm({ onSubmitAction }: SessionFormProps) {
 				/>
 				<div className="field">
 					<label>Notes</label>
-					<textarea />
+					<textarea className="auto-sized" />
 				</div>
 
 				<label>
