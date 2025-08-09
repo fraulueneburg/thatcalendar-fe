@@ -5,4 +5,5 @@ export type CategoryType = {
 	color?: string
 	colorBg?: string
 	children?: string[]
+	isArchived?: boolean
 }

@@ -6,6 +6,8 @@
 	--color-error: #ff00ff;
 	--color-text-disabled: rgb(133, 133, 133);
 
+	--font-family: system-ui, Inter, Avenir, Helvetica, Arial, sans-serif;
+
 	--background-button: #1a1a1a;
 	--background-popover: #1a1a1a;
 	--background-field-disabled: #313131;
@@ -18,6 +20,8 @@
 	--border-popover: 1px solid rgba(255, 251, 237, 0.08);
 
 	--box-shadow-popover: 0px 8px 16px rgba(0, 0, 0, 0.8);
+
+	--padding-form-field: 0.5rem;
 }
 
 $breakpoint-height-smallest-session: 60px;

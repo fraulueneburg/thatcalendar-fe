@@ -78,7 +78,7 @@ export function CategoryForm() {
 
 	return (
 		<>
-			<form onSubmit={handleSubmit} className="new-category">
+			<form onSubmit={handleSubmit} className="category-form">
 				{mainCategories.length > 0 && (
 					<div className="field">
 						<label>

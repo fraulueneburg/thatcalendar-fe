@@ -1,25 +1,33 @@
-import { useEffect, useState } from 'react'
+import './session-form.scss'
+import { useState, useId } from 'react'
 import { format } from 'date-fns'
 import { nanoid } from 'nanoid'
 
 import { useDataContext } from '../../../context/Data.context'
-import { TaskType } from '../../../types'
+import { CategoryType, TaskType } from '../../../types'
 import { Combobox, Time } from '../../FormElements'
+import { ArrowRightIcon as IconArrow } from '@phosphor-icons/react'
 
 type SessionFormProps = {
 	onSubmitAction?: React.FormEvent<HTMLFormElement>
 }
 
 export function SessionForm({ onSubmitAction }: SessionFormProps) {
+	const componentId = useId()
 	const { categoryData, taskData, setTaskData } = useDataContext()
 	const { data: categoryArr } = categoryData
-
-	const [category, setCategory] = useState('')
-	const [subCategory, setSubCategory] = useState('')
 	const mainCategories = categoryArr.filter((elem) => !elem.parent)
-	const subCategories = categoryArr.filter((elem) => elem.parent === category)
 
-	const filteredTasks = taskData.filter((elem: TaskType) => elem.parent === subCategory && elem.isDone === false)
+	const [categoryId, setCategoryId] = useState('')
+	const [subCategoryId, setSubCategoryId] = useState('')
+	const category = categoryArr.find((elem) => elem._id === categoryId)
+	const subCategory = categoryArr.find((elem) => elem._id === subCategoryId)
+
+	const filterByParent = (parent: string) => {
+		return categoryArr.filter((elem) => elem.parent === parent) ?? []
+	}
+
+	const filteredTasks = taskData.filter((elem: TaskType) => elem.parent === subCategoryId && elem.isDone === false)
 
 	const [isAllDay, setisAllDay] = useState(false)
 	const [hasTravelTime, setHasTravelTime] = useState(false)
@@ -29,15 +37,18 @@ export function SessionForm({ onSubmitAction }: SessionFormProps) {
 	const hourNow = format(now, 'HH')
 	const minuteNow = format(now, 'mm')
 
-	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-		event.preventDefault()
-		console.log(event.target)
+	const handleChangeProject = (event: React.FormEvent<HTMLSelectElement>) => {
+		const id = event.currentTarget.value
+		const parentId = categoryArr.find((elem) => elem._id === id)?.parent || ''
+
+		setCategoryId(parentId)
+		setSubCategoryId(id)
 	}
 
 	const handleAddNewTask = (title: string) => {
 		const newTask: TaskType = {
 			_id: nanoid(),
-			parent: subCategory,
+			parent: subCategoryId,
 			title: title,
 			isDone: false,
 		}
@@ -49,72 +60,83 @@ export function SessionForm({ onSubmitAction }: SessionFormProps) {
 		setTaskData(taskData.filter((elem) => elem._id !== id))
 	}
 
-	useEffect(() => {
-		setSubCategory('')
-	}, [category])
+	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault()
+		console.log(event.target)
+		// onSubmitAction()
+	}
 
 	return (
 		<>
-			<form onSubmit={handleSubmit}>
+			<form onSubmit={handleSubmit} className="session-form">
 				<h4>New Session</h4>
-				<p className="grid">
-					<label>
-						Category
-						<select required onChange={(e) => setCategory(e.target.value)} name="parentsCategory">
+				<fieldset aria-labelledby={`${componentId}timelabel`}>
+					<div id={`${componentId}timelabel`} className="legend">
+						Time
+					</div>
+					<div className="time-group">
+						<Time title="starts at" titleHidden={true} defaultHour={hourNow} defaultMinute={minuteNow} />
+						<span className="separator">–</span>
+						<Time title="ends at" titleHidden={true} defaultHour={''} defaultMinute={''} />
+						<IconArrow className="icon icon-arrow" weight="bold" aria-hidden="true" />
+						<Time title="duration" titleHidden={true} isDuration={true} />
+						<label>
+							<input type="checkbox" name="isAllDay" checked={isAllDay} onChange={() => setisAllDay((prev) => !prev)} />
+							all day
+						</label>
+					</div>
+				</fieldset>
+				<div className="field">
+					<label htmlFor={`${componentId}project`}>Project</label>
+					<div className="project-field">
+						{category && (
+							<div className="category" style={{ color: category.color }}>
+								<span>{category?.title}</span> <IconArrow weight="bold" aria-hidden="true" />
+							</div>
+						)}
+
+						<select
+							id={`${componentId}project`}
+							className="custom-select"
+							onChange={handleChangeProject}
+							name="parentsCategory"
+							required>
 							<option value="">–</option>
 							{mainCategories.map((elem) => (
-								<option value={elem._id} key={elem._id}>
-									{elem.title}
-								</option>
+								<optgroup label={elem.title} key={elem._id}>
+									{filterByParent(elem._id).map((e: CategoryType) => (
+										<option value={e._id} key={e._id}>
+											{e.title}
+										</option>
+									))}
+								</optgroup>
 							))}
 						</select>
-					</label>
-					<label>
-						Project
-						<select
-							required
-							onChange={(e) => setSubCategory(e.target.value)}
-							disabled={category === ''}
-							name="parentsParentCategory">
-							<option value="">–</option>
-							{subCategories.map((elem) => (
-								<option value={elem._id} key={elem._id}>
-									{elem.title}
-								</option>
-							))}
-						</select>
-					</label>
-				</p>
+					</div>
+				</div>
 				<Combobox
 					title="Task"
 					itemSingular="task"
 					data={filteredTasks}
 					addItemAction={handleAddNewTask}
 					deleteItemAction={handleDeleteTask}
-					disabled={subCategory === ''}
+					disabled={subCategoryId === ''}
 				/>
-				<fieldset>
-					<legend>Time</legend>
-					<label>
-						<input type="checkbox" name="isAllDay" checked={isAllDay} onChange={() => setisAllDay((prev) => !prev)} />
-						all day
-					</label>
-					<div className="grid">
-						<Time title="starts at" defaultHour={hourNow} defaultMinute={minuteNow} />
-						<Time title="ends at" defaultHour={''} defaultMinute={''} />
-					</div>
-				</fieldset>
-				<p>
-					<label>
-						<input
-							type="checkbox"
-							aria-controls="fs-travel-duration"
-							checked={hasTravelTime}
-							onChange={() => setHasTravelTime((prev) => !prev)}
-						/>
-						add travel duration
-					</label>
-				</p>
+				<div className="field">
+					<label>Notes</label>
+					<textarea />
+				</div>
+
+				<label>
+					<input
+						type="checkbox"
+						aria-controls="fs-travel-duration"
+						checked={hasTravelTime}
+						onChange={() => setHasTravelTime((prev) => !prev)}
+					/>
+					add travel duration
+				</label>
+
 				{hasTravelTime && (
 					<fieldset id="fs-travel-duration">
 						<legend>Travel time</legend>
@@ -130,6 +152,7 @@ export function SessionForm({ onSubmitAction }: SessionFormProps) {
 						</div>
 					</fieldset>
 				)}
+
 				<button type="submit">add session</button>
 			</form>
 		</>

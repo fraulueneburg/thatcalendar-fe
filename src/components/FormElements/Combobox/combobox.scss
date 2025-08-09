@@ -1,7 +1,6 @@
 @use '/src/styles/mixins';
 
 [data-scope='combobox'] {
-	margin-bottom: 1rem;
 	position: relative;
 
 	[data-part='label'] {

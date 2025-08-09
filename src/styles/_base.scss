@@ -1,7 +1,7 @@
 @use './mixins';
 
 :root {
-	font-family: system-ui, Inter, Avenir, Helvetica, Arial, sans-serif;
+	font-family: var(--font-family);
 	line-height: 1.5;
 	font-weight: 400;
 	font-synthesis: none;

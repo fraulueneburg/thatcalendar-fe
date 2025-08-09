@@ -1,14 +1,16 @@
 import './time.scss'
 import { useId, useState } from 'react'
+import { TimerIcon as IconDuration } from '@phosphor-icons/react'
 
 type TimeProps = {
 	title: string
+	titleHidden?: boolean
 	isDuration?: boolean
 	defaultHour?: string
 	defaultMinute?: string
 }
 
-export function Time({ title, isDuration = false, defaultHour, defaultMinute }: TimeProps) {
+export function Time({ title, titleHidden = false, isDuration = false, defaultHour, defaultMinute }: TimeProps) {
 	const componentId = useId()
 	const hoursId = `${componentId}hour`
 	const minutesId = `${componentId}minute`
@@ -42,7 +44,7 @@ export function Time({ title, isDuration = false, defaultHour, defaultMinute }: 
 			updateValue('00')
 			return
 		}
-		if (+value < 10) {
+		if (+value < 10 && !isDuration) {
 			updateValue(value.padStart(2, '0'))
 			return
 		}
@@ -88,8 +90,9 @@ export function Time({ title, isDuration = false, defaultHour, defaultMinute }: 
 	return (
 		<>
 			<fieldset>
-				<legend>{title}</legend>
+				<legend className={titleHidden ? 'sr-only' : ''}>{title}</legend>
 				<div className="field-group">
+					{isDuration && <IconDuration className="icon" weight="bold" aria-hidden={true} />}
 					<div className="field">
 						<label htmlFor={hoursId} className="sr-only">
 							{isDuration ? 'hours' : 'hour'}
@@ -109,7 +112,7 @@ export function Time({ title, isDuration = false, defaultHour, defaultMinute }: 
 						/>
 					</div>
 					<span className="field-separator" aria-hidden="true">
-						{isDuration ? 'h' : ':'}
+						{isDuration ? ':' : '.'}
 					</span>
 					<div className="field">
 						<label htmlFor={minutesId} className="sr-only">
@@ -129,13 +132,13 @@ export function Time({ title, isDuration = false, defaultHour, defaultMinute }: 
 							value={minute}
 						/>
 					</div>
-					{isDuration && (
-						<span className="field-separator" aria-hidden="true">
-							min
-						</span>
-					)}
 				</div>
 			</fieldset>
+			{isDuration && (
+				<div className="unit" aria-hidden="true">
+					h
+				</div>
+			)}
 		</>
 	)
 }
