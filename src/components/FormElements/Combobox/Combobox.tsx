@@ -7,12 +7,21 @@ type ComboboxProps = {
 	title: string
 	itemSingular: string
 	data: CategoryType[]
+	selectItemAction: (id: string) => void
 	addItemAction: (title: string) => string
 	deleteItemAction: (title: string) => void
 	disabled?: boolean
 }
 
-export function Combobox({ title, itemSingular, data, addItemAction, deleteItemAction, disabled }: ComboboxProps) {
+export function Combobox({
+	title,
+	itemSingular,
+	data,
+	selectItemAction,
+	addItemAction,
+	deleteItemAction,
+	disabled,
+}: ComboboxProps) {
 	const wrapperRef = useRef<HTMLDivElement | null>(null)
 	const inputRef = useRef<HTMLInputElement>(null)
 	const componentId = `combobox:${useId()}:`
@@ -65,6 +74,7 @@ export function Combobox({ title, itemSingular, data, addItemAction, deleteItemA
 	const handleSelect = (id: string) => (event: React.SyntheticEvent<HTMLDivElement>) => {
 		event?.stopPropagation()
 		setSelectedId(id)
+		selectItemAction(id)
 		setQuery('')
 		inputRef.current?.focus()
 		setIsOpen(false)
