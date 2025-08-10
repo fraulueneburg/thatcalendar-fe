@@ -2,6 +2,7 @@ import './checklist.scss'
 import { useDataContext } from '../../../context/Data.context'
 import { nanoid } from 'nanoid'
 import { ChecklistItemType, TaskType } from '../../../types'
+import { useEffect, useState } from 'react'
 
 type ChecklistProps = {
 	parentId?: string
@@ -11,6 +12,7 @@ export function Checklist({ parentId }: ChecklistProps) {
 	const { taskData, setTaskData } = useDataContext()
 	const parentTask = taskData.find((elem) => elem._id === parentId)
 	const checklist = parentTask?.checklist || []
+	const [focusId, setFocusId] = useState<string | null>(null)
 
 	const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
 		const { key, target } = event
@@ -19,7 +21,9 @@ export function Checklist({ parentId }: ChecklistProps) {
 		if (key === 'Enter' && !event.shiftKey) {
 			event.preventDefault()
 			if (value.trim().length > 0) {
-				handleAddNew({ _id: nanoid(), value: '', isDone: false })
+				const id = nanoid()
+				handleAddNew({ _id: id, value: '', isDone: false })
+				setFocusId(id)
 			}
 		}
 
@@ -74,6 +78,12 @@ export function Checklist({ parentId }: ChecklistProps) {
 		const updatedChecklist = checklist.filter((elem) => elem._id !== id)
 		setTaskData((prev) => prev.map((elem) => (elem._id === parentId ? { ...elem, checklist: updatedChecklist } : elem)))
 	}
+
+	useEffect(() => {
+		if (!focusId) return
+		const field = document.querySelector(`[data-id="${focusId}"]`) as HTMLFormElement
+		if (field) field.focus()
+	}, [focusId])
 
 	return (
 		<>
