@@ -40,9 +40,9 @@ export function SessionForm({ onSubmitAction }: SessionFormProps) {
 	const handleChangeProject = (event: React.FormEvent<HTMLSelectElement>) => {
 		const id = event.currentTarget.value
 		const parentId = categoryArr.find((elem) => elem._id === id)?.parent || ''
-
 		setCategoryId(parentId)
 		setSubCategoryId(id)
+		setTask(null)
 	}
 
 	const handleSelectTask = (id: string) => {
