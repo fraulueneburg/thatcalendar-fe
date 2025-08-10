@@ -1,7 +1,7 @@
 import './checklist.scss'
 import { useDataContext } from '../../../context/Data.context'
 import { nanoid } from 'nanoid'
-import { ChecklistItemType, TaskType } from '../../../types'
+import { ChecklistItemType } from '../../../types'
 import { useEffect, useState } from 'react'
 
 type ChecklistProps = {
@@ -12,7 +12,9 @@ export function Checklist({ parentId }: ChecklistProps) {
 	const { taskData, setTaskData } = useDataContext()
 	const parentTask = taskData.find((elem) => elem._id === parentId)
 	const checklist = parentTask?.checklist || []
+
 	const [focusId, setFocusId] = useState<string | null>(null)
+	const newItemDataId = 'new-item-field'
 
 	const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
 		const { key, target } = event
@@ -32,7 +34,24 @@ export function Checklist({ parentId }: ChecklistProps) {
 				event.preventDefault()
 				const id = (target as HTMLElement).dataset.id
 
-				if (id) handleDelete(id)
+				if (id) {
+					handleDelete(id)
+
+					const li = event.currentTarget.closest('li')
+					if (li) {
+						const prevLi = li.previousElementSibling as HTMLLIElement | null
+						const nextLi = li.nextElementSibling as HTMLLIElement | null
+
+						const setFocus = (targetLi: HTMLLIElement) => {
+							const prevField = targetLi.querySelector('textarea[data-id]') as HTMLTextAreaElement
+							const fieldId = prevField?.dataset.id
+							if (fieldId) setFocusId(fieldId)
+						}
+
+						const target = prevLi || nextLi
+						if (target) setFocus(target)
+					}
+				}
 			}
 		}
 	}
@@ -42,17 +61,21 @@ export function Checklist({ parentId }: ChecklistProps) {
 		const trimmedValue = event.currentTarget.value.trim()
 		const id = (event.target as HTMLElement).dataset.id
 
-		if (!parentTask || !parentId) return
+		if (!parentTask || !parentId || !id) return
 
-		if (!id) {
-			if (trimmedValue !== '') handleAddNew({ _id: nanoid(), value: value, isDone: false })
+		if (id === newItemDataId) {
+			const newId = nanoid()
+			if (trimmedValue !== '') handleAddNew({ _id: newId, value: value, isDone: false })
+			setFocusId(newId)
 			return
 		}
 
 		if (value !== '' && trimmedValue === '') return
 
+		// if only item left
 		if (value === '' && checklist.length === 1) {
 			handleDelete(id)
+			setFocusId(newItemDataId)
 			return
 		}
 
@@ -83,6 +106,7 @@ export function Checklist({ parentId }: ChecklistProps) {
 		if (!focusId) return
 		const field = document.querySelector(`[data-id="${focusId}"]`) as HTMLFormElement
 		if (field) field.focus()
+		field.setSelectionRange(field.value.length, field.value.length)
 	}, [focusId])
 
 	return (
@@ -104,7 +128,13 @@ export function Checklist({ parentId }: ChecklistProps) {
 				) : parentTask && checklist.length === 0 ? (
 					<li key="new">
 						<input type="checkbox" />
-						<textarea className="auto-sized" placeholder={'new'} onChange={handleChange} />
+						<textarea
+							className="auto-sized"
+							placeholder={'new'}
+							data-id={newItemDataId}
+							onChange={handleChange}
+							onKeyDown={handleKeyDown}
+						/>
 					</li>
 				) : (
 					<li key="placeholder" className="disabled">
