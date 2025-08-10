@@ -9,7 +9,7 @@ export type TaskType = {
 	parent: string
 	title: string
 	description?: string
-	checklist?: ChecklistItemType[]
+	checklist: ChecklistItemType[]
 	isDone?: boolean
 	travelTime?: string
 	travelReturnTime?: string

@@ -56,6 +56,7 @@ export function SessionForm({ onSubmitAction }: SessionFormProps) {
 			parent: subCategoryId,
 			title: title,
 			isDone: false,
+			checklist: [],
 		}
 		setTaskData((prev) => [...prev, newTask])
 		return newTask._id
