@@ -16,12 +16,14 @@
 	--border-radius: 5px;
 	--border-width: 1px;
 	--border: var(--border-width) solid #494843;
-	--border-field-disabled: var(--border-width) solid #4c4c4c;
+	--border-disabled: var(--border-width) solid #4c4c4c;
 	--border-popover: 1px solid rgba(255, 251, 237, 0.08);
 
 	--box-shadow-popover: 0px 8px 16px rgba(0, 0, 0, 0.8);
 
 	--padding-form-field: 0.5rem;
+
+	--textarea-min-height: 37px;
 }
 
 $breakpoint-height-smallest-session: 60px;

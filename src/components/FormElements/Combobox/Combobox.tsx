@@ -68,6 +68,7 @@ export function Combobox({
 
 	const handleClear = () => {
 		setSelectedId('')
+		selectItemAction('')
 		inputRef.current?.focus()
 	}
 

@@ -8,6 +8,10 @@ ul.checklist {
 		grid-template-columns: 1rem 1fr;
 		gap: 0.5rem;
 		align-items: baseline;
+
+		&.disabled {
+			align-items: center;
+		}
 	}
 
 	textarea {

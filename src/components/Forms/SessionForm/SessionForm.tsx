@@ -47,7 +47,7 @@ export function SessionForm({ onSubmitAction }: SessionFormProps) {
 
 	const handleSelectTask = (id: string) => {
 		const selectedTask = taskData.find((elem) => elem._id === id)
-		if (selectedTask) setTask(selectedTask)
+		setTask(selectedTask ?? null)
 	}
 
 	const handleAddNewTask = (title: string) => {
@@ -136,15 +136,15 @@ export function SessionForm({ onSubmitAction }: SessionFormProps) {
 					deleteItemAction={handleDeleteTask}
 					disabled={subCategoryId === ''}
 				/>
-				<div className="field">
+				<div className={`field${task ? '' : ' disabled'}`}>
 					<label>Notes</label>
-					<textarea className="auto-sized" />
+					<textarea className="auto-sized" aria-disabled={!task} readOnly={!task} value={!task ? 'empty' : ''} />
 				</div>
-				<fieldset aria-labelledby={`${componentId}checklistlabel`}>
+				<fieldset className={`${task ? '' : 'disabled'}`} aria-labelledby={`${componentId}checklistlabel`}>
 					<div id={`${componentId}checklistlabel`} className="legend">
 						Checklist
 					</div>
-					<Checklist taskId={task?._id} />
+					<Checklist parentId={task?._id} />
 				</fieldset>
 				<label>
 					<input

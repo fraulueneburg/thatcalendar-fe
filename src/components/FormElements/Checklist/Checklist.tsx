@@ -5,54 +5,55 @@ import { nanoid } from 'nanoid'
 import { ChecklistItemType, TaskType } from '../../../types'
 
 type ChecklistProps = {
-	taskId?: string
+	parentId?: string
 }
 
-export function Checklist({ taskId }: ChecklistProps) {
-	const { taskData, setTaskData } = useDataContext()
-	const task = taskData.find((elem) => elem._id === taskId)
-	const list = task?.checklist
-	const emptyListItem = { _id: '', value: '', isDone: false }
+export function Checklist({ parentId }: ChecklistProps) {
+	const emptyItem: ChecklistItemType = { _id: '', value: '', isDone: false }
 
-	const [newListItem, setNewListItem] = useState<ChecklistItemType>(emptyListItem)
+	const { taskData, setTaskData } = useDataContext()
+	const parentTask = taskData.find((elem) => elem._id === parentId)
+	const checklist = parentTask?.checklist || [emptyItem]
+
+	const [newListItem, setNewListItem] = useState<ChecklistItemType>(emptyItem)
 
 	const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
 		const { key, target } = event
 		const { value } = event.currentTarget
 
-		if (key === 'Enter' && !event.shiftKey) {
-			event.preventDefault()
-			if (newListItem.value.trim().length > 0) {
-				addItem()
-				setNewListItem(emptyListItem)
-			}
-		}
+		// if (key === 'Enter' && !event.shiftKey) {
+		// 	event.preventDefault()
+		// 	if (newListItem.value.trim().length > 0) {
+		// 		addItem()
+		// 		setNewListItem(emptyItem)
+		// 	}
+		// }
 
-		if (key === 'Backspace') {
-			if (value === '') {
-				event.preventDefault()
+		// if (key === 'Backspace') {
+		// 	if (value === '') {
+		// 		event.preventDefault()
 
-				const element = target as HTMLElement
-				const id = element.dataset.id
+		// 		const element = target as HTMLElement
+		// 		const id = element.dataset.id
 
-				if (id) deleteItem(id)
-			}
-		}
+		// 		if (id) deleteItem(id)
+		// 	}
+		// }
 	}
 
 	const addItem = () => {
-		if (!taskId || !task || newListItem.value !== '') return
+		if (!parentId || !parentTask || newListItem.value !== '') return
 
 		const listItem = { ...newListItem, _id: nanoid() }
-		const updatedTask = { ...task, checklist: [...(task.checklist ?? []), listItem] }
+		const updatedTask = { ...parentTask, checklist: [...(parentTask.checklist ?? []), listItem] }
 
 		setTaskData((prev) => prev.map((elem) => (elem._id === updatedTask._id ? updatedTask : elem)))
 	}
 
 	const deleteItem = (id: string) => {
-		if (!taskId || !task) return
-		const updatedChecklist = list?.filter((elem) => elem._id !== id)
-		const updatedTask = { ...task, checklist: updatedChecklist }
+		if (!parentId || !parentTask) return
+		const updatedChecklist = checklist?.filter((elem) => elem._id !== id)
+		const updatedTask = { ...parentTask, checklist: updatedChecklist }
 
 		setTaskData((prev) => [...prev, updatedTask])
 	}
@@ -60,13 +61,21 @@ export function Checklist({ taskId }: ChecklistProps) {
 	return (
 		<>
 			<ul className="checklist">
-				{list?.map((elem) => (
-					<li key={elem._id} id={elem._id}>
-						<input type="checkbox" checked={elem.isDone} />
-						<textarea className="auto-sized" defaultValue={elem.value} data-id={elem._id} onKeyDown={handleKeyDown} />
+				{parentTask && checklist ? (
+					checklist?.map((elem) => (
+						<li key={elem._id} id={elem._id}>
+							<input type="checkbox" checked={elem.isDone} />
+							<textarea className="auto-sized" defaultValue={elem.value} data-id={elem._id} onKeyDown={handleKeyDown} />
+						</li>
+					))
+				) : (
+					<li className="disabled">
+						<input type="checkbox" checked={false} aria-disabled={true} readOnly={true} />
+						<textarea className="auto-sized" aria-disabled={true} readOnly={true} placeholder={'empty'} />
 					</li>
-				))}
-				<li>
+				)}
+
+				{/* <li>
 					<input
 						type="checkbox"
 						checked={newListItem.isDone}
@@ -78,7 +87,7 @@ export function Checklist({ taskId }: ChecklistProps) {
 						value={newListItem.value}
 						onChange={(event) => setNewListItem((prev) => ({ ...prev, value: event.target.value }))}
 					/>
-				</li>
+				</li> */}
 			</ul>
 		</>
 	)

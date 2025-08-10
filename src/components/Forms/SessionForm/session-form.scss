@@ -1,4 +1,7 @@
 .session-form {
+	--label-width: 95px;
+	--gap: 1rem;
+
 	width: min(500px, calc(100vw - 1rem));
 
 	> {
@@ -6,13 +9,17 @@
 		fieldset,
 		[data-scope='combobox'] [data-part='root'] {
 			display: grid;
-			gap: 1rem;
-			grid-template-columns: 95px 1fr;
+			gap: var(--gap);
+			grid-template-columns: var(--label-width) 1fr;
 			align-items: center;
 
-			&:has(textarea) {
+			&:has(textarea:not(:disabled):not([readonly])) {
 				align-items: baseline;
 			}
+		}
+		[data-scope='combobox'] [data-part='positioner'] {
+			width: calc(100% - var(--gap) - var(--label-width));
+			right: 0;
 		}
 	}
 
