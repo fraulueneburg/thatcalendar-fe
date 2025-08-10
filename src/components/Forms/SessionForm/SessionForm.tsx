@@ -6,7 +6,7 @@ import { nanoid } from 'nanoid'
 import { useDataContext } from '../../../context/Data.context'
 import { CategoryType, TaskType } from '../../../types'
 import { Combobox, Time } from '../../FormElements'
-import { ArrowRightIcon as IconArrow } from '@phosphor-icons/react'
+import { ArrowRightIcon as IconArrow, MinusIcon as IconUntil } from '@phosphor-icons/react'
 import { Checklist } from '../../FormElements/Checklist'
 
 type SessionFormProps = {
@@ -79,16 +79,24 @@ export function SessionForm({ onSubmitAction }: SessionFormProps) {
 					<div id={`${componentId}timelabel`} className="legend">
 						Time
 					</div>
-					<div className="time-group">
-						<Time title="starts at" titleHidden={true} defaultHour={hourNow} defaultMinute={minuteNow} />
-						<span className="separator">–</span>
-						<Time title="ends at" titleHidden={true} defaultHour={''} defaultMinute={''} />
-						<IconArrow className="icon icon-arrow" weight="bold" aria-hidden="true" />
-						<Time title="duration" titleHidden={true} isDuration={true} />
+					<div className={`time-section${isAllDay ? ' disabled' : ''}`}>
 						<label>
 							<input type="checkbox" name="isAllDay" checked={isAllDay} onChange={() => setisAllDay((prev) => !prev)} />
 							all day
 						</label>
+						<div className="time-group">
+							<Time
+								title="starts at"
+								titleHidden={true}
+								defaultHour={hourNow}
+								defaultMinute={minuteNow}
+								disabled={isAllDay}
+							/>
+							<IconUntil weight="bold" aria-hidden="true" />
+							<Time title="ends at" titleHidden={true} defaultHour={''} defaultMinute={''} disabled={isAllDay} />
+							<IconArrow className="icon icon-arrow" weight="bold" aria-hidden="true" />
+							<Time title="duration" titleHidden={true} isDuration={true} disabled={isAllDay} />
+						</div>
 					</div>
 				</fieldset>
 				<div className="field">

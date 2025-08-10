@@ -1,5 +1,9 @@
 input.time-field {
+	background-color: transparent;
 	box-sizing: content-box;
+	border: none;
+	border-radius: 0;
+	margin: 0;
 	width: fit-content;
 }
 
@@ -16,13 +20,6 @@ input.time-field {
 
 	> .field:last-child input {
 		padding-right: var(--padding-form-field);
-	}
-
-	input.time-field {
-		background-color: transparent;
-		border: none;
-		border-radius: 0;
-		margin: 0;
 	}
 
 	.icon-arrow {

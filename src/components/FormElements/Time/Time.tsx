@@ -8,9 +8,17 @@ type TimeProps = {
 	isDuration?: boolean
 	defaultHour?: string
 	defaultMinute?: string
+	disabled?: boolean
 }
 
-export function Time({ title, titleHidden = false, isDuration = false, defaultHour, defaultMinute }: TimeProps) {
+export function Time({
+	title,
+	titleHidden = false,
+	isDuration = false,
+	defaultHour,
+	defaultMinute,
+	disabled = false,
+}: TimeProps) {
 	const componentId = useId()
 	const hoursId = `${componentId}hour`
 	const minutesId = `${componentId}minute`
@@ -109,6 +117,7 @@ export function Time({ title, titleHidden = false, isDuration = false, defaultHo
 							onBlur={(event) => handleBlur(event, setHour, fallBackHour)}
 							onKeyDown={(event) => handleKeyDown(event, setHour)}
 							value={hour}
+							disabled={disabled}
 						/>
 					</div>
 					<span className="field-separator" aria-hidden="true">
@@ -130,6 +139,7 @@ export function Time({ title, titleHidden = false, isDuration = false, defaultHo
 							onBlur={(event) => handleBlur(event, setMinute, fallBackMinute)}
 							onKeyDown={(event) => handleKeyDown(event, setMinute)}
 							value={minute}
+							disabled={disabled}
 						/>
 					</div>
 				</div>
