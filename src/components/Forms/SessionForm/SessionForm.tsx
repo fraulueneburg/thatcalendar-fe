@@ -59,6 +59,7 @@ export function SessionForm({ onSubmitAction }: SessionFormProps) {
 			checklist: [],
 		}
 		setTaskData((prev) => [...prev, newTask])
+		setTask(newTask)
 		return newTask._id
 	}
 
@@ -68,7 +69,6 @@ export function SessionForm({ onSubmitAction }: SessionFormProps) {
 
 	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault()
-		console.log(event.target)
 		// onSubmitAction()
 	}
 

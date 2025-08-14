@@ -128,13 +128,7 @@ export function Checklist({ parentId }: ChecklistProps) {
 				) : parentTask && checklist.length === 0 ? (
 					<li key="new">
 						<input type="checkbox" />
-						<textarea
-							className="auto-sized"
-							placeholder={'new'}
-							data-id={newItemDataId}
-							onChange={handleChange}
-							onKeyDown={handleKeyDown}
-						/>
+						<textarea className="auto-sized" data-id={newItemDataId} onChange={handleChange} onKeyDown={handleKeyDown} />
 					</li>
 				) : (
 					<li key="placeholder" className="disabled">
