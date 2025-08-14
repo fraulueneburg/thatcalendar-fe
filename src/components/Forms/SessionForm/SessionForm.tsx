@@ -89,14 +89,20 @@ export function SessionForm({ onSubmitAction }: SessionFormProps) {
 							<Time
 								title="starts at"
 								titleHidden={true}
-								defaultHour={hourNow}
-								defaultMinute={minuteNow}
-								disabled={isAllDay}
+								defaultHour={isAllDay ? '00' : hourNow}
+								defaultMinute={isAllDay ? '00' : minuteNow}
+								readonly={isAllDay}
 							/>
 							<IconUntil weight="bold" aria-hidden="true" />
-							<Time title="ends at" titleHidden={true} defaultHour={''} defaultMinute={''} disabled={isAllDay} />
+							<Time
+								title="ends at"
+								titleHidden={true}
+								defaultHour={isAllDay ? '23' : ''}
+								defaultMinute={isAllDay ? '59' : ''}
+								readonly={isAllDay}
+							/>
 							<IconArrow className="icon icon-arrow" weight="bold" aria-hidden="true" />
-							<Time title="duration" titleHidden={true} isDuration={true} disabled={isAllDay} />
+							<Time title="duration" titleHidden={true} isDuration={true} readonly={isAllDay} />
 						</div>
 					</div>
 				</fieldset>
