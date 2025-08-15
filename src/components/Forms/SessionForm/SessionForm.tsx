@@ -4,26 +4,30 @@ import { format } from 'date-fns'
 import { nanoid } from 'nanoid'
 
 import { useDataContext } from '../../../context/Data.context'
-import { CategoryType, TaskType } from '../../../types'
+import { CategoryType, SessionType, TaskType } from '../../../types'
 import { Combobox, Time } from '../../FormElements'
 import { ArrowRightIcon as IconArrow, MinusIcon as IconUntil } from '@phosphor-icons/react'
 import { Checklist } from '../../FormElements/Checklist'
 
-type SessionFormProps = {
-	onSubmitAction?: React.FormEvent<HTMLFormElement>
+type Nullable<T> = {
+	[K in keyof T]: T[K] | null
 }
 
-export function SessionForm({ onSubmitAction }: SessionFormProps) {
+type SessionTypeNullable = Nullable<SessionType>
+
+export function SessionForm() {
 	const componentId = useId()
 	const { categoryData, taskData, setTaskData } = useDataContext()
 	const { data: categoryArr } = categoryData
 	const mainCategories = categoryArr.filter((elem) => !elem.parent)
 
+	const [session, setSession] = useState<SessionTypeNullable>({ _id: '', dtStart: '', dtEnd: '', parent: null })
+	const taskId = session.parent
+
 	const [categoryId, setCategoryId] = useState('')
 	const [subCategoryId, setSubCategoryId] = useState('')
 	const category = categoryArr.find((elem) => elem._id === categoryId)
 	const filteredTasks = taskData.filter((elem: TaskType) => elem.parent === subCategoryId && elem.isDone === false)
-	const [task, setTask] = useState<TaskType | null>(null)
 
 	const filterByParent = (parent: string) => {
 		return categoryArr.filter((elem) => elem.parent === parent) ?? []
@@ -42,24 +46,27 @@ export function SessionForm({ onSubmitAction }: SessionFormProps) {
 		const parentId = categoryArr.find((elem) => elem._id === id)?.parent || ''
 		setCategoryId(parentId)
 		setSubCategoryId(id)
-		setTask(null)
+		setSession((prev) => ({ ...prev, parent: null }))
 	}
 
 	const handleSelectTask = (id: string) => {
 		const selectedTask = taskData.find((elem) => elem._id === id)
-		setTask(selectedTask ?? null)
+		setSession((prev) => ({ ...prev, parent: selectedTask ? selectedTask._id : null }))
 	}
 
 	const handleAddNewTask = (title: string) => {
+		const newTaskId = nanoid()
+
 		const newTask: TaskType = {
-			_id: nanoid(),
+			_id: newTaskId,
 			parent: subCategoryId,
 			title: title,
 			isDone: false,
 			checklist: [],
 		}
 		setTaskData((prev) => [...prev, newTask])
-		setTask(newTask)
+		setSession((prev) => ({ ...prev, parent: newTaskId }))
+
 		return newTask._id
 	}
 
@@ -143,15 +150,15 @@ export function SessionForm({ onSubmitAction }: SessionFormProps) {
 					deleteItemAction={handleDeleteTask}
 					disabled={subCategoryId === ''}
 				/>
-				<div className={`field${task ? '' : ' disabled'}`}>
+				<div className={`field${taskId ? '' : ' disabled'}`}>
 					<label>Notes</label>
-					<textarea className="auto-sized" aria-disabled={!task} readOnly={!task} value={!task ? 'empty' : ''} />
+					<textarea className="auto-sized" aria-disabled={!taskId} readOnly={!taskId} value={!taskId ? 'empty' : ''} />
 				</div>
-				<fieldset className={`${task ? '' : 'disabled'}`} aria-labelledby={`${componentId}checklistlabel`}>
+				<fieldset className={`${taskId ? '' : 'disabled'}`} aria-labelledby={`${componentId}checklistlabel`}>
 					<div id={`${componentId}checklistlabel`} className="legend">
 						Checklist
 					</div>
-					<Checklist parentId={task?._id} />
+					<Checklist parentId={taskId || undefined} />
 				</fieldset>
 				<label>
 					<input
