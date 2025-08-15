@@ -15,6 +15,7 @@
 		"@dnd-kit/modifiers": "^9.0.0",
 		"@phosphor-icons/react": "^2.1.10",
 		"date-fns": "^4.1.0",
+		"date-fns-tz": "^3.2.0",
 		"ical2json": "^4.1.0",
 		"nanoid": "^5.1.5",
 		"react": "^19.0.0",
