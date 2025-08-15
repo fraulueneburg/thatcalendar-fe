@@ -15,7 +15,11 @@ type Nullable<T> = {
 
 type SessionTypeNullable = Nullable<SessionType>
 
-export function SessionForm() {
+type SessionFormProps = {
+	day: Date
+}
+
+export function SessionForm({ day }: SessionFormProps) {
 	const componentId = useId()
 	const { categoryData, taskData, setTaskData } = useDataContext()
 	const { data: categoryArr } = categoryData
