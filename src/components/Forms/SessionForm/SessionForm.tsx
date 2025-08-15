@@ -103,6 +103,8 @@ export function SessionForm({ day }: SessionFormProps) {
 								defaultHour={isAllDay ? '00' : hourNow}
 								defaultMinute={isAllDay ? '00' : minuteNow}
 								readonly={isAllDay}
+								namePrefix={'start'}
+								required={isAllDay ? false : true}
 							/>
 							<IconUntil weight="bold" aria-hidden="true" />
 							<Time
@@ -111,6 +113,8 @@ export function SessionForm({ day }: SessionFormProps) {
 								defaultHour={isAllDay ? '23' : ''}
 								defaultMinute={isAllDay ? '59' : ''}
 								readonly={isAllDay}
+								namePrefix={'end'}
+								required={isAllDay ? false : true}
 							/>
 							<IconArrow className="icon icon-arrow" weight="bold" aria-hidden="true" />
 							<Time title="duration" titleHidden={true} isDuration={true} readonly={isAllDay} />
