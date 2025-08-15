@@ -267,8 +267,11 @@ export function Combobox({
 							onFocus={handleFocus}
 							onClick={handleFocus}
 							onChange={handleChange}
+							onInput={(e) => e.currentTarget.setCustomValidity('')}
+							onInvalid={(e) => e.currentTarget.setCustomValidity(`Please select a ${itemSingular} or create a new one`)}
 							onKeyDown={handleKeyDown}
 							ref={inputRef}
+							required={!selectedId}
 						/>
 					</div>
 				</div>
