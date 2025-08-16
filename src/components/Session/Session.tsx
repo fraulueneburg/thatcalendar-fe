@@ -1,24 +1,28 @@
 import './session.scss'
+import { useRef, useState } from 'react'
 import { SessionProps } from '../../types'
 import { CategoryType } from '../../types/category'
 
-import { categoryArr, tasksArr } from '../../data/dummydata'
+import { userTimeZone } from '../../data/user-settings'
+import { useDataContext } from '../../context/Data.context'
 
 import { getGridPosition } from '../../utils/grid'
 import { calculateDuration } from '../../utils/duration'
 import { convertToTime, shiftTimeByMinutes, stripLeadingZero } from '../../utils/time'
-
-import { TravelTime } from './TravelTime'
-import { TimerIcon as IconDuration } from '@phosphor-icons/react'
+import { toZonedTime } from 'date-fns-tz'
 import { useDndMonitor, useDraggable } from '@dnd-kit/core'
 import { CSS } from '@dnd-kit/utilities'
-import { useRef, useState } from 'react'
+
 import { ResizeHandle } from './ResizeHandle'
-import { toZonedTime } from 'date-fns-tz'
-import { userTimeZone } from '../../data/user-settings'
+import { TravelTime } from './TravelTime'
+import { TimerIcon as IconDuration } from '@phosphor-icons/react'
 
 export function Session({ data }: SessionProps) {
 	const { _id, dtStartUtc, dtEndUtc, parent: sessionParent } = data
+
+	const { categoryData, taskData } = useDataContext()
+	const categoryArr = categoryData.data
+	const tasksArr = taskData
 
 	const dtStart = toZonedTime(dtStartUtc, userTimeZone).toISOString()
 	const dtEnd = toZonedTime(dtEndUtc, userTimeZone).toISOString()
@@ -87,7 +91,7 @@ export function Session({ data }: SessionProps) {
 				style={{ backgroundColor: colorBg, color: color, top: gridPos.top, height: gridPos.height, ...style }}>
 				<ResizeHandle />
 				<div className="content">
-					{isValidTravelTime(travelTime) ? <TravelTime time={travelTime} /> : null}
+					{travelTime && isValidTravelTime(travelTime) ? <TravelTime time={travelTime} /> : null}
 					<div className="text" ref={setNodeRef} {...listeners} {...attributes}>
 						<small className="time">
 							<span className="hours">
@@ -106,7 +110,7 @@ export function Session({ data }: SessionProps) {
 							<span className="sub-cal">{subCatTitle}</span> <span className="main-cal">•&nbsp;{catTitle}</span>
 						</small>
 					</div>
-					{isValidTravelTime(travelReturnTime) && <TravelTime time={travelReturnTime} isReturn={true} />}
+					{travelReturnTime && isValidTravelTime(travelReturnTime) && <TravelTime time={travelReturnTime} isReturn={true} />}
 				</div>
 				<ResizeHandle />
 			</section>
