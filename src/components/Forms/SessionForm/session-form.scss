@@ -35,6 +35,10 @@
 		grid-template-columns: repeat(6, min-content);
 		align-items: center;
 
+		&:has([readonly]) {
+			cursor: default;
+		}
+
 		label:has(input[type='checkbox']) {
 			white-space: nowrap;
 		}

@@ -15,6 +15,7 @@ I am learning a lot about date conversion (love you, [date-fns](https://github.c
 - phosphor-icons
 
 - data-fns
+- date-fns-tz
 - dnd-kit
 - ~~ical2json~~
 - ~~re-resizable~~

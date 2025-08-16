@@ -6,4 +6,6 @@ const weekStartsOnMonday = true
 
 const hoursArr = ['all day', ...getHoursRange(dayStartHour, dayEndHour)]
 
-export { dayStartHour, dayEndHour, weekStartsOnMonday, hoursArr }
+const userTimeZone = 'Europe/Berlin'
+
+export { dayStartHour, dayEndHour, weekStartsOnMonday, hoursArr, userTimeZone }

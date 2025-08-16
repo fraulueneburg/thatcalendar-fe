@@ -9,6 +9,8 @@ type TimeProps = {
 	defaultHour?: string
 	defaultMinute?: string
 	readonly?: boolean
+	namePrefix?: string
+	required?: boolean
 }
 
 export function Time({
@@ -18,6 +20,8 @@ export function Time({
 	defaultHour,
 	defaultMinute,
 	readonly = false,
+	namePrefix,
+	required,
 }: TimeProps) {
 	const componentId = useId()
 	const hoursId = `${componentId}hour`
@@ -107,6 +111,7 @@ export function Time({
 						</label>
 						<input
 							id={hoursId}
+							name={namePrefix && `${namePrefix}Hour`}
 							className="time-field hour"
 							type="number"
 							inputMode="numeric"
@@ -118,6 +123,7 @@ export function Time({
 							onKeyDown={(event) => handleKeyDown(event, setHour)}
 							value={hour}
 							readOnly={readonly}
+							required={required}
 						/>
 					</div>
 					<span className="field-separator" aria-hidden="true">
@@ -129,6 +135,7 @@ export function Time({
 						</label>
 						<input
 							id={minutesId}
+							name={namePrefix && `${namePrefix}Minute`}
 							className="time-field minute"
 							type="number"
 							inputMode="numeric"
@@ -140,6 +147,7 @@ export function Time({
 							onKeyDown={(event) => handleKeyDown(event, setMinute)}
 							value={minute}
 							readOnly={readonly}
+							required={required}
 						/>
 					</div>
 				</div>

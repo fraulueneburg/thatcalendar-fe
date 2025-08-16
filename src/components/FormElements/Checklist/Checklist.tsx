@@ -133,13 +133,7 @@ export function Checklist({ parentId }: ChecklistProps) {
 				) : (
 					<li key="placeholder" className="disabled">
 						<input type="checkbox" aria-disabled={true} readOnly={true} />
-						<textarea
-							className="auto-sized"
-							aria-disabled={true}
-							readOnly={true}
-							placeholder={'empty'}
-							onChange={handleChange}
-						/>
+						<textarea className="auto-sized" aria-disabled={true} readOnly={true} onChange={handleChange} />
 					</li>
 				)}
 			</ul>

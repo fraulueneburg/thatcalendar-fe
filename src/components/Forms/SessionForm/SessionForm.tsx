@@ -1,6 +1,7 @@
 import './session-form.scss'
 import { useState, useId } from 'react'
-import { format } from 'date-fns'
+import { set, format, isBefore, isSameDay } from 'date-fns'
+import { fromZonedTime } from 'date-fns-tz'
 import { nanoid } from 'nanoid'
 
 import { useDataContext } from '../../../context/Data.context'
@@ -8,6 +9,7 @@ import { CategoryType, SessionType, TaskType } from '../../../types'
 import { Combobox, Time } from '../../FormElements'
 import { ArrowRightIcon as IconArrow, MinusIcon as IconUntil } from '@phosphor-icons/react'
 import { Checklist } from '../../FormElements/Checklist'
+import { userTimeZone } from '../../../data/user-settings'
 
 type Nullable<T> = {
 	[K in keyof T]: T[K] | null
@@ -15,13 +17,18 @@ type Nullable<T> = {
 
 type SessionTypeNullable = Nullable<SessionType>
 
-export function SessionForm() {
+type SessionFormProps = {
+	day: Date
+}
+
+export function SessionForm({ day }: SessionFormProps) {
 	const componentId = useId()
-	const { categoryData, taskData, setTaskData } = useDataContext()
+	const { categoryData, taskData, setTaskData, setSessionData } = useDataContext()
 	const { data: categoryArr } = categoryData
 	const mainCategories = categoryArr.filter((elem) => !elem.parent)
 
-	const [session, setSession] = useState<SessionTypeNullable>({ _id: '', dtStart: '', dtEnd: '', parent: null })
+	const emptySession: SessionTypeNullable = { _id: '', dtStartUtc: '', dtEndUtc: '', parent: null }
+	const [session, setSession] = useState<SessionTypeNullable>(emptySession)
 	const taskId = session.parent
 
 	const [categoryId, setCategoryId] = useState('')
@@ -33,7 +40,6 @@ export function SessionForm() {
 		return categoryArr.filter((elem) => elem.parent === parent) ?? []
 	}
 
-	const [isAllDay, setisAllDay] = useState(false)
 	const [hasTravelTime, setHasTravelTime] = useState(false)
 	const [isSameReturnTime, setIsSameReturnTime] = useState(false)
 
@@ -44,19 +50,21 @@ export function SessionForm() {
 	const handleChangeProject = (event: React.FormEvent<HTMLSelectElement>) => {
 		const id = event.currentTarget.value
 		const parentId = categoryArr.find((elem) => elem._id === id)?.parent || ''
+
 		setCategoryId(parentId)
 		setSubCategoryId(id)
 		setSession((prev) => ({ ...prev, parent: null }))
 	}
 
-	const handleSelectTask = (id: string) => {
+	const handleChangeSelectTask = (id: string) => {
 		const selectedTask = taskData.find((elem) => elem._id === id)
-		setSession((prev) => ({ ...prev, parent: selectedTask ? selectedTask._id : null }))
+		const sessionParent = selectedTask ? selectedTask._id : null
+
+		setSession((prev) => ({ ...prev, parent: sessionParent }))
 	}
 
 	const handleAddNewTask = (title: string) => {
 		const newTaskId = nanoid()
-
 		const newTask: TaskType = {
 			_id: newTaskId,
 			parent: subCategoryId,
@@ -64,6 +72,7 @@ export function SessionForm() {
 			isDone: false,
 			checklist: [],
 		}
+
 		setTaskData((prev) => [...prev, newTask])
 		setSession((prev) => ({ ...prev, parent: newTaskId }))
 
@@ -72,11 +81,44 @@ export function SessionForm() {
 
 	const handleDeleteTask = (id: string) => {
 		setTaskData(taskData.filter((elem) => elem._id !== id))
+		setSessionData((prev) => ({ data: [...prev.data.filter((elem) => elem.parent !== id)], index: { ...prev.index } }))
 	}
 
 	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault()
-		// onSubmitAction()
+
+		const formData = new FormData(event.currentTarget)
+
+		const startH = Number(formData.get('startHour'))
+		const startMin = Number(formData.get('startMinute'))
+		const endH = Number(formData.get('endHour'))
+		const endMin = Number(formData.get('endMinute'))
+
+		const dtStart = set(day, { hours: startH, minutes: startMin })
+		const dtEnd = set(day, { hours: endH, minutes: endMin })
+		const dtStartUtcISO = fromZonedTime(dtStart, userTimeZone).toISOString()
+		const dtEndUtcISO = fromZonedTime(dtEnd, userTimeZone).toISOString()
+
+		if (!taskId) throw new Error('Can not add session. Session has no parent task.')
+		if (isBefore(dtEnd, dtStart)) throw new Error('Can not add session. End time is before start time.')
+		if (!isSameDay(dtStart, dtEnd)) throw new Error('Can not add session. Start and end time are not on the same day.')
+
+		const dayKey = format(dtStart, 'yyyyMMdd')
+		const newSession: SessionType = {
+			_id: nanoid(),
+			dtStartUtc: dtStartUtcISO,
+			dtEndUtc: dtEndUtcISO,
+			parent: taskId,
+		}
+
+		setSessionData((prev) => ({
+			data: [...prev.data, newSession],
+			index: {
+				...prev.index,
+				[dayKey]: [...(prev.index[dayKey] ?? []), newSession._id],
+			},
+		}))
+		setSession(emptySession)
 	}
 
 	return (
@@ -87,29 +129,27 @@ export function SessionForm() {
 					<div id={`${componentId}timelabel`} className="legend">
 						Time
 					</div>
-					<div className={`time-section${isAllDay ? ' disabled' : ''}`}>
-						<label>
-							<input type="checkbox" name="isAllDay" checked={isAllDay} onChange={() => setisAllDay((prev) => !prev)} />
-							all day
-						</label>
+					<div className={`time-section`}>
 						<div className="time-group">
 							<Time
 								title="starts at"
 								titleHidden={true}
-								defaultHour={isAllDay ? '00' : hourNow}
-								defaultMinute={isAllDay ? '00' : minuteNow}
-								readonly={isAllDay}
+								defaultHour={hourNow}
+								defaultMinute={minuteNow}
+								namePrefix={'start'}
+								required={true}
 							/>
 							<IconUntil weight="bold" aria-hidden="true" />
 							<Time
 								title="ends at"
 								titleHidden={true}
-								defaultHour={isAllDay ? '23' : ''}
-								defaultMinute={isAllDay ? '59' : ''}
-								readonly={isAllDay}
+								defaultHour={''}
+								defaultMinute={''}
+								namePrefix={'end'}
+								required={true}
 							/>
 							<IconArrow className="icon icon-arrow" weight="bold" aria-hidden="true" />
-							<Time title="duration" titleHidden={true} isDuration={true} readonly={isAllDay} />
+							<Time title="duration" titleHidden={true} isDuration={true} />
 						</div>
 					</div>
 				</fieldset>
@@ -145,14 +185,15 @@ export function SessionForm() {
 					title="Task"
 					itemSingular="task"
 					data={filteredTasks}
-					selectItemAction={handleSelectTask}
+					selectItemAction={handleChangeSelectTask}
 					addItemAction={handleAddNewTask}
 					deleteItemAction={handleDeleteTask}
 					disabled={subCategoryId === ''}
+					disabledPlaceholder={'Please choose a project first'}
 				/>
 				<div className={`field${taskId ? '' : ' disabled'}`}>
 					<label>Notes</label>
-					<textarea className="auto-sized" aria-disabled={!taskId} readOnly={!taskId} value={!taskId ? 'empty' : ''} />
+					<textarea className="auto-sized" aria-disabled={!taskId} readOnly={!taskId} />
 				</div>
 				<fieldset className={`${taskId ? '' : 'disabled'}`} aria-labelledby={`${componentId}checklistlabel`}>
 					<div id={`${componentId}checklistlabel`} className="legend">

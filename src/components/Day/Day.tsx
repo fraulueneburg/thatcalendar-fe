@@ -51,7 +51,7 @@ export function Day({ data }: DayProps) {
 					<span className="day-total-time">00:00 h</span>
 				</h3>
 				<Popover trigger={<IconAdd weight="bold" />} triggerLabel={`add session`}>
-					<SessionForm />
+					<SessionForm day={dayDate} />
 				</Popover>
 			</header>
 			<div className="content">

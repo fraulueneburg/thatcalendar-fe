@@ -1,6 +1,6 @@
 import { parse, format } from 'date-fns'
 
-const DATE_FORMAT = "yyyyMMdd'T'HHmmssX"
+const DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSX"
 
 const timeFromHourNumber = (hour: number): string => {
 	if (!Number.isInteger(hour)) throw new Error('No decimals allowed.')
