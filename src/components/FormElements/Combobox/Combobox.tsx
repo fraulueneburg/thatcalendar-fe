@@ -11,6 +11,7 @@ type ComboboxProps = {
 	addItemAction: (title: string) => string
 	deleteItemAction: (title: string) => void
 	disabled?: boolean
+	disabledPlaceholder?: string
 }
 
 export function Combobox({
@@ -21,6 +22,7 @@ export function Combobox({
 	addItemAction,
 	deleteItemAction,
 	disabled,
+	disabledPlaceholder,
 }: ComboboxProps) {
 	const wrapperRef = useRef<HTMLDivElement | null>(null)
 	const inputRef = useRef<HTMLInputElement>(null)
@@ -40,6 +42,13 @@ export function Combobox({
 	const hasCreateNew = query.trim().length > 0 && !filteredData.some((elem) => elem.title === query.trim())
 	const createNewIndex = !hasCreateNew ? null : filteredData?.length > 0 ? filteredData.length : 0
 	const [highlightedIndex, setHighlightedIndex] = useState<number | null>(null)
+
+	const getPlaceholder = (): string => {
+		if (disabled && disabledPlaceholder) return disabledPlaceholder
+		if (selectedId) return ''
+		if (filteredData.length > 0) return `Search for a ${itemSingular} or create a new one`
+		return `Create your first ${itemSingular}.`
+	}
 
 	const getItemDomId = (id: string) => {
 		return `${componentId}${id}`
@@ -256,13 +265,7 @@ export function Combobox({
 							aria-expanded={isOpen}
 							aria-haspopup="listbox"
 							disabled={disabled}
-							placeholder={
-								selectedId
-									? ''
-									: filteredData.length > 0
-									? `Search for a ${itemSingular} or create a new one`
-									: `Create your first ${itemSingular}.`
-							}
+							placeholder={getPlaceholder()}
 							value={query}
 							onFocus={handleFocus}
 							onClick={handleFocus}

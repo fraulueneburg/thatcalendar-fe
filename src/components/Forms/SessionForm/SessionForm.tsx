@@ -157,10 +157,11 @@ export function SessionForm({ day }: SessionFormProps) {
 					addItemAction={handleAddNewTask}
 					deleteItemAction={handleDeleteTask}
 					disabled={subCategoryId === ''}
+					disabledPlaceholder={'Please choose a project first'}
 				/>
 				<div className={`field${taskId ? '' : ' disabled'}`}>
 					<label>Notes</label>
-					<textarea className="auto-sized" aria-disabled={!taskId} readOnly={!taskId} value={!taskId ? 'empty' : ''} />
+					<textarea className="auto-sized" aria-disabled={!taskId} readOnly={!taskId} />
 				</div>
 				<fieldset className={`${taskId ? '' : 'disabled'}`} aria-labelledby={`${componentId}checklistlabel`}>
 					<div id={`${componentId}checklistlabel`} className="legend">
