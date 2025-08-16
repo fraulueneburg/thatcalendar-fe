@@ -1,6 +1,6 @@
 import { differenceInMinutes, parse } from 'date-fns'
 
-const DATE_FORMAT = "yyyyMMdd'T'HHmmssX"
+const DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSX"
 
 const calculateDuration = (start: string, end: string): string => {
 	const date1 = parse(start, DATE_FORMAT, new Date())

@@ -1,7 +1,7 @@
 export type SessionType = {
 	_id: string
-	dtStart: string
-	dtEnd: string
+	dtStartUtc: string
+	dtEndUtc: string
 	parent: string
 }
 

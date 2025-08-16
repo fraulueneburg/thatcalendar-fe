@@ -1,6 +1,6 @@
 import './user-settings-form.scss'
 import { useMemo, useState } from 'react'
-import { dayStartHour, dayEndHour, weekStartsOnMonday } from '../../../data/user-settings'
+import { dayStartHour, dayEndHour, weekStartsOnMonday, userTimeZone } from '../../../data/user-settings'
 import { useDataContext } from '../../../context/Data.context'
 import { CategoryType } from '../../../types'
 import { TrashIcon as IconDelete } from '@phosphor-icons/react'
@@ -76,6 +76,9 @@ export function UserSettingsForm() {
 							<option>Sunday</option>
 						</select>
 					</label>
+				</div>
+				<div className="field">
+					<label>Time Zone: {userTimeZone}</label>
 				</div>
 				<div className="field">
 					<h3>Categories</h3>

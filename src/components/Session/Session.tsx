@@ -14,9 +14,15 @@ import { useDndMonitor, useDraggable } from '@dnd-kit/core'
 import { CSS } from '@dnd-kit/utilities'
 import { useRef, useState } from 'react'
 import { ResizeHandle } from './ResizeHandle'
+import { toZonedTime } from 'date-fns-tz'
+import { userTimeZone } from '../../data/user-settings'
 
 export function Session({ data }: SessionProps) {
-	const { _id, dtStart, dtEnd, parent: sessionParent } = data
+	const { _id, dtStartUtc, dtEndUtc, parent: sessionParent } = data
+
+	const dtStart = toZonedTime(dtStartUtc, userTimeZone).toISOString()
+	const dtEnd = toZonedTime(dtEndUtc, userTimeZone).toISOString()
+
 	const [startTime, setStartTime] = useState(convertToTime(dtStart))
 	const [endTime, setEndTime] = useState(convertToTime(dtEnd))
 	const duration = calculateDuration(dtStart, dtEnd)
