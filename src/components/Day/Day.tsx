@@ -1,15 +1,15 @@
 import './day.scss'
 import { useDataContext } from '../../context/Data.context'
-
-import { hoursArr } from '../../data/user-settings'
-
-import { format, isToday } from 'date-fns'
+import { useState } from 'react'
 import { useDroppable } from '@dnd-kit/core'
+import { format, isToday } from 'date-fns'
 
 import { Session } from '../Session'
 import { SessionForm } from '../Forms'
 import { PlusIcon as IconAdd } from '@phosphor-icons/react'
 import { Popover } from '../Popover/Popover'
+
+import { hoursArr } from '../../data/user-settings'
 
 type DayType = {
 	dayDate: Date
@@ -21,13 +21,11 @@ type DayProps = {
 }
 
 export function Day({ data }: DayProps) {
-	const { sessionData, setSessionData } = useDataContext()
-
+	const { sessionData } = useDataContext()
 	const sessionsArr = sessionData.data
 	const sessionIndex = sessionData.index
 
 	const { dayDate, dayName } = data
-
 	const dayNum = dayDate.getDate()
 	const isItToday = isToday(dayDate)
 	const isWeekend = ['Sat', 'Sun'].includes(dayName)
@@ -38,6 +36,7 @@ export function Day({ data }: DayProps) {
 	const sessionIdsSet = new Set(sessionIndex[sessionStartDay] ?? [])
 	const filteredSessions = sessionsArr.filter((session) => sessionIdsSet.has(session._id))
 
+	const [popoverIsOpen, setPopoverIsOpen] = useState(false)
 	const { setNodeRef } = useDroppable({ id: sessionStartDay })
 
 	return (
@@ -46,10 +45,14 @@ export function Day({ data }: DayProps) {
 				<h3 aria-label={writtenDate}>
 					<span className="day-name">{dayName}</span>
 					<span className="day-num">{dayNum}</span>
-					<span className="day-total-time">00:00 h</span>
+					<span className="day-total-time">00:00 h</span>
 				</h3>
-				<Popover trigger={<IconAdd weight="bold" />} triggerLabel={`add session`}>
-					<SessionForm day={dayDate} />
+				<Popover
+					trigger={<IconAdd weight="bold" />}
+					triggerLabel={`add session`}
+					isOpen={popoverIsOpen}
+					onOpenChange={setPopoverIsOpen}>
+					<SessionForm day={dayDate} onAfterSubmit={() => setPopoverIsOpen(false)} />
 				</Popover>
 			</header>
 			<div className="content">

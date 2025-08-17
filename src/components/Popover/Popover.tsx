@@ -1,12 +1,14 @@
 import './popover.scss'
 import { Popover as ArkPopover } from '@ark-ui/react'
 import { XIcon as IconClose } from '@phosphor-icons/react'
-import { ReactNode, useRef, useState } from 'react'
+import { ReactNode, useEffect, useRef, useState } from 'react'
 import { useCloseOnClickOutside } from '../../utils/useCloseOnClickOutside'
 
 type PopoverProps = {
 	trigger: ReactNode
 	triggerLabel: string
+	isOpen: boolean
+	onOpenChange: (open: boolean) => void
 	title?: string
 	description?: string
 	children: ReactNode
@@ -19,6 +21,8 @@ type PopoverProps = {
 export const Popover = ({
 	trigger,
 	triggerLabel,
+	isOpen,
+	onOpenChange,
 	title,
 	description,
 	children,
@@ -27,19 +31,18 @@ export const Popover = ({
 	positioning,
 	withArrow,
 }: PopoverProps) => {
-	const [isOpen, setIsOpen] = useState(false)
 	const ref = useRef<HTMLDivElement>(null)
 
 	useCloseOnClickOutside({
 		ref: ref,
-		onCloseAction: () => setIsOpen(false),
+		onCloseAction: () => onOpenChange?.(false),
 	})
 
 	return (
 		<>
 			<ArkPopover.Root modal={isModal} open={isOpen} positioning={positioning} closeOnEscape={false}>
 				{trigger && (
-					<ArkPopover.Trigger className="btn-round" aria-label={triggerLabel} onClick={() => setIsOpen((prev) => !prev)}>
+					<ArkPopover.Trigger className="btn-round" aria-label={triggerLabel} onClick={() => onOpenChange?.(!isOpen)}>
 						{trigger}
 					</ArkPopover.Trigger>
 				)}
@@ -50,7 +53,7 @@ export const Popover = ({
 							{title && <ArkPopover.Title>{title}</ArkPopover.Title>}
 							{description && <ArkPopover.Description>{description}</ArkPopover.Description>}
 							{children}
-							<ArkPopover.CloseTrigger className="btn-round" onClick={() => setIsOpen((prev) => !prev)}>
+							<ArkPopover.CloseTrigger className="btn-round" onClick={() => onOpenChange?.(!isOpen)}>
 								<IconClose />
 							</ArkPopover.CloseTrigger>
 						</ArkPopover.Content>
