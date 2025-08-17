@@ -13,6 +13,7 @@ import { UserSettingsForm } from '../Forms'
 export function Header() {
 	const brandName = 'that calendar'
 	const [isExpanded, setIsExpanded] = useState(true)
+	const [popoverIsOpen, setPopoverIsOpen] = useState(false)
 
 	return (
 		<>
@@ -34,7 +35,9 @@ export function Header() {
 					trigger={<IconSettings weight="bold" />}
 					triggerLabel={`Settings`}
 					isModal={true}
-					className="modal-settings">
+					className="modal-settings"
+					isOpen={popoverIsOpen}
+					onOpenChange={setPopoverIsOpen}>
 					<UserSettingsForm />
 				</Popover>
 			</header>

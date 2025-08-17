@@ -12,6 +12,7 @@ export function NavMain() {
 
 	const mainCategories: CategoryType[] = useMemo(() => categoryArr.filter((elem) => !elem.parent), [categoryData])
 	const [openSubmenus, setOpenSubmenus] = useState<Record<string, boolean>>({})
+	const [popoverIsOpen, setPopoverIsOpen] = useState(false)
 
 	const toggleSubmenu = (id: string) => {
 		setOpenSubmenus((prev) => ({
@@ -30,8 +31,10 @@ export function NavMain() {
 						triggerLabel={`add category`}
 						positioning={{
 							placement: 'right-start',
-						}}>
-						<CategoryForm />
+						}}
+						isOpen={popoverIsOpen}
+						onOpenChange={setPopoverIsOpen}>
+						<CategoryForm onAfterSubmit={() => setPopoverIsOpen(false)} />
 					</Popover>
 				</div>
 				{mainCategories && (

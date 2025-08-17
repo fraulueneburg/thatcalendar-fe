@@ -4,7 +4,11 @@ import { useDataContext } from '../../../context/Data.context'
 import { CategoryType } from '../../../types'
 import { nanoid } from 'nanoid'
 
-export function CategoryForm() {
+type CategoryFormProps = {
+	onAfterSubmit?: () => void
+}
+
+export function CategoryForm({ onAfterSubmit }: CategoryFormProps) {
 	const { categoryData, setCategoryData } = useDataContext()
 	const mainCategories = categoryData.data.filter((elem) => !elem.parent)
 
@@ -73,6 +77,7 @@ export function CategoryForm() {
 			}
 		})
 
+		onAfterSubmit?.()
 		setTitle('')
 	}
 
