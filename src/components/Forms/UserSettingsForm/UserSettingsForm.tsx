@@ -1,6 +1,6 @@
 import './user-settings-form.scss'
 import { useMemo, useState } from 'react'
-import { dayStartHour, dayEndHour, weekStartsOnMonday, userTimeZone } from '../../../data/user-settings'
+import { globalStartHour, globalEndHour, weekStartsOnMonday, userTimeZone } from '../../../data/user-settings'
 import { useDataContext } from '../../../context/Data.context'
 import { CategoryType } from '../../../types'
 import { TrashIcon as IconDelete } from '@phosphor-icons/react'
@@ -43,7 +43,7 @@ export function UserSettingsForm() {
 				<div className="field">
 					<div className="grid">
 						<label>
-							Day starts at {dayStartHour}
+							Day starts at {globalStartHour}
 							<input
 								required
 								id="slot-start-time"
@@ -55,7 +55,7 @@ export function UserSettingsForm() {
 							/>
 						</label>
 						<label>
-							Day ends at {dayEndHour}
+							Day ends at {globalEndHour}
 							<input
 								required
 								id="slot-end-time"

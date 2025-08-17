@@ -3,7 +3,7 @@ import { useRef, useState } from 'react'
 import { SessionProps } from '../../types'
 import { CategoryType } from '../../types/category'
 
-import { userTimeZone } from '../../data/user-settings'
+import { globalGridSize, globalOffsetY, globalStartHour, gridHeight15min, userTimeZone } from '../../data/user-settings'
 import { useDataContext } from '../../context/Data.context'
 
 import { getGridPosition } from '../../utils/grid'
@@ -45,11 +45,6 @@ export function Session({ data }: SessionProps) {
 
 	const isValidTravelTime = (time: string) => time && time !== '0'
 
-	const globalStartHour = 7
-
-	const globalGridSize = 45
-	const gridHeight15min = globalGridSize / 4
-	const globalOffsetY = 128
 	const gridPos = getGridPosition(globalStartHour, dtStart, dtEnd, globalGridSize, globalOffsetY)
 	const yPosRef = useRef<number>(0)
 

@@ -1,11 +1,23 @@
 import { getHoursRange } from '../utils/time'
 
-const dayStartHour = 7
-const dayEndHour = 0
+const globalStartHour = 7
+const globalEndHour = 0
 const weekStartsOnMonday = true
 
-const hoursArr = ['all day', ...getHoursRange(dayStartHour, dayEndHour)]
+const globalGridSize = 45
+const gridHeight15min = globalGridSize / 4
+const globalOffsetY = 128
 
+const hoursArr = ['all day', ...getHoursRange(globalStartHour, globalEndHour)]
 const userTimeZone = 'Europe/Berlin'
 
-export { dayStartHour, dayEndHour, weekStartsOnMonday, hoursArr, userTimeZone }
+export {
+	globalStartHour,
+	globalEndHour,
+	weekStartsOnMonday,
+	globalGridSize,
+	gridHeight15min,
+	globalOffsetY,
+	hoursArr,
+	userTimeZone,
+}
