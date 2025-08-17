@@ -19,9 +19,10 @@ type SessionTypeNullable = Nullable<SessionType>
 
 type SessionFormProps = {
 	day: Date
+	onAfterSubmit?: () => void
 }
 
-export function SessionForm({ day }: SessionFormProps) {
+export function SessionForm({ day, onAfterSubmit }: SessionFormProps) {
 	const componentId = useId()
 	const { categoryData, taskData, setTaskData, setSessionData } = useDataContext()
 	const { data: categoryArr } = categoryData
@@ -118,6 +119,7 @@ export function SessionForm({ day }: SessionFormProps) {
 				[dayKey]: [...(prev.index[dayKey] ?? []), newSession._id],
 			},
 		}))
+		onAfterSubmit?.()
 		setSession(emptySession)
 	}
 
