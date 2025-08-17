@@ -1,8 +1,8 @@
 import './day.scss'
 import { useDataContext } from '../../context/Data.context'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useDroppable } from '@dnd-kit/core'
-import { format, isToday } from 'date-fns'
+import { compareAsc, differenceInMinutes, format, isToday, parseISO } from 'date-fns'
 
 import { Session } from '../Session'
 import { SessionForm } from '../Forms'
@@ -34,7 +34,17 @@ export function Day({ data }: DayProps) {
 
 	const sessionStartDay = format(dayDate, 'yyyyMMdd')
 	const sessionIdsSet = new Set(sessionIndex[sessionStartDay] ?? [])
-	const filteredSessions = sessionsArr.filter((session) => sessionIdsSet.has(session._id))
+
+	const daySessions = useMemo(() => {
+		const filteredSessions = sessionsArr.filter((session) => sessionIdsSet.has(session._id))
+
+		return filteredSessions.sort((a, b) => compareAsc(parseISO(a.dtStartUtc), parseISO(b.dtStartUtc)))
+	}, [sessionsArr, sessionIdsSet])
+
+	const totalMinutes = Math.abs(
+		daySessions.reduce((acc, session) => acc + differenceInMinutes(session.dtStartUtc, session.dtEndUtc), 0)
+	)
+	const totalTime = `${String(Math.floor(totalMinutes / 60))}:${String(totalMinutes % 60).padStart(2, '0')} h`
 
 	const [popoverIsOpen, setPopoverIsOpen] = useState(false)
 	const { setNodeRef } = useDroppable({ id: sessionStartDay })
@@ -45,7 +55,7 @@ export function Day({ data }: DayProps) {
 				<h3 aria-label={writtenDate}>
 					<span className="day-name">{dayName}</span>
 					<span className="day-num">{dayNum}</span>
-					<span className="day-total-time">00:00 h</span>
+					<span className="day-total-time">{totalTime}</span>
 				</h3>
 				<Popover
 					trigger={<IconAdd weight="bold" />}
@@ -56,7 +66,7 @@ export function Day({ data }: DayProps) {
 				</Popover>
 			</header>
 			<div className="content">
-				{filteredSessions.map((session) => (
+				{daySessions.map((session) => (
 					<Session data={session} key={session._id} />
 				))}
 				{hoursArr.map((_, index, arr) => (
