@@ -1,7 +1,6 @@
 import './session.scss'
 import { useRef, useState } from 'react'
-import { SessionProps } from '../../types'
-import { CategoryType } from '../../types/category'
+import { SessionProps, CategoryType, SessionType } from '../../types'
 
 import { globalGridSize, globalOffsetY, globalStartHour, gridHeight15min, userTimeZone } from '../../data/user-settings'
 import { useDataContext } from '../../context/Data.context'
@@ -9,23 +8,25 @@ import { useDataContext } from '../../context/Data.context'
 import { getGridPosition } from '../../utils/grid'
 import { calculateDuration } from '../../utils/duration'
 import { convertToTime, shiftTimeByMinutes, stripLeadingZero } from '../../utils/time'
-import { toZonedTime } from 'date-fns-tz'
+import { toUserTimeZone } from '../../utils/timezones'
+
 import { useDndMonitor, useDraggable } from '@dnd-kit/core'
 import { CSS } from '@dnd-kit/utilities'
 
 import { ResizeHandle } from './ResizeHandle'
 import { TravelTime } from './TravelTime'
 import { TimerIcon as IconDuration } from '@phosphor-icons/react'
+import { set } from 'date-fns'
 
 export function Session({ data }: SessionProps) {
 	const { _id, dtStartUtc, dtEndUtc, parent: sessionParent } = data
 
-	const { categoryData, taskData } = useDataContext()
+	const { categoryData, taskData, sessionData, setSessionData } = useDataContext()
 	const categoryArr = categoryData.data
 	const tasksArr = taskData
 
-	const dtStart = toZonedTime(dtStartUtc, userTimeZone).toISOString()
-	const dtEnd = toZonedTime(dtEndUtc, userTimeZone).toISOString()
+	const dtStart = toUserTimeZone(dtStartUtc)
+	const dtEnd = toUserTimeZone(dtEndUtc)
 
 	const [startTime, setStartTime] = useState(convertToTime(dtStart))
 	const [endTime, setEndTime] = useState(convertToTime(dtEnd))
@@ -70,11 +71,29 @@ export function Session({ data }: SessionProps) {
 
 			if (currentPosY < lastPosY) {
 				setStartTime(shiftTimeByMinutes(startTime, -15 * (currentDistanceY / gridHeight15min)))
+				setEndTime(shiftTimeByMinutes(endTime, -15 * (currentDistanceY / gridHeight15min)))
 			} else if (currentPosY > lastPosY) {
 				setStartTime(shiftTimeByMinutes(startTime, 15 * (currentDistanceY / gridHeight15min)))
+				setEndTime(shiftTimeByMinutes(endTime, 15 * (currentDistanceY / gridHeight15min)))
 			}
 
 			yPosRef.current = currentPosY
+		},
+		onDragEnd(event) {
+			if (event.active.id !== _id) return
+			if (event.delta.x === 0 && event.delta.y === 0) return
+
+			const [startHour, startMinute] = startTime.split(':').map(Number)
+			const [endHour, endMinute] = endTime.split(':').map(Number)
+
+			const newDtStartUtc = set(dtStart, { hours: startHour, minutes: startMinute }).toISOString()
+			const newDtEndUtc = set(dtEnd, { hours: endHour, minutes: endMinute }).toISOString()
+
+			const updatedSessionsArr = sessionData.data.map((elem: SessionType) =>
+				elem._id === _id ? { ...elem, dtStartUtc: newDtStartUtc, dtEndUtc: newDtEndUtc } : elem
+			)
+
+			setSessionData({ ...sessionData, data: updatedSessionsArr })
 		},
 	})
 

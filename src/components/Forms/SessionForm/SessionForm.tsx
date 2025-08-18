@@ -1,7 +1,6 @@
 import './session-form.scss'
 import { useState, useId } from 'react'
 import { set, format, isBefore, isSameDay } from 'date-fns'
-import { fromZonedTime } from 'date-fns-tz'
 import { nanoid } from 'nanoid'
 
 import { useDataContext } from '../../../context/Data.context'
@@ -9,7 +8,6 @@ import { CategoryType, SessionType, TaskType } from '../../../types'
 import { Combobox, Time } from '../../FormElements'
 import { ArrowRightIcon as IconArrow, MinusIcon as IconUntil } from '@phosphor-icons/react'
 import { Checklist } from '../../FormElements/Checklist'
-import { userTimeZone } from '../../../data/user-settings'
 
 type Nullable<T> = {
 	[K in keyof T]: T[K] | null
@@ -95,16 +93,17 @@ export function SessionForm({ day, onAfterSubmit }: SessionFormProps) {
 		const endH = Number(formData.get('endHour'))
 		const endMin = Number(formData.get('endMinute'))
 
-		const dtStart = set(day, { hours: startH, minutes: startMin })
-		const dtEnd = set(day, { hours: endH, minutes: endMin })
-		const dtStartUtcISO = fromZonedTime(dtStart, userTimeZone).toISOString()
-		const dtEndUtcISO = fromZonedTime(dtEnd, userTimeZone).toISOString()
+		const dtStart = set(day, { hours: startH, minutes: startMin, seconds: 0, milliseconds: 0 })
+		const dtEnd = set(day, { hours: endH, minutes: endMin, seconds: 0, milliseconds: 0 })
+		const dtStartUtcISO = dtStart.toISOString()
+		const dtEndUtcISO = dtEnd.toISOString()
 
 		if (!taskId) throw new Error('Can not add session. Session has no parent task.')
 		if (isBefore(dtEnd, dtStart)) throw new Error('Can not add session. End time is before start time.')
 		if (!isSameDay(dtStart, dtEnd)) throw new Error('Can not add session. Start and end time are not on the same day.')
 
-		const dayKey = format(dtStart, 'yyyyMMdd')
+		const dayKey = format(dtStart, 'yyyyMMdd') // local timezone
+
 		const newSession: SessionType = {
 			_id: nanoid(),
 			dtStartUtc: dtStartUtcISO,
